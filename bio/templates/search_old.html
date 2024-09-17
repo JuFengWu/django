@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataTables Example</title>
+    <!-- 引入 jQuery 和 DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+    <button id="fetch-data">Hello World</button>
+    <br><br>
+    <!-- 表格結構 -->
+    <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            let table = $('#example').DataTable({
+                ordering: false  // 禁用排序
+            });
+            // 先初始化空表格
+            //let table = $('#example').DataTable();
+
+            // 當按下按鈕時，通過 AJAX 請求數據
+            $('#fetch-data').on('click', function() {
+                $.ajax({
+                    url: '/get-data/',  // Django 視圖的路徑
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        // 清空現有表格數據
+                        table.clear();
+
+                        // 插入新的數據
+                        table.rows.add(response.data);
+                        table.draw();
+                    },
+                    error: function() {
+                        console.log('Error fetching data.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

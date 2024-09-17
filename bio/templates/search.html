@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search predicted piRNA-target pairs</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+    <h1>Search predicted piRNA-target pairs in Caenorhabditis elegans</h1>
+    <form method="POST" action="{% url 'search_show' %}">
+        {% csrf_token %}
+        <label for="search-type">Search by :</label>
+        <input type="radio" id="target" name="search_type" value="target" checked> Target (RNAs except piRNA)
+        <input type="radio" id="regulator" name="search_type" value="regulator"> Regulator (piRNA)
+
+        <br><br>
+        
+        <label for="gene">Input a gene or transcript to search:</label>
+        <input type="text" id="gene" name="gene" placeholder="e.g., fxbx-97, WBGene00016885, C52E2.6.1" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if data %}
+    <h2>Gene {{ data.gene_name }} Information</h2>
+    <table id="geneTable" class="display">
+        <thead>
+            <tr>
+                <th>Gene WormBase ID</th>
+                <th>Status</th>
+                <th>Gene Sequence Name</th>
+                <th>Gene Name</th>
+                <th>Other Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="{{ data.wormbase_link }}">{{ data.wormbase_id }}</a></td>
+                <td>{{ data.status }}</td>
+                <td>{{ data.gene_sequence_name }}</td>
+                <td>{{ data.gene_name }}</td>
+                <td>{{ data.other_name }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+
+    <script>
+        $(document).ready(function() {
+            $('#geneTable').DataTable();  // 初始化 DataTables
+        });
+    </script>
+</body>
+</html>
