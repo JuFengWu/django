@@ -2,18 +2,30 @@ import yfinance as yf
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.http import HttpResponse
+import json
 
 def get_stock_data(request):
-    # 假設我們抓取的是 Apple 的股票代碼 AAPL
-    stock = yf.Ticker("AAPL")
-    hist = stock.history(period="1mo")  # 抓取一個月的歷史資料
 
-    # 格式化資料為 Highcharts 可接受的格式
-    data = []
-    for date, row in hist.iterrows():
-        data.append([int(date.timestamp() * 1000), row['Close']])  # 日期轉換為毫秒
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        stock_symbol = data.get('stock_symbol')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        window_size = data.get('window_size')
 
-    return JsonResponse({'stock_data': data})
+        print("Json ",stock_symbol)
+
+        # 假設我們抓取的是 Apple 的股票代碼 AAPL
+        stock = yf.Ticker(stock_symbol)
+        hist = stock.history(period="1mo")  # 抓取一個月的歷史資料
+
+        # 格式化資料為 Highcharts 可接受的格式
+        data = []
+        for date, row in hist.iterrows():
+            data.append([int(date.timestamp() * 1000), row['Close']])  # 日期轉換為毫秒
+
+        return JsonResponse({'stock_data': data})
 
 def stock_chart(request):
     return render(request, 'stock_chart.html')
@@ -53,6 +65,20 @@ def test_view(request):
             )
         else:
             response_message = "未知的操作"
+
+        # 假設用戶只選擇了一個股票代碼，我們取第一個
+        stock_symbol = selected_stocks[0] if selected_stocks else 'AAPL'
+
+        print("stock_symbol in slect is ",stock_symbol)
+
+        # 返回帶有 Highcharts 圖表的 HTML，並傳遞股票代碼和其他參數到模板
+        context = {
+            'stock_symbol': stock_symbol,
+            'start_date': start_date,
+            'end_date': end_date,
+            'window_size': window_size,
+        }
+        return render(request, 'stock_chart.html', context)
 
         return HttpResponse(f"<pre>{response_message}</pre>")
 
