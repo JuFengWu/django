@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>選擇股票與設定</title>
+    <style>
+        #stock-list {
+            width: 200px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 表單開始 -->
+    <form id="stock-form" method="post" action="{% url 'test_view' %}">
+        {% csrf_token %}
+
+        <!-- 股票代碼多選框 -->
+        <label for="stock-list">選擇股票代碼:</label>
+        <select id="stock-list" name="selected_stocks" multiple>
+            <option value="MSFT">MSFT</option>
+            <option value="AAPL">AAPL</option>
+            <option value="GOOG">GOOG</option>
+            <option value="TSLA">TSLA</option>
+        </select>
+
+        <br><br>
+
+        <!-- 日期選擇 -->
+        <label for="start_date">開始日期:</label>
+        <input type="date" id="start_date" name="start_date" value="2016-01-01">
+
+        <label for="end_date">結束日期:</label>
+        <input type="date" id="end_date" name="end_date" value="2024-01-01">
+
+        <br><br>
+
+        <!-- window size 的滑動條與數字顯示 -->
+        <label for="window_size">窗口大小:</label>
+        <input type="range" id="window_size" name="window_size" min="50" max="500" value="200" oninput="document.getElementById('size_display').value = this.value">
+        <input type="number" id="size_display" value="200" readonly>
+
+        <br><br>
+
+        <!-- 提交按鈕 -->
+        <button type="button" id="submitBtn1">提交按鈕 1</button>
+    </form>
+
+    <script>
+        // 確保當數字顯示框中的值變更時，滑動條同步更新
+        document.getElementById('size_display').oninput = function() {
+            document.getElementById('window_size').value = this.value;
+        };
+
+        // 按鈕的點擊事件
+        document.getElementById('submitBtn1').addEventListener('click', function() {
+            // 更改表單的動作或其他行為
+            document.getElementById('stock-form').action = "{% url 'test_view' %}?action=submit1"; // 改變表單 action 為一個不同的 URL 或參數
+            document.getElementById('stock-form').submit(); // 提交表單
+        });
+
+    </script>
+
+</body>
+</html>
