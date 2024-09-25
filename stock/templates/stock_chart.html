@@ -16,41 +16,53 @@
         var startDate = "{{ start_date }}";
         var endDate = "{{ end_date }}";
         var windowSize = "{{ window_size }}";
-
-        var data = {
-            'stock_symbol': stockSymbol,
-            'start_date': startDate,
-            'end_date': endDate,
-            'window_size': windowSize
-        };
-
+    
         // 使用 AJAX 來抓取後端 API 的數據
-        fetch(`/api/stock-data/?symbol=${stockSymbol}&start_date=${startDate}&end_date=${endDate}&window_size=${windowSize}`,{
-            method: 'POST',
+        fetch(`/api/stock-data/?symbol=${stockSymbol}&start_date=${startDate}&end_date=${endDate}&window_size=${windowSize}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}' // 這裡要傳遞 CSRF Token
-            },
-            body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                Highcharts.stockChart('stock-chart', {
-                    rangeSelector: {
-                        selected: 1
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            Highcharts.stockChart('stock-chart', {
+                rangeSelector: {
+                    selected: 1
+                },
+                title: {
+                    text: stockSymbol + ' Stock Price'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        month: '%b %e, %Y',
+                        year: '%Y'
                     },
                     title: {
-                        text: stockSymbol + ' Stock Price'
+                        text: 'Date'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Stock Price (USD)'
+                    }
+                },
+                series: [{
+                    name: stockSymbol,
+                    data: data.stock_data,
+                    tooltip: {
+                        valueDecimals: 2
                     },
-                    series: [{
-                        name: stockSymbol,
-                        data: data.stock_data,
-                        tooltip: {
-                            valueDecimals: 2
-                        }
-                    }]
-                });
+                    color: '#8B0000',  // 類似圖片中曲線的顏色
+                }],
+                chart: {
+                    backgroundColor: '#ffffff', // 背景白色
+                    height: 400
+                }
             });
+        });
     </script>
 </body>
 </html>

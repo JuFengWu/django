@@ -5,27 +5,22 @@ from django.http import HttpResponse
 import json
 
 def get_stock_data(request):
+    stock_symbol = request.GET.get('symbol')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    window_size = request.GET.get('window_size')
 
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        
-        stock_symbol = data.get('stock_symbol')
-        start_date = data.get('start_date')
-        end_date = data.get('end_date')
-        window_size = data.get('window_size')
+    print(stock_symbol)
 
-        print("Json ",stock_symbol)
+    stock = yf.Ticker(stock_symbol)
+    hist = stock.history(start=start_date, end=end_date)  # 根據請求的開始與結束日期抓取資料
 
-        # 假設我們抓取的是 Apple 的股票代碼 AAPL
-        stock = yf.Ticker(stock_symbol)
-        hist = stock.history(period="1mo")  # 抓取一個月的歷史資料
+    # 格式化資料為 Highcharts 可接受的格式
+    data = []
+    for date, row in hist.iterrows():
+        data.append([int(date.timestamp() * 1000), row['Close']])  # 日期轉換為毫秒
 
-        # 格式化資料為 Highcharts 可接受的格式
-        data = []
-        for date, row in hist.iterrows():
-            data.append([int(date.timestamp() * 1000), row['Close']])  # 日期轉換為毫秒
-
-        return JsonResponse({'stock_data': data})
+    return JsonResponse({'stock_data': data})
 
 def stock_chart(request):
     return render(request, 'stock_chart.html')
