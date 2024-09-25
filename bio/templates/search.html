@@ -45,7 +45,7 @@
             <tr>
                 <td><a href="{{ data.wormbase_link }}">{{ data.wormbase_id }}</a></td>
                 <td>{{ data.status }}</td>
-                <td>{{ data.gene_sequence_name }}</td>
+                <td><a href="{% url 'gene_sequence_detail' data.gene_sequence_name %}">{{ data.gene_sequence_name }}</a></td>
                 <td>{{ data.gene_name }}</td>
                 <td>{{ data.other_name }}</td>
             </tr>

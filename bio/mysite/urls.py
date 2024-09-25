@@ -24,4 +24,6 @@ urlpatterns = [
     #path('get-data/', views.search), #新增網址與對應的動作 #http://localhost/search/
     #path('search/', views.search_show, name='search'),
     path('search/', views.search_show, name='search_show'),
+    path('browse_result/', views.browse_result, name='browse_result'),
+    path('gene_sequence_detail/<str:gene_sequence_name>/', views.gene_sequence_detail, name='gene_sequence_detail'),
 ]

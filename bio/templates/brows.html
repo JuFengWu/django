@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瀏覽 PRG-1 piRNA 標的對應關係</title>
+    <!-- 引入 DataTables CSS 和 jQuery -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <h1>瀏覽 PRG-1 相關的 piRNA 標的對應關係 (Caenorhabditis)</h1>
+    
+    <form method="post" action="{% url 'browse_result' %}">
+        {% csrf_token %}
+        <h3>篩選條件:</h3>
+        <div>
+            <label>
+                <input type="radio" name="target_type" value="mRNA"> mRNA
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="target_type" value="non_coding_rna"> 非編碼 RNA
+            </label>
+        </div>
+
+        <div id="non_coding_rna_options" style="display:none;">
+            <label>
+                <input type="checkbox" id="selectAllNonCodingRNA" /> 全選
+            </label>
+            <br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="scRNA"> scRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="miRNA primary transcript"> miRNA primary transcript</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="non coding transcript"> non coding transcript</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="snoRNA"> snoRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="snRNA"> snRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="tRNA"> tRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="Transposon ncRNA"> Transposon ncRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="Transposon mRNA"> Transposon mRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="7kncRNA"> 7kncRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="ncRNA"> ncRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="asRNA"> asRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="circRNA"> circRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="lincRNA"> lincRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="miRNA"> miRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="pre miRNA"> pre miRNA</label><br>
+            <label><input type="checkbox" name="non_coding_rna[]" value="rRNA"> rRNA</label><br>
+        </div>
+
+        <button type="submit">提交</button>
+    </form>
+
+    <!-- 表格顯示 -->
+    <table id="resultsTable" class="display">
+        <thead>
+            <tr>
+                <th>基因 ID</th>
+                <th>基因名稱</th>
+                <th>標的 RNA 名稱</th>
+                <th>標的 RNA 類型</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+            <tr>
+                <td>{{ row.gene_id }}</td>
+                <td>{{ row.gene_name }}</td>
+                <td>{{ row.target_rna_name }}</td>
+                <td>{{ row.target_rna_type }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 引入 jQuery 和 DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // 初始化 DataTables
+            $('#resultsTable').DataTable();
+
+            // 切換非編碼 RNA 的選項顯示
+            $('input[name="target_type"]').change(function() {
+                var nonCodingOptions = $('#non_coding_rna_options');
+                if (this.value === 'non_coding_rna') {
+                    nonCodingOptions.show();
+                } else {
+                    nonCodingOptions.hide();
+                }
+            });
+
+            // 全選功能實現
+            $('#selectAllNonCodingRNA').click(function() {
+                var allCheckboxes = $('#non_coding_rna_options input[type="checkbox"]');
+                allCheckboxes.prop('checked', $(this).prop('checked'));
+            });
+        });
+    </script>
+</body>
+</html>
