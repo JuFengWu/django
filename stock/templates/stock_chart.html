@@ -13,12 +13,13 @@
     <script type="text/javascript">
         // 從模板上下文中獲取變數
         var stockSymbol = "{{ stock_symbol }}";
+        var stockSymbol2 = "{{ stock_symbol2 }}";
         var startDate = "{{ start_date }}";
         var endDate = "{{ end_date }}";
         var windowSize = "{{ window_size }}";
     
         // 使用 AJAX 來抓取後端 API 的數據
-        fetch(`/api/stock-data/?symbol=${stockSymbol}&start_date=${startDate}&end_date=${endDate}&window_size=${windowSize}`, {
+        fetch(`/api/stock-data/?symbol=${stockSymbol}&symbol2=${stockSymbol2}&start_date=${startDate}&end_date=${endDate}&window_size=${windowSize}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,13 +57,29 @@
                         valueDecimals: 2
                     },
                     color: '#8B0000',  // 類似圖片中曲線的顏色
+                },{
+                    name: stockSymbol2,
+                    data: data.stock_data2,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    color: '#008B00',  // 類似圖片中曲線的顏色
+                },{
+                    name: "Spread",
+                    data: data.spread,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    color: '#00008B',  // 類似圖片中曲線的顏色
                 }],
                 chart: {
                     backgroundColor: '#ffffff', // 背景白色
                     height: 400
                 }
             });
-        });
+        })
+        
+        ;
     </script>
 </body>
 </html>

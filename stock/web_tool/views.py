@@ -1,26 +1,28 @@
-import yfinance as yf
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.http import HttpResponse
+from web_tool.strategy import strategy,spider_data
 import json
+
+
 
 def get_stock_data(request):
     stock_symbol = request.GET.get('symbol')
+    stock_symbol2 = request.GET.get('symbol2')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
     window_size = request.GET.get('window_size')
 
     print(stock_symbol)
+    print(stock_symbol2)
 
-    stock = yf.Ticker(stock_symbol)
-    hist = stock.history(start=start_date, end=end_date)  # 根據請求的開始與結束日期抓取資料
+    data = spider_data(stock_symbol,start_date,end_date)
+    data2= spider_data(stock_symbol2,start_date,end_date)
 
-    # 格式化資料為 Highcharts 可接受的格式
-    data = []
-    for date, row in hist.iterrows():
-        data.append([int(date.timestamp() * 1000), row['Close']])  # 日期轉換為毫秒
+    newData, newData2, spread , moving_avg_result, moving_std_result = strategy(data,data2)
 
-    return JsonResponse({'stock_data': data})
+    return JsonResponse({'stock_data': newData,"stock_data2":newData2,"spread":spread})
 
 def stock_chart(request):
     return render(request, 'stock_chart.html')
@@ -33,6 +35,9 @@ def test_view(request):
 
         # 獲取選中的股票代碼列表
         selected_stocks = request.POST.getlist('selected_stocks')
+
+        # 獲取選中的股票代碼列表
+        selected_stocks2 = request.POST.getlist('selected_stocks2')
 
         # 獲取開始和結束日期
         start_date = request.POST.get('start_date')
@@ -50,25 +55,19 @@ def test_view(request):
                 f"結束日期: {end_date}\n"
                 f"窗口大小: {window_size}"
             )
-        elif action == 'submit2':
-            response_message = (
-                f"按下的是按鈕 2\n"
-                f"股票代碼: {', '.join(selected_stocks)}\n"
-                f"開始日期: {start_date}\n"
-                f"結束日期: {end_date}\n"
-                f"窗口大小: {window_size}"
-            )
         else:
             response_message = "未知的操作"
 
         # 假設用戶只選擇了一個股票代碼，我們取第一個
         stock_symbol = selected_stocks[0] if selected_stocks else 'AAPL'
+        stock_symbol2 = selected_stocks2[0] if selected_stocks2 else 'AAPL'
 
         print("stock_symbol in slect is ",stock_symbol)
 
         # 返回帶有 Highcharts 圖表的 HTML，並傳遞股票代碼和其他參數到模板
         context = {
             'stock_symbol': stock_symbol,
+            "stock_symbol2" : stock_symbol2,
             'start_date': start_date,
             'end_date': end_date,
             'window_size': window_size,

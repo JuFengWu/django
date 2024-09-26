@@ -17,15 +17,25 @@
         {% csrf_token %}
 
         <!-- 股票代碼多選框 -->
-        <label for="stock-list">選擇股票代碼:</label>
+        <label for="stock 1-list">選擇股票代碼:</label>
         <select id="stock-list" name="selected_stocks" multiple>
             <option value="MSFT">MSFT</option>
             <option value="AAPL">AAPL</option>
             <option value="GOOG">GOOG</option>
             <option value="TSLA">TSLA</option>
         </select>
+        <br></br>
 
-        <br><br>
+        <!-- 股票代碼多選框2 -->
+        <label for="stock 2-list">選擇股票代碼:</label>
+        <select id="stock-list" name="selected_stocks2" multiple>
+            <option value="MSFT">MSFT</option>
+            <option value="AAPL">AAPL</option>
+            <option value="GOOG">GOOG</option>
+            <option value="TSLA">TSLA</option>
+        </select>
+
+        <br></br>
 
         <!-- 日期選擇 -->
         <label for="start_date">開始日期:</label>
