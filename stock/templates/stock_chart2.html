@@ -38,7 +38,14 @@
                             text: 'Stock Data Chart'
                         },
                         xAxis: {
-                            categories: data.stock_data.map((_, index) => index + 1) // 假設 x 軸是點的索引
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%b %e, %Y',
+                                year: '%Y'
+                            },
+                            title: {
+                                text: 'Date'
+                            }
                         },
                         series: [
                             {
@@ -58,7 +65,14 @@
                             text: 'Spread and Lines'
                         },
                         xAxis: {
-                            categories: data.spread.map((_, index) => index + 1) // 假設 x 軸是點的索引
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%b %e, %Y',
+                                year: '%Y'
+                            },
+                            title: {
+                                text: 'Date'
+                            }
                         },
                         series: [
                             {
