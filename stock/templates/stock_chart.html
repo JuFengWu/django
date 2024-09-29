@@ -92,39 +92,39 @@
                 data: $('#stock-form').serialize(),
                 success: function(data) {
                     // 提取標記數據
-                    const buy1Markers = data.buy1time.map(time => ({
+                    const buy1Markers = data.buy1time.map((time,index) => ({
                         x: time,
-                        y: data.stock_data.find(item => item[0] === Date.parse(time)),  // 尋找對應時間的股價
+                        y: data.buy1timeStock[index],
                         marker: {
                             symbol: 'triangle',
                             fillColor: 'green'
                         }
                     }));
     
-                    const sell1Markers = data.sell1Time.map(time => ({
+                    const sell1Markers = data.sell1Time.map((time,index) => ({
                         x: Date.parse(time),
-                        y: data.stock_data.find(item => item[0] === Date.parse(time)),
+                        y: data.buy2timeStock[index],
                         marker: {
                             symbol: 'triangle',
                             fillColor: 'green'
                         }
                     }));
     
-                    const buy2Markers = data.buy2time.map(time => ({
+                    const buy2Markers = data.buy2time.map((time,index) => ({
                         x: Date.parse(time),
-                        y: data.stock_data.find(item => item[0] === Date.parse(time)),
+                        y: data.sell1TimeStock[index],
                         marker: {
                             symbol: 'triangle-down',
                             fillColor: 'red'
                         }
                     }));
     
-                    const sell2Markers = data.sell2Time.map(time => ({
+                    const sell2Markers = data.sell2Time.map((time,index) => ({
                         x: Date.parse(time),
-                        y: data.stock_data.find(item => item[0] === Date.parse(time)),
+                        y: data.sell2TimeStock[index],  // 使用 sell2TimeStock 中的股價
                         marker: {
-                            symbol: 'triangle-down',
-                            fillColor: 'red'
+                        symbol: 'triangle-down',
+                        fillColor: 'red'
                         }
                     })); 
     

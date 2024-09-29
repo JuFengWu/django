@@ -23,7 +23,13 @@ def test_view(request):
         log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2, window_size = int(window_size))
     
         buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
+        
+        buy1timeStock = [float(price) for timestamp, price in data if timestamp in buy1Time]
+        buy2timeStock = [float(price) for timestamp, price in data if timestamp in buy2Time]
+        sell1TimeStock = [float(price) for timestamp, price in data if timestamp in sell1Time]
+        sell2TimeStock = [float(price) for timestamp, price in data if timestamp in sell2Time]
 
+        print(buy1timeStock)
         
         show_upperline = []
         show_downline = []
@@ -44,7 +50,11 @@ def test_view(request):
             'buy1time': buy1Time,
             'buy2time': buy2Time,
             'sell1Time': sell1Time,
-            'sell2Time': sell2Time
+            'sell2Time': sell2Time,
+            'buy1timeStock': buy1timeStock,
+            'buy2timeStock': buy2timeStock,
+            'sell1TimeStock': sell1TimeStock,
+            'sell2TimeStock': sell2TimeStock
         }
         return JsonResponse(data)
     return render(request, 'stock_chart.html')
