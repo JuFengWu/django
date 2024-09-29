@@ -5,35 +5,6 @@ from django.http import HttpResponse
 from web_tool.strategy import strategy,spider_data, buy_and_sell
 import json
 
-
-
-def get_stock_data(request):
-    stock_symbol = request.GET.get('symbol')
-    stock_symbol2 = request.GET.get('symbol2')
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    window_size = request.GET.get('window_size')
-
-    print(stock_symbol)
-    print(stock_symbol2)
-
-    data = spider_data(stock_symbol,start_date,end_date)
-    data2= spider_data(stock_symbol2,start_date,end_date)
-
-    log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2)
-    
-    buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
-
-    data = {'stock_data': data,"stock_data2":data2,
-            "spread":spread,"upperline":upperline, "downline":downline,"averageLine":moving_avg_result,
-            "buy1time":buy1Time,"buy2time":buy2Time,"sell1Time":sell1Time,"sell2Time":sell2Time}
-
-    return JsonResponse(data)
-
-def stock_chart(request):
-    return render(request, 'stock_chart.html')
-
-
 def test_view(request):
     if request.method == "POST":
         print("post")

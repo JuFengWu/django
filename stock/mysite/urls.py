@@ -20,7 +20,5 @@ from web_tool import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/stock-data/', views.get_stock_data, name='get_stock_data'),
-    path('stock-chart/', views.stock_chart, name='stock_chart'),
     path('test/', views.test_view, name='test_view'),
 ]
