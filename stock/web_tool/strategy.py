@@ -3,6 +3,7 @@ import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
 import datetime
+import numpy as np
 
 def spider_data(stock,start_date,end_date):
     stock = yf.Ticker(stock)
@@ -14,7 +15,7 @@ def spider_data(stock,start_date,end_date):
         data.append([int(date.timestamp() * 1000), row['Close']])  # 日期轉換為毫秒
     return data
 
-def strategy(data1, data2):
+def strategy(data1, data2, window_size = 200, std_multiple = 2):
     log1 = log_data(data1)
     log2 = log_data(data2)
     spread = []
@@ -22,31 +23,36 @@ def strategy(data1, data2):
         lenth = len(log1)
     else:
         lenth = len(log2)
+
+    data_list = []
     for i in range(lenth):
         timestamp = log1[i][0]
         price1 = log1[i][1]
         price2 = log2[i][1]
         log_price = price1 - price2  # 將對數相減
         spread.append([timestamp, log_price])
-
-    window_size = 200
-
-    spread_df = pd.DataFrame(spread, columns=['timestamp', 'log_price'])
-
-    spread_df['moving_avg'] = spread_df['log_price'].expanding(min_periods=1).mean()
-    spread_df['moving_std'] = spread_df['log_price'].expanding(min_periods=1).std()
-
-    # 如果需要將 NaN 替換為 0 或其他值，處理標準差的 NaN
-    spread_df['moving_std'].fillna(0, inplace=True)  # 例如：將 NaN 替換為 0
-
-    # 不再需要 dropna，因為 expanding 從第一筆資料開始累積計算
-
-    # 格式化結果為兩個獨立的列表，一個是 timestamp 和 moving_avg，一個是 timestamp 和 moving_std
-    moving_avg_result = spread_df[['timestamp', 'moving_avg']].values.tolist()
-    moving_std_result = spread_df[['timestamp', 'moving_std']].values.tolist()
+        data_list.append(log_price)
 
     
-    return log1, log2, spread, moving_avg_result, moving_std_result
+    moving_averages = []
+    moving_stds = []
+    upperline = []
+    downline = []
+    
+    for i in range(len(spread)):
+        # 計算當前位置前的 200 個元素（或不到 200 就取前面所有的元素）
+        window = data_list[max(0, i - window_size + 1):i + 1]
+        # 計算窗口內的平均值
+        window_average = np.mean(window)
+        moving_averages.append(window_average)
+        
+        std_window = moving_averages[max(0, i - window_size + 1):i + 1]
+        window_std = np.std(std_window)
+        moving_stds.append(window_std*std_multiple)
+        upperline.append(moving_averages[i]+window_std)
+        downline.append(moving_averages[i]-window_std)
+    
+    return log1, log2, spread, moving_averages,moving_stds, upperline, downline
 
 class BuySell:
     def __init__(self) -> None:
@@ -77,16 +83,16 @@ class BuySell:
             pass
     
 
-def buy_and_sell(spread, moving_avg_result, moving_std_result ):
+def buy_and_sell(spread, moving_avg_result, upperline, downline):
     buySell = BuySell()
     for i in range(len(spread)):
-        if spread[i][1] > moving_std_result[i][1] * 1:
+        if spread[i][1] > upperline[i]:
             buySell.upper_std(spread[i][0])
-        elif spread[i][1] < moving_std_result[i][1] * 1:
+        elif spread[i][1] < downline[i]:
             buySell.down_std(spread[i][0])
-        elif (spread[i-1][1] - moving_avg_result[i][1]) > 0 and (spread[i][1] - moving_avg_result[i][1]) < 0:
+        elif (spread[i-1][1] - moving_avg_result[i]) > 0 and (spread[i][1] - moving_avg_result[i]) < 0:
             buySell.close(spread[i][0])
-        elif(spread[i-1][1] - moving_avg_result[i][1]) < 0 and (spread[i][1] - moving_avg_result[i][1]) > 0:
+        elif(spread[i-1][1] - moving_avg_result[i]) < 0 and (spread[i][1] - moving_avg_result[i]) > 0:
             buySell.close(spread[i][0])
     return buySell.buy1Time,buySell.buy2Time,buySell.sell1Time,buySell.sell2Time
         
@@ -107,8 +113,9 @@ if __name__ == "__main__":
     #data = spider_data('AAPL', '2023-01-01', '2023-09-01')
 
 
-    log1, log2, spread, moving_avg_result, moving_std_result = strategy(data1,data2)
-    buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, moving_std_result )
+    log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data1,data2)
+    
+    buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
 
     buy1_dates = [datetime.datetime.fromtimestamp(ts / 1000) for ts in buy1Time]
     buy2_dates = [datetime.datetime.fromtimestamp(ts / 1000) for ts in buy2Time]
@@ -117,29 +124,34 @@ if __name__ == "__main__":
 
     data = spread
 
-    
-
-
     dates = [datetime.datetime.fromtimestamp(item[0] / 1000) for item in data]
     prices = [item[1] for item in data]
-    moving_std = [item[1] for item in moving_std_result]
 
     # 繪製股價圖
     plt.figure(figsize=(10, 6))
-    plt.plot(dates, prices, label='Stock Price')
-    plt.plot(dates, moving_std, label='moving_std',color = "red", linestyle='--')
+    plt.plot(dates, prices,color = "blue", label='Stock Price')
+    plt.plot(dates, moving_avg_result, label='moving_avg_result',color = "red", linestyle='--')
+    plt.plot(dates, upperline, label='upperline',color = "orange", linestyle='--')
+    plt.plot(dates, downline, label='downline',color = "green", linestyle='--')
 
     # 格式化日期標籤
     plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y.%m.%d'))
-
+    
     for date in buy1_dates:
         price_at_date = prices[dates.index(date)]  # 找到該日期對應的價格
-        plt.scatter(date, price_at_date, color='green', marker='^', s=100, label='Buy 1 Time')
+        plt.scatter(date, price_at_date, color='green', marker='^', s=100)
+
+    for date in sell1_dates:
+        price_at_date = prices[dates.index(date)]  # 找到該日期對應的價格
+        plt.scatter(date, price_at_date, color='yellow', marker='v', s=100)
+    for date in sell2_dates:
+        price_at_date = prices[dates.index(date)]  # 找到該日期對應的價格
+        plt.scatter(date, price_at_date, color='yellow', marker='v', s=100)
 
     # 在 buy2Time 的日期繪製向下三角形
     for date in buy2_dates:
         price_at_date = prices[dates.index(date)]  # 找到該日期對應的價格
-        plt.scatter(date, price_at_date, color='red', marker='v', s=100, label='Buy 2 Time')
+        plt.scatter(date, price_at_date, color='red', marker='v', s=100)
 
     # 設定x軸與y軸標題
     plt.xlabel('Date')

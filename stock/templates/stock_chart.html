@@ -28,12 +28,13 @@
         })
         .then(response => response.json())
         .then(data => {
+            // 第一個圖表 (股票價格)
             Highcharts.stockChart('stock-chart', {
                 rangeSelector: {
                     selected: 1
                 },
                 title: {
-                    text: stockSymbol + ' Stock Price'
+                    text: 'Price & Signals'
                 },
                 xAxis: {
                     type: 'datetime',
@@ -64,13 +65,6 @@
                         valueDecimals: 2
                     },
                     color: '#008B00',  // 類似圖片中曲線的顏色
-                },{
-                    name: "Spread",
-                    data: data.spread,
-                    tooltip: {
-                        valueDecimals: 2
-                    },
-                    color: '#00008B',  // 類似圖片中曲線的顏色
                 }],
                 chart: {
                     backgroundColor: '#ffffff', // 背景白色
@@ -78,8 +72,66 @@
                 }
             });
         })
-        
-        ;
+        .then(data=>{
+            // 第二個圖表 (Signals - spread, upperline, downline, averageLine)
+            Highcharts.stockChart('signals-chart', {
+                rangeSelector: {
+                    selected: 1
+                },
+                title: {
+                    text: 'Signals'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        month: '%b %e, %Y',
+                        year: '%Y'
+                    },
+                    title: {
+                        text: 'Date'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Value'
+                    }
+                },
+                series: [{
+                    name: "upperline",
+                    data: data.upperline,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    color: '#8B0000',  // 類似圖片中曲線的顏色
+                },{
+                    name: "downline",
+                    data: data.downline,
+                    tooltip: {
+                        valueDecimals: 3
+                    },
+                    color: '#00800B',  // 類似圖片中曲線的顏色
+                },{
+                    name: "averageLine",
+                    data: data.averageLine,
+                    tooltip: {
+                        valueDecimals: 3
+                    },
+                    color: '#00008B',  // 類似圖片中曲線的顏色
+                },{
+                    name: "spread",
+                    data: data.spread,
+                    tooltip: {
+                        valueDecimals: 3
+                    },
+                    color: '#0B000',  // 類似圖片中曲線的顏色
+                }],
+                chart: {
+                    backgroundColor: '#ffffff', // 背景白色
+                    height: 400
+                }
+            });
+        });
     </script>
+    
 </body>
 </html>

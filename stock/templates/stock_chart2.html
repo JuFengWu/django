@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highcharts & DataTables Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <div id="chartA" style="width: 100%; height: 400px;"></div>
+    <div id="chartB" style="width: 100%; height: 400px; margin-top: 50px;"></div>
+    <table id="buySellTable" class="display" style="width:100%; margin-top: 50px;">
+        <thead>
+            <tr>
+                <th>Buy 1 Time</th>
+                <th>Buy 2 Time</th>
+                <th>Sell 1 Time</th>
+                <th>Sell 2 Time</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            // AJAX 請求從 Django 後端獲取數據
+            $.ajax({
+                url: '/your-api-endpoint/', // Django 返回 JsonResponse 的 API
+                method: 'GET',
+                success: function(data) {
+                    // 1. Highcharts 圖 A (stock_data 和 stock_data2)
+                    Highcharts.chart('chartA', {
+                        title: {
+                            text: 'Stock Data Chart'
+                        },
+                        xAxis: {
+                            categories: data.stock_data.map((_, index) => index + 1) // 假設 x 軸是點的索引
+                        },
+                        series: [
+                            {
+                                name: 'Stock Data',
+                                data: data.stock_data
+                            },
+                            {
+                                name: 'Stock Data 2',
+                                data: data.stock_data2
+                            }
+                        ]
+                    });
+
+                    // 2. Highcharts 圖 B (spread、upperline、downline 和 averageLine)
+                    Highcharts.chart('chartB', {
+                        title: {
+                            text: 'Spread and Lines'
+                        },
+                        xAxis: {
+                            categories: data.spread.map((_, index) => index + 1) // 假設 x 軸是點的索引
+                        },
+                        series: [
+                            {
+                                name: 'Spread',
+                                data: data.spread
+                            },
+                            {
+                                name: 'Upper Line',
+                                data: data.upperline
+                            },
+                            {
+                                name: 'Down Line',
+                                data: data.downline
+                            },
+                            {
+                                name: 'Average Line',
+                                data: data.averageLine
+                            }
+                        ]
+                    });
+
+                    // 3. DataTables (buy1time、buy2time、sell1Time、sell2Time)
+                    $('#buySellTable').DataTable({
+                        data: [
+                            [data.buy1time, data.buy2time, data.sell1Time, data.sell2Time]
+                        ]
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

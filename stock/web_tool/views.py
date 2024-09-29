@@ -2,7 +2,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.http import HttpResponse
-from web_tool.strategy import strategy,spider_data
+from web_tool.strategy import strategy,spider_data, buy_and_sell
 import json
 
 
@@ -20,9 +20,15 @@ def get_stock_data(request):
     data = spider_data(stock_symbol,start_date,end_date)
     data2= spider_data(stock_symbol2,start_date,end_date)
 
-    newData, newData2, spread , moving_avg_result, moving_std_result = strategy(data,data2)
+    log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2)
+    
+    buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
 
-    return JsonResponse({'stock_data': newData,"stock_data2":newData2,"spread":spread})
+    data = {'stock_data': data,"stock_data2":data2,
+            "spread":spread,"upperline":upperline, "downline":downline,"averageLine":moving_avg_result,
+            "buy1time":buy1Time,"buy2time":buy2Time,"sell1Time":sell1Time,"sell2Time":sell2Time}
+
+    return JsonResponse(data)
 
 def stock_chart(request):
     return render(request, 'stock_chart.html')
