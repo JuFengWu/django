@@ -20,7 +20,7 @@ def test_view(request):
         data = spider_data(selected_stocks[0],start_date,end_date)
         data2= spider_data(selected_stocks2[0],start_date,end_date)
 
-        log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2)
+        log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2, window_size = int(window_size))
     
         buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
 
@@ -41,10 +41,10 @@ def test_view(request):
             'upperline': show_upperline,
             'downline': show_downline,
             'averageLine': show_moving_avg_result,
-            'buy1time': "2024-09-01 10:00:00",
-            'buy2time': "2024-09-01 11:00:00",
-            'sell1Time': "2024-09-01 12:00:00",
-            'sell2Time': "2024-09-01 13:00:00"
+            'buy1time': buy1Time,
+            'buy2time': buy2Time,
+            'sell1Time': sell1Time,
+            'sell2Time': sell2Time
         }
         return JsonResponse(data)
     return render(request, 'stock_chart.html')

@@ -91,7 +91,44 @@
                 method: "POST",
                 data: $('#stock-form').serialize(),
                 success: function(data) {
-                    // 1. Highcharts 圖 A (stock_data 和 stock_data2)
+                    // 提取標記數據
+                    const buy1Markers = data.buy1time.map(time => ({
+                        x: time,
+                        y: data.stock_data.find(item => item[0] === Date.parse(time)),  // 尋找對應時間的股價
+                        marker: {
+                            symbol: 'triangle',
+                            fillColor: 'green'
+                        }
+                    }));
+    
+                    const sell1Markers = data.sell1Time.map(time => ({
+                        x: Date.parse(time),
+                        y: data.stock_data.find(item => item[0] === Date.parse(time)),
+                        marker: {
+                            symbol: 'triangle',
+                            fillColor: 'green'
+                        }
+                    }));
+    
+                    const buy2Markers = data.buy2time.map(time => ({
+                        x: Date.parse(time),
+                        y: data.stock_data.find(item => item[0] === Date.parse(time)),
+                        marker: {
+                            symbol: 'triangle-down',
+                            fillColor: 'red'
+                        }
+                    }));
+    
+                    const sell2Markers = data.sell2Time.map(time => ({
+                        x: Date.parse(time),
+                        y: data.stock_data.find(item => item[0] === Date.parse(time)),
+                        marker: {
+                            symbol: 'triangle-down',
+                            fillColor: 'red'
+                        }
+                    })); 
+    
+                    // 1. Highcharts 圖 A (stock_data 和 stock_data2，使用日期作為 X 軸)
                     Highcharts.chart('chartA', {
                         title: {
                             text: 'Stock Data Chart'
@@ -109,15 +146,33 @@
                         series: [
                             {
                                 name: 'Stock Data',
-                                data: data.stock_data
+                                data: data.stock_data,
                             },
                             {
                                 name: 'Stock Data 2',
-                                data: data.stock_data2
+                                data: data.stock_data2,
+                            },
+                            // 標記 buy1time 和 sell1Time 的綠色向上三角形
+                            {
+                                name: 'Buy/Sell Markers',
+                                type: 'scatter',
+                                data: buy1Markers.concat(sell1Markers),
+                                marker: {
+                                    radius: 8
+                                }
+                            },
+                            // 標記 buy2time 和 sell2Time 的紅色向下三角形
+                            {
+                                name: 'Sell Markers',
+                                type: 'scatter',
+                                data: buy2Markers.concat(sell2Markers),
+                                marker: {
+                                    radius: 8
+                                }
                             }
                         ]
                     });
-
+    
                     // 2. Highcharts 圖 B (spread、upperline、downline 和 averageLine)
                     Highcharts.chart('chartB', {
                         title: {
@@ -140,25 +195,24 @@
                             },
                             {
                                 name: 'Upper Line',
-                                data: data.upperline
+                                data: data.upperline.map(([timestamp, value]) => [Date.parse(timestamp), value])
                             },
                             {
                                 name: 'Down Line',
-                                data: data.downline
+                                data: data.downline.map(([timestamp, value]) => [Date.parse(timestamp), value])
                             },
                             {
                                 name: 'Average Line',
-                                data: data.averageLine
+                                data: data.averageLine.map(([timestamp, value]) => [Date.parse(timestamp), value])
                             }
                         ]
                     });
-
+    
                     // 3. DataTables (buy1time、buy2time、sell1Time、sell2Time)
                     $('#datatable').DataTable({
                         data: [
                             [data.buy1time, data.buy2time, data.sell1Time, data.sell2Time]
                         ],
-                        destroy: true, // 如果表格已初始化，重新加載數據
                     });
                 },
                 error: function(error) {
@@ -166,7 +220,7 @@
                 }
             });
         });
-
+    
         // 確保當數字顯示框中的值變更時，滑動條同步更新
         document.getElementById('size_display').oninput = function() {
             document.getElementById('window_size').value = this.value;

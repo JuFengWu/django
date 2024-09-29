@@ -117,6 +117,8 @@ if __name__ == "__main__":
     
     buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
 
+    
+
     buy1_dates = [datetime.datetime.fromtimestamp(ts / 1000) for ts in buy1Time]
     buy2_dates = [datetime.datetime.fromtimestamp(ts / 1000) for ts in buy2Time]
     sell1_dates = [datetime.datetime.fromtimestamp(ts / 1000) for ts in sell1Time]
