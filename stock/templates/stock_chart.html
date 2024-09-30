@@ -102,7 +102,7 @@
                     }));
     
                     const sell1Markers = data.sell1Time.map((time,index) => ({
-                        x: Date.parse(time),
+                        x: time,
                         y: data.buy2timeStock[index],
                         marker: {
                             symbol: 'triangle',
@@ -111,7 +111,7 @@
                     }));
     
                     const buy2Markers = data.buy2time.map((time,index) => ({
-                        x: Date.parse(time),
+                        x: time,
                         y: data.sell1TimeStock[index],
                         marker: {
                             symbol: 'triangle-down',
@@ -120,7 +120,7 @@
                     }));
     
                     const sell2Markers = data.sell2Time.map((time,index) => ({
-                        x: Date.parse(time),
+                        x: time,
                         y: data.sell2TimeStock[index],  // 使用 sell2TimeStock 中的股價
                         marker: {
                         symbol: 'triangle-down',

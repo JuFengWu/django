@@ -28,8 +28,9 @@ def test_view(request):
         buy2timeStock = [float(price) for timestamp, price in data if timestamp in buy2Time]
         sell1TimeStock = [float(price) for timestamp, price in data if timestamp in sell1Time]
         sell2TimeStock = [float(price) for timestamp, price in data if timestamp in sell2Time]
-
+        
         print(buy1timeStock)
+        print(sell2TimeStock)
         
         show_upperline = []
         show_downline = []
