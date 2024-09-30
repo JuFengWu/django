@@ -29,24 +29,56 @@ def test_view(request):
         buy2timeStock = []
         sell1TimeStock = []
         sell2TimeStock = []
+        buy1timeStockSpread = []
+        buy2timeStockSpread = []
+        sell1TimeStockSpread = []
+        sell2TimeStockSpread = []
 
         
         dates = [item[0]  for item in data]
+
+        tableData = []
         for date in buy1Time:
             price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
+            price_at_other_date =  data2[dates.index(date)]
             buy1timeStock.append([price_at_date[0] ,price_at_date[1]])
+            tableDataElement=(price_at_date[0],"Open","Buy 1",price_at_date[1],"Sell 2", price_at_other_date[1])
+            tableData.append(tableDataElement)
+            
+            price_at_spread = spread[dates.index(date)]
+            buy1timeStockSpread.append([price_at_spread[0],price_at_spread[1]])
+
 
         for date in buy2Time:
             price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
-            buy2timeStock.append([price_at_date[0],price_at_date[1]])
+            price_at_other_date =  data2[dates.index(date)]
+            buy2timeStock.append([price_at_other_date[0],price_at_other_date[1]])
+            tableDataElement=(price_at_date[0],"Open","Sell 1",price_at_date[1],"Buy 2", price_at_other_date[1])
+            tableData.append(tableDataElement)
+
+            price_at_spread = spread[dates.index(date)]
+            buy2timeStockSpread.append([price_at_spread[0],price_at_spread[1]])
+
         for date in sell1Time:
             price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
+            price_at_other_date =  data2[dates.index(date)]
             sell1TimeStock.append([price_at_date[0],price_at_date[1]])
+            tableDataElement=(price_at_date[0],"Close","Sell 1",price_at_date[1],"Buy 2", price_at_other_date[1])
+            tableData.append(tableDataElement)
+
+            price_at_spread = spread[dates.index(date)]
+            sell1TimeStockSpread.append([price_at_spread[0],price_at_spread[1]])
 
         # 在 buy2Time 的日期繪製向下三角形
         for date in sell2Time:
             price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
-            sell2TimeStock.append([price_at_date[0],price_at_date[1]])
+            price_at_other_date =  data2[dates.index(date)]
+            sell2TimeStock.append([price_at_other_date[0],price_at_other_date[1]])
+            tableDataElement=(price_at_date[0],"Close","Buy 1",price_at_date[1],"Sell 2", price_at_other_date[1])
+            tableData.append(tableDataElement)
+
+            price_at_spread = spread[dates.index(date)]
+            sell2TimeStockSpread.append([price_at_spread[0],price_at_spread[1]])
         """
         print(buy1timeStock)
         print(buy2timeStock)
@@ -62,6 +94,12 @@ def test_view(request):
             show_downline.append([timestamp, downline[i]])
             show_moving_avg_result.append([timestamp, moving_avg_result[i]])
 
+        datatable_headers = ['Date', 'type', 'Action A', 'Price A', 'Action B', 'Price B']
+        newtable = sorted(
+            [(datetime.datetime.fromtimestamp(row[0] / 1000), *row[1:]) for row in tableData],
+            key=lambda x: x[0]
+        )
+
         data = {
             'stock_data': data,  # 假設數據
             'stock_data2': data2,
@@ -69,10 +107,12 @@ def test_view(request):
             'upperline': show_upperline,
             'downline': show_downline,
             'averageLine': show_moving_avg_result,
-            'buy1time': buy1Time,
-            'buy2time': buy2Time,
-            'sell1Time': sell1Time,
-            'sell2Time': sell2Time,
+            'buy1timeStockSpread': buy1timeStockSpread,
+            'buy2timeStockSpread': buy2timeStockSpread,
+            'sell1TimeStockSpread': sell1TimeStockSpread,
+            'sell2TimeStockSpread': sell2TimeStockSpread,
+            'datatable_headers': datatable_headers,  # 返回表格標題
+            "tableData":newtable,
             'buy1timeStock': buy1timeStock,
             'buy2timeStock': buy2timeStock,
             'sell1TimeStock': sell1TimeStock,

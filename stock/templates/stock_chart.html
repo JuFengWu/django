@@ -71,13 +71,13 @@
 
     <div id="chartA"></div>
     <div id="chartB"></div>
-    <table id="datatable" class="display">
+    <table id="datatable" >
         <thead>
             <tr>
-                <th>Buy 1 Time</th>
+                <!--th>Buy 1 Time</th>
                 <th>Buy 2 Time</th>
                 <th>Sell 1 Time</th>
-                <th>Sell 2 Time</th>
+                <th>Sell 2 Time</th-->
             </tr>
         </thead>
         <tbody></tbody>
@@ -101,16 +101,7 @@
                         }
                     }));
     
-                    const sell1Markers = data.buy2timeStock.map(([timestamp, price]) => ({
-                        x: timestamp,
-                        y: price,
-                        marker: {
-                            symbol: 'triangle',
-                            fillColor: 'green'
-                        }
-                    }));
-    
-                    const buy2Markers = data.sell1TimeStock.map(([timestamp, price]) => ({
+                    const sell1Markers = data.sell1TimeStock.map(([timestamp, price]) => ({
                         x: timestamp,
                         y: price,
                         marker: {
@@ -119,7 +110,52 @@
                         }
                     }));
     
+                    const buy2Markers = data.buy2timeStock.map(([timestamp, price]) => ({
+                        x: timestamp,
+                        y: price,
+                        marker: {
+                            symbol: 'triangle',
+                            fillColor: 'green'
+                        }
+                    }));
+    
                     const sell2Markers = data.sell2TimeStock.map(([timestamp, price]) => ({
+                        x: timestamp,
+                        y: price,  // 使用 sell2TimeStock 中的股價
+                        marker: {
+                        symbol: 'triangle-down',
+                        fillColor: 'red'
+                        }
+                    })); 
+
+                    const buy1MarkersSpread = data.buy1timeStockSpread.map(([timestamp, price]) => ({
+                        x: timestamp,  // 直接使用 timestamp
+                        y: price,      // 直接使用對應的 price
+                        marker: {
+                            symbol: 'triangle',
+                            fillColor: 'green'
+                        }
+                    }));
+    
+                    const sell1MarkersSpread = data.sell1TimeStockSpread.map(([timestamp, price]) => ({
+                        x: timestamp,
+                        y: price,
+                        marker: {
+                            symbol: 'triangle-down',
+                            fillColor: 'red'
+                        }
+                    }));
+    
+                    const buy2MarkersSpread = data.buy2timeStockSpread.map(([timestamp, price]) => ({
+                        x: timestamp,
+                        y: price,
+                        marker: {
+                            symbol: 'triangle',
+                            fillColor: 'green'
+                        }
+                    }));
+    
+                    const sell2MarkersSpread = data.sell2TimeStockSpread.map(([timestamp, price]) => ({
                         x: timestamp,
                         y: price,  // 使用 sell2TimeStock 中的股價
                         marker: {
@@ -161,20 +197,34 @@
                                 name: 'Stock Data 2',
                                 data: data.stock_data2,
                             },
-                            // 標記 buy1time 和 sell1Time 的綠色向上三角形
                             {
-                                name: 'Buy/Sell Markers',
+                                name: 'Buy1 Markers',
                                 type: 'scatter',
-                                data: buy1Markers.concat(sell1Markers),
+                                data: buy1Markers,
                                 marker: {
                                     radius: 8
                                 }
                             },
-                            // 標記 buy2time 和 sell2Time 的紅色向下三角形
                             {
-                                name: 'Sell Markers',
+                                name: 'Buy2 Markers',
                                 type: 'scatter',
-                                data: buy2Markers.concat(sell2Markers),
+                                data: buy2Markers,
+                                marker: {
+                                    radius: 8
+                                }
+                            },
+                            {
+                                name: 'Sell1 Markers',
+                                type: 'scatter',
+                                data: sell1Markers,
+                                marker: {
+                                    radius: 8
+                                }
+                            },
+                            {
+                                name: 'Sell2 Markers',
+                                type: 'scatter',
+                                data: sell2Markers,
                                 marker: {
                                     radius: 8
                                 }
@@ -213,25 +263,58 @@
                             },
                             {
                                 name: 'Upper Line',
-                                data: data.upperline.map(([timestamp, value]) => [Date.parse(timestamp), value])
+                                data: data.upperline
                             },
                             {
                                 name: 'Down Line',
-                                data: data.downline.map(([timestamp, value]) => [Date.parse(timestamp), value])
+                                data: data.downline
                             },
                             {
                                 name: 'Average Line',
-                                data: data.averageLine.map(([timestamp, value]) => [Date.parse(timestamp), value])
+                                data: data.averageLine
+                            },
+                            {
+                                name: 'Buy1 Markers',
+                                type: 'scatter',
+                                data: buy1MarkersSpread,
+                                marker: {
+                                    radius: 8
+                                }
+                            },
+                            {
+                                name: 'Buy2 Markers',
+                                type: 'scatter',
+                                data: buy2MarkersSpread,
+                                marker: {
+                                    radius: 8
+                                }
+                            },
+                            {
+                                name: 'Sell1 Markers',
+                                type: 'scatter',
+                                data: sell1MarkersSpread,
+                                marker: {
+                                    radius: 8
+                                }
+                            },
+                            {
+                                name: 'Sell2 Markers',
+                                type: 'scatter',
+                                data: sell2MarkersSpread,
+                                marker: {
+                                    radius: 8
+                                }
                             }
                         ]
                     });
     
-                    // 3. DataTables (buy1time、buy2time、sell1Time、sell2Time)
+                    // 3. DataTables
                     $('#datatable').DataTable({
-                        data: [
-                            [data.buy1time, data.buy2time, data.sell1Time, data.sell2Time]
-                        ],
-                    });
+                        data: data.tableData,
+                        
+                        columns: data.datatable_headers.map(header => ({ title: header })), // 使用後端提供的標題
+                        destroy: false // 如果表格已初始化，重新加載數據
+                        });
                 },
                 error: function(error) {
                     console.error("Error:", error);
