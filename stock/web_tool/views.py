@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from web_tool.strategy import strategy,spider_data, buy_and_sell
 import json
+import datetime
 
 def test_view(request):
     if request.method == "POST":
@@ -24,14 +25,34 @@ def test_view(request):
     
         buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
         
-        buy1timeStock = [float(price) for timestamp, price in data if timestamp in buy1Time]
-        buy2timeStock = [float(price) for timestamp, price in data if timestamp in buy2Time]
-        sell1TimeStock = [float(price) for timestamp, price in data if timestamp in sell1Time]
-        sell2TimeStock = [float(price) for timestamp, price in data if timestamp in sell2Time]
+        buy1timeStock = []
+        buy2timeStock = []
+        sell1TimeStock = []
+        sell2TimeStock = []
+
         
+        dates = [item[0]  for item in data]
+        for date in buy1Time:
+            price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
+            buy1timeStock.append([price_at_date[0] ,price_at_date[1]])
+
+        for date in buy2Time:
+            price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
+            buy2timeStock.append([price_at_date[0],price_at_date[1]])
+        for date in sell1Time:
+            price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
+            sell1TimeStock.append([price_at_date[0],price_at_date[1]])
+
+        # 在 buy2Time 的日期繪製向下三角形
+        for date in sell2Time:
+            price_at_date = data[dates.index(date)]  # 找到該日期對應的價格
+            sell2TimeStock.append([price_at_date[0],price_at_date[1]])
+        """
         print(buy1timeStock)
+        print(buy2timeStock)
+        print(sell1TimeStock)
         print(sell2TimeStock)
-        
+"""         
         show_upperline = []
         show_downline = []
         show_moving_avg_result=[]
