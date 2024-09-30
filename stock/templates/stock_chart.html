@@ -130,6 +130,15 @@
     
                     // 1. Highcharts 圖 A (stock_data 和 stock_data2，使用日期作為 X 軸)
                     Highcharts.chart('chartA', {
+                        chart: {
+                        zoomType: 'x'  // 啟用 X 軸縮放
+                        },
+                        navigator: {  // 啟用導航器，提供縮放範圍選擇
+                        enabled: true
+                        },
+                        scrollbar: {  // 啟用滾動條
+                            enabled: true
+                        },
                         title: {
                             text: 'Stock Data Chart'
                         },
@@ -175,6 +184,15 @@
     
                     // 2. Highcharts 圖 B (spread、upperline、downline 和 averageLine)
                     Highcharts.chart('chartB', {
+                        chart: {
+                        zoomType: 'x'  // 啟用 X 軸縮放
+                        },
+                        navigator: {  // 啟用導航器，提供縮放範圍選擇
+                        enabled: true
+                        },
+                        scrollbar: {  // 啟用滾動條
+                            enabled: true
+                        },
                         title: {
                             text: 'Spread and Lines'
                         },
