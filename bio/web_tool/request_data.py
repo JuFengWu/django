@@ -3,6 +3,9 @@ import requests
 import json
 
 def get_data_from_web(data):
+    print("-------")
+    print(data)
+    print("-------")
     # 指定要爬取的URL
     url = "https://wormbase.org/rest/widget/transcript/"+data+"/sequences"
 
@@ -15,7 +18,7 @@ def get_data_from_web(data):
         data = response.json()
 
         # 將資料寫入到 test.txt
-        with open('test.txt', 'w', encoding='utf-8') as file:
+        with open('test.json', 'w', encoding='utf-8') as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
 
         print("資料已成功寫入到 test.txt")
@@ -23,7 +26,8 @@ def get_data_from_web(data):
         print(f"請求失敗，狀態碼: {response.status_code}")
 
 def get_split_data():
-    file_path = 'ask.json'
+    #file_path = 'ask.json'
+    file_path = 'test.json'
 
     # 讀取 JSON 檔案並轉換為字典
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -50,13 +54,13 @@ def get_positive_sequence_range(positive_features):
     rangeSequence = []
     count = 0
     for i in positive_features:
-        if count/4 == 0:
+        if count%4 == 0:
             color = "red"
-        elif count/4 == 0:
+        elif count%4 == 1:
             color = "blue"
-        elif count/4 == 0:
+        elif count%4 == 2:
             color = "orange"
-        elif count/4 == 0:
+        elif count%4 == 3:
             color = "green"
         count += 1
         rangeSequence.append((i["start"],i["stop"],color))
@@ -66,8 +70,9 @@ def split_string_into_tuples(s, chunk_size=50):
     chunks = [s[i:i + chunk_size] for i in range(0, len(s), chunk_size)]
     # 將列表轉換為 tuple 並返回
     return tuple(chunks)
+
 if __name__ == "__main__":
-    get_data_from_web("F07C3.7.1")
+    #get_data_from_web("Y110A7A.10.1")
     positive_squence,positive_features,negative_squence,negative_features = get_split_data()
     table = get_positive_table_data(positive_features)
     sequence_range = get_positive_sequence_range(positive_features)

@@ -3,6 +3,7 @@ from django.http import HttpResponse #匯入http模組
 from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from web_tool.request_data import *
 import io
 from web_tool.search import search
 from web_tool.browse import browse
@@ -129,21 +130,26 @@ def draw_colored_ranges(buf,ranges, total_length=1000):
     buf.seek(0)
 
 def gene_sequence_detail(request, gene_sequence_name):
-    # 在這裡你可以根據 gene_sequence_name 做一些處理
-    # 比如查詢資料庫或者處理該值
-
+    get_data_from_web(gene_sequence_name)
+    positive_squence,positive_features,negative_squence,negative_features = get_split_data()
+    table = get_positive_table_data(positive_features)
+    color_ranges = get_positive_sequence_range(positive_features)
+    print(color_ranges)
+    sequences = split_string_into_tuples(positive_squence)
+    
+    """
     # Sample data, replace with your method of fetching sequence data
     sequences = (
         "ATGTGAAAAATCTGTTGGTGTAAAACTCTTTAAAATAATGGATATAGACTCTGAAG",
         "CATTTGAGCTAGCTTCAAAGAAATAACCAAAATCAACAGTTCTCGTCGACTATTGGAA",
         # Add all your lines here
     )
-    
     # Define the ranges for coloring with specific colors (1-based index)
     color_ranges = [
         (1, 10, 'orange'),  # Orange for this range
         (50, 58, 'green')   # Green for this range
     ]
+    """
     
     # Prepare data with color flags
     highlighted_sequences = []
@@ -176,13 +182,14 @@ def gene_sequence_detail(request, gene_sequence_name):
 
     buf = io.BytesIO()
 
-    draw_colored_ranges(buf,[(30, 50, "blue"), (60, 80, "red"), (132, 200, "green")], total_length=1000)
+    draw_colored_ranges(buf,color_ranges, total_length=1000)
     
     string = base64.b64encode(buf.read())
     matplotlib_image_url = urllib.parse.quote(string)
 
-    positiveData = [{"Exon" : "b","Start":"d","End":'f',"Length":'h'},
-                    {"Exon" : "a","Start":"d","End":'f',"Length":'g'}]
+    #positiveData = [{"Exon" : "b","Start":"d","End":'f',"Length":'h'},
+    #                {"Exon" : "a","Start":"d","End":'f',"Length":'g'}]
+    positiveData = table
 
     context = {
         'gene_sequence_name': gene_sequence_name,
