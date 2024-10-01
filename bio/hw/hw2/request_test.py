@@ -28,11 +28,11 @@ def get_split_data():
     # 讀取 JSON 檔案並轉換為字典
     with open(file_path, 'r', encoding='utf-8') as file:
         data_dict = json.load(file)
-    print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features'])
-    print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence'])
+    #print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features'])
+    #print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence'])
 
-    print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features'])
-    print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence'])
+    #print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features'])
+    #print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence'])
 
     positive_squence = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence']
     positive_features = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features']
@@ -40,8 +40,32 @@ def get_split_data():
     negative_features = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features']
 
     return positive_squence,positive_features,negative_squence,negative_features
-
+def get_positive_table_data(positive_features):
+    print(positive_features)
+    table = []
+    for i in positive_features:
+        table.append({"Exon" : i["type"],"Start": i["start"],"End": i["stop"],"Length":i["stop"] - i["start"]})
+    return table
+def get_positive_sequence_range(positive_features):
+    rangeSequence = []
+    count = 0
+    for i in positive_features:
+        if count/4 == 0:
+            color = "red"
+        elif count/4 == 0:
+            color = "blue"
+        elif count/4 == 0:
+            color = "orange"
+        elif count/4 == 0:
+            color = "green"
+        rangeSequence.append((i["start"],i["stop"],color))
+    return rangeSequence
 
 if __name__ == "__main__":
     #get_data_from_web("Y110A7A.10.1")
-    get_split_data()
+    positive_squence,positive_features,negative_squence,negative_features = get_split_data()
+    table = get_positive_table_data(positive_features)
+    sequence_range = get_positive_sequence_range(positive_features)
+    print(table)
+    print(sequence_range)
+    print(positive_squence)
