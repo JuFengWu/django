@@ -23,7 +23,7 @@ def test_view(request):
 
         log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2, window_size = int(window_size))
     
-        buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline)
+        buy1Time,buy2Time,sell1Time,sell2Time = buy_and_sell(spread, moving_avg_result, upperline, downline, window_size = int(window_size))
         
         buy1timeStock = []
         buy2timeStock = []
@@ -93,6 +93,10 @@ def test_view(request):
             show_upperline.append([timestamp, upperline[i]])
             show_downline.append([timestamp, downline[i]])
             show_moving_avg_result.append([timestamp, moving_avg_result[i]])
+
+        show_downline = show_downline[200:]
+        show_moving_avg_result = show_moving_avg_result[200:]
+        show_upperline = show_upperline[200:]
 
         datatable_headers = ['Date', 'type', 'Action A', 'Price A', 'Action B', 'Price B']
         newtable = sorted(

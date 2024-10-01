@@ -83,17 +83,18 @@ class BuySell:
             pass
     
 
-def buy_and_sell(spread, moving_avg_result, upperline, downline):
+def buy_and_sell(spread, moving_avg_result, upperline, downline,window_size):
     buySell = BuySell()
     for i in range(len(spread)):
-        if spread[i][1] > upperline[i]:
-            buySell.upper_std(spread[i][0])
-        elif spread[i][1] < downline[i]:
-            buySell.down_std(spread[i][0])
-        elif (spread[i-1][1] - moving_avg_result[i]) > 0 and (spread[i][1] - moving_avg_result[i]) < 0:
-            buySell.close(spread[i][0])
-        elif(spread[i-1][1] - moving_avg_result[i]) < 0 and (spread[i][1] - moving_avg_result[i]) > 0:
-            buySell.close(spread[i][0])
+        if i>=window_size:
+            if spread[i][1] > upperline[i]:
+                buySell.upper_std(spread[i][0])
+            elif spread[i][1] < downline[i]:
+                buySell.down_std(spread[i][0])
+            elif (spread[i-1][1] - moving_avg_result[i]) > 0 and (spread[i][1] - moving_avg_result[i]) < 0:
+                buySell.close(spread[i][0])
+            elif(spread[i-1][1] - moving_avg_result[i]) < 0 and (spread[i][1] - moving_avg_result[i]) > 0:
+                buySell.close(spread[i][0])
     return buySell.buy1Time,buySell.buy2Time,buySell.sell1Time,buySell.sell2Time
         
 
