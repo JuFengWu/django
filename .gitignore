@@ -1,2 +1,8 @@
 stock/web_tool/__pycache__/
-stock/web_tool/migrations/__pycache__/__init__.cpython-312.pyc 
+stock/web_tool/migrations/__pycache__/__init__.cpython-312.pyc
+mysite/__pycache__/
+web_tool/__pycache__/
+web_tool/migrations/__pycache__/
+bio/mysite/__pycache__/
+bio/web_tool/__pycache__/
+bio/web_tool/migrations/__pycache__/

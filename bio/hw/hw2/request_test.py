@@ -28,10 +28,18 @@ def get_split_data():
     # 讀取 JSON 檔案並轉換為字典
     with open(file_path, 'r', encoding='utf-8') as file:
         data_dict = json.load(file)
-    unspliced_sequence_context = data_dict['fields']['unspliced_sequence_context']
+    print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features'])
+    print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence'])
 
-    # 打印出提取的部分（unspliced_sequence_context）
-    print(unspliced_sequence_context)
+    print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features'])
+    print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence'])
+
+    positive_squence = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence']
+    positive_features = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features']
+    negative_squence = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence']
+    negative_features = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features']
+
+    return positive_squence,positive_features,negative_squence,negative_features
 
 
 if __name__ == "__main__":

@@ -7,14 +7,19 @@
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
+
+    <!-- 頂部的 banner 區塊 -->
+    <div id="banner">
+        <a href="{% url 'browse_result' %}">點擊這裡查看結果</a>
+    </div>
+
+
     <h1>Search predicted piRNA-target pairs in Caenorhabditis elegans</h1>
     <form method="POST" action="{% url 'search_show' %}">
         {% csrf_token %}

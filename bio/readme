@@ -1,3 +1,7 @@
 python manage.py runserver 0.0.0.0:80
 
-localhost
+localhost/search
+localhost/browse_result
+
+HW1 : 要確定data是否正確
+HW2 : 畫出相關的資料  , 找 乙民 62400-1479

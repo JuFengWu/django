@@ -3,10 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <title>Gene Sequence Detail</title>
+    <style>
+        .orange { background-color: orange; }
+        .green { background-color: green; }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+         /* Left column (Matplotlib image) */
+         .left {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+        }
+        /* Right column (DNA Sequences) */
+        .right {
+            flex: 1;
+            padding: 10px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Gene Sequence Detail</h1>
     <p>Gene Sequence Name: {{ gene_sequence_name }}</p>
+
+    <table id="positiveGeneTable" class="display">
+        <thead>
+            <tr>
+                <th>Exon</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Length</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in positiveData%}
+            <tr>
+                <td>{{ row.Exon }}</a></td>
+                <td>{{ row.Start }}</td>
+                <td>{{ row.End }}</a></td>
+                <td>{{ row.Length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h1>DNA Sequences and Graph</h1>
+    <div class="container">
+        <!-- Left column: Matplotlib generated image -->
+        <div class="left">
+            <h2>Graph</h2>
+            <img src="{{ matplotlib_image_url }}" alt="Matplotlib Plot" />
+        </div>
+
+        <!-- Right column: DNA Sequences -->
+        <div class="right">
+            <h2>DNA Sequences</h2>
+            <div>
+                {% for sequence in sequences %}
+                    <div>{{ sequence|safe }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#positiveGeneTable').DataTable();  // 初始化 DataTables
+        });
+    </script>
 </body>
 </html>
