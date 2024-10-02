@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], select, input[type="date"] {
+            padding: 5px;
+            margin-left: 10px;
+            margin-right: 20px;
+            font-size: 14px;
+            width: 150px;  /* 設定寬度 */
+        }
+
+        button {
+            padding: 5px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 80px; /* 設定按鈕寬度 */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .form-section {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="stock-form" method="post" action="{% url 'strategy' %}">
+        {% csrf_token %}
+        <!-- 股票代碼輸入框 -->
+        <label for="stock_code">輸入股票代碼： </label>
+        <input type="text" id="stock_code" value="0050" name="stock_code">
+        <button type="submit">送出</button>
+
+        <!-- 策略選擇 -->
+        <div class="form-section">
+            <label for="strategy">選擇策略：</label>
+            <select id="strategy" name="strategy">
+                <option value="RSI_strategy">RSI黃金交叉策略</option>
+            </select>
+        </div>
+
+        <!-- 參數輸入 -->
+        <div class="form-section">
+            <label for="short_rsi">輸入參數：</label>
+            <label for="short_rsi">短期RSI</label>
+            <input type="number" id="short_rsi" name="short_rsi" value="5">
+            <label for="long_rsi">日期長RSI</label>
+            <input type="number" id="long_rsi" name="long_rsi" value="20">
+        </div>
+
+        <!-- 日期選擇 -->
+        <div class="form-section">
+            <label for="start_date">開始日期：</label>
+            <input type="date" id="start_date" name="start_date" value="2021-01-01">
+            <label for="end_date">結束日期：</label>
+            <input type="date" id="end_date" name="end_date" value="2023-01-01">
+        </div>
+
+    </form>
+
+</body>
+</html>

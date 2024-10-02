@@ -124,4 +124,3 @@ def test_view(request):
         }
         return JsonResponse(data)
     return render(request, 'stock_chart.html')
-
