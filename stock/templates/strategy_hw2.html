@@ -52,15 +52,22 @@
             width: 50px;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
 
-    <form id="stock-form" method="post" action="{% url 'strategy' %}">
+    <form id="stock-form" method="post">
         {% csrf_token %}
         <!-- 股票代碼輸入框 -->
         <label for="stock_code">輸入股票代碼： </label>
         <input type="text" id="stock_code" value="0050" name="stock_code">
-        <button type="submit">送出</button>
+        
+        <!-- 提交按鈕 -->
+        <button type="button" id="submitBtn1">提交按鈕 1</button>
+        <!--button type="submit">送出</button-->
 
         <!-- 策略選擇 -->
         <div class="form-section">
@@ -87,7 +94,40 @@
             <input type="date" id="end_date" name="end_date" value="2023-01-01">
         </div>
 
-    </form>
+        <table id="datatable" >
+            <thead>
+                <tr>
+                    <!--th>Buy 1 Time</th>
+                    <th>Buy 2 Time</th>
+                    <th>Sell 1 Time</th>
+                    <th>Sell 2 Time</th-->
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
+    </form>
+    <script>
+        // 提交表單並生成圖表和表格
+        document.getElementById('submitBtn1').addEventListener('click', function() {
+            $.ajax({
+                url: "{% url 'strategy' %}",
+                method: "POST",
+                data: $('#stock-form').serialize(),
+                success: function(data) {                   
+                    // 1. DataTables
+                    $('#datatable').DataTable({
+                        data: data.stock_table,
+                        columns: data.datatable_headers.map(header => ({ title: header })), // 使用後端提供的標題
+                        destroy: false // 如果表格已初始化，重新加載數據
+                        });
+                },
+                error: function(error) {
+                    console.error("Error:", error);
+                }
+            });
+            
+        });
+    </script>
 </body>
 </html>

@@ -118,27 +118,29 @@ def strategy(request):
         trades = use_rsi()
         trades['ret']=(((trades['cover_price']-trades['order_price'])/trades['order_price'])) *trades['order_unit']
         simulate = 0
-        tableData = []
+        stock_table = []
         for i in range(len(trades["order_price"])):
             simulate += trades['ret'][i]
-            tableDataElement=(trades["bs"][i],
-                              trades["order_time"][i],
-                              trades["order_price"][i],
-                              trades["cover_time"][i],
-                              trades["cover_price"][i],
-                              trades["order_unit"][i],
-                              trades['ret'][i],
-                              simulate)
-            tableData.append(tableDataElement)
+            tableDataElement=(str( trades["bs"][i]),
+                              str(trades["order_time"][i]),
+                              str(trades["order_price"][i]),
+                              str(trades["cover_time"][i]),
+                              str(trades["cover_price"][i]),
+                              str(trades["order_unit"][i]),
+                              str(trades['ret'][i]),
+                              str(simulate))
+            stock_table.append(tableDataElement)
         datatable_headers = ['買賣別','賣進日','賣進價格','賣出日','賣出價格','買賣股數','賺賠','累積賺賠']
         
         trades['acc_ret'] = (1+trades['ret']).cumprod() # acc_ret = Profit
         trades['acc_max_cap'] = trades['acc_ret'].cummax()
         trades['dd'] = (trades['acc_ret'] / trades['acc_max_cap'])
 
-        data = {
+        print(stock_table)
+
+        redata = {
             'datatable_headers': datatable_headers,
-            'stock_table': tableData,  # 假設數據
+            'stock_table': stock_table,  # 假設數據
         }
-        return JsonResponse(data)
+        return JsonResponse(redata)
     return render(request, 'strategy_hw2.html')
