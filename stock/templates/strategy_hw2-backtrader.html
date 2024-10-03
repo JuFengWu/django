@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票進出場回測</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        #form-container {
+            margin: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 15px;
+        }
+
+        .form-section input, .form-section select {
+            width: 100%;
+        }
+
+        .info-icon {
+            margin-left: 5px;
+        }
+
+        #result-chart {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container" id="form-container">
+        <div class="row">
+            <div class="col-12">
+                <h3>股票進出場回測</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-section">
+                        <label for="stock" class="form-label">Select stock:</label>
+                        <input type="text" id="stock" name="stock" value="2330.TW">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="entry_strategy" class="form-label">Select entry Strategy:</label>
+                        <select id="entry_strategy" name="entry_strategy" value="entry_strategy">
+                            <option value="RSI">RSI黃金交叉</option>
+                        </select>
+                    </div>
+
+                    <div class="form-section">
+                        <label for="exit_strategy" class="form-label">Select exit Strategy:</label>
+                        <select id="exit_strategy" name="exit_strategy" value="exit_strategy">
+                            <option value="RSI">RSI死亡交叉</option>
+                        </select>
+                    </div>
+
+                    <div class="form-section">
+                        <label for="long_rsi" class="form-label">長期RSI週期:</label>
+                        <input type="text" id="long_rsi" name="long_rsi">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="short_rsi" class="form-label">短期RSI週期:</label>
+                        <input type="text" id="short_rsi" name="short_rsi">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="initial_cash" class="form-label">初始資金:</label>
+                        <input type="text" id="initial_cash" name="initial_cash" value="1000">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="commission" class="form-label">手續費 (%):</label>
+                        <input type="text" id="commission" name="commission" value="0.1425">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="start_date" class="form-label">開始日期:</label>
+                        <input type="date" id="start_date" name="start_date"  value="2021-09-01">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="end_date" class="form-label">結束日期:</label>
+                        <input type="date" id="end_date" name="end_date" value='2024-09-15'>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">新增</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 這裡顯示結果圖表 -->
+        <div class="row" id="result-chart">
+            <div class="col-12">
+                {% if chart_url %}
+                    <img src="{{ chart_url }}" alt="結果圖表">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -275,3 +275,135 @@ def strategy(request):
         }
         return JsonResponse(redata)
     return render(request, 'strategy_hw2.html')
+
+import matplotlib
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+
+import backtrader as bt
+import yfinance as yf
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
+
+
+class TestStrategy(bt.Strategy):
+    params = (
+        # (1) 開盤 or 收盤
+        ("entry_strategy_type", ""),
+        ("exit_strategy_type", ""),
+
+        # RSI 超買超賣
+        ("rsi_short_period", 7),
+        ("rsi_long_period", 14),
+    )
+
+    def __init__(self, params=None):
+        # Keep a reference to the "close" line in the data[0] dataseries
+        self.dataopen = self.datas[0].open
+        self.dataclose = self.datas[0].close
+        self.order = None
+        self.buyprice = None
+        self.buycomm = None
+
+        # RSI 超買超賣
+        self.rsi_short = bt.indicators.RSI(
+            self.dataclose, period=self.params.rsi_short_period)
+
+        self.rsi_long = bt.indicators.RSI(
+            self.dataclose, period=self.params.rsi_long_period)
+        self._next_buy_date = datetime(2016, 1, 5)
+    def next(self):
+        
+        #print(self.rsi_short[0])
+        #print(self.rsi_long[0])
+        """
+        if self.data.datetime.date() >= self._next_buy_date.date():
+             self._next_buy_date += relativedelta(months=1)
+             self.buy(size=1)
+        """
+        
+        if self.rsi_short[0] > self.rsi_long[0]:
+                #print('BUY CREATE, %.2f' % self.dataopen[0])
+                self.order = self.buy(size=1)
+        
+        elif self.rsi_short[0] < self.rsi_long[0] * 0.999:
+                #print('SELL CREATE, %.2f' % self.dataopen[0])
+                self.order = self.sell(size=1)
+
+def generate_plot(cerebro):
+    """生成 Matplotlib 圖表並返回其 URL。"""
+    #plt.figure(figsize=(6,4))
+    #plt.plot([1, 2, 3, 4], [10, 20, 25, 30])  # 示例數據
+    #plt.title("Example Plot")
+
+    
+
+    fig = cerebro.plot()[0][0]  # cerebro.plot() 返回圖表數組, 選擇第一個圖表
+    buf = BytesIO()
+    fig.savefig(buf, format='png')
+    buf.seek(0)
+    image_png = buf.getvalue()
+    buf.close()
+
+    # 將 PNG 轉換為 base64 格式
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    return 'data:image/png;base64,' + graph
+
+    # 將圖表存為 PNG 圖片並轉換為 Base64
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_png = buf.getvalue()
+    buf.close()
+
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    return 'data:image/png;base64,' + graph
+
+def backtest_view(request):
+    chart_url = None
+    if request.method == 'POST':
+        # 處理表單數據 (可以根據需要添加具體邏輯)
+        stock = request.POST.get('stock')
+        entry_strategy = request.POST.get('entry_strategy')
+        exit_strategy = request.POST.get('exit_strategy')
+        long_rsi = request.POST.get('long_rsi')
+        short_rsi = request.POST.get('short_rsi')
+        initial_cash = request.POST.get('initial_cash')
+        commission = request.POST.get('commission')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+
+        cerebro = bt.Cerebro()
+        cerebro.addstrategy(TestStrategy,
+            entry_strategy_type = entry_strategy,
+            #sma_up_period = 10,
+            exit_strategy_type = exit_strategy,
+            #sma_down_period = 10
+        )
+
+        data = bt.feeds.PandasData(dataname=yf.download(stock, start_date, end_date))
+        cerebro.adddata(data)
+
+        cerebro.addanalyzer(bt.analyzers.TimeReturn, timeframe = bt.TimeFrame.Years, _name = 'Timereturn')
+        cerebro.addanalyzer(bt.analyzers.AnnualReturn, _name = 'AnnualReturn')
+        cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name = 'SharpeRatio', riskfreerate=0.2)
+        cerebro.addanalyzer(bt.analyzers.DrawDown, _name = 'DrawDown')
+        cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name = 'trade_analyzer')
+        cerebro.addanalyzer(bt.analyzers.Returns, _name = 'returns')
+        cerebro.addanalyzer(bt.analyzers.Transactions, _name = 'transactions')
+
+        cerebro.broker.setcash(int(initial_cash))
+        cerebro.broker.setcommission(commission=float(commission)/100)
+        #cerebro.broker.setcommission(commission=0)
+        cerebro.addsizer(bt.sizers.FixedSize, stake=1000)
+        result = cerebro.run()
+        #cerebro.plot(iplot=False)
+
+        # 生成圖表
+        chart_url = generate_plot(cerebro)
+
+    return render(request, 'strategy_hw2-backtrader.html', {'chart_url': chart_url})

@@ -29,9 +29,9 @@ cerebro.broker.setcash(10000.0)
 cerebro.broker.setcommission(commission=0.001)
 
 # 添加數據
-data = bt.feeds.PandasData(dataname=yf.download("MSFT", 
+data = bt.feeds.PandasData(dataname=yf.download("2330.TW", 
                                                 start="2018-01-01", 
-                                                end="2018-12-31"))
+                                                end="2023-12-31"))
 cerebro.adddata(data)
 
 cerebro.broker.setcash(10000.0)

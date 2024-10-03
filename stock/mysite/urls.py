@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('test/', views.test_view, name='test_view'), # HW1
     path('strategy_hw2/', hw2_views.strategy, name='strategy'), #HW2
+    path('strategy_hw2-2/', hw2_views.backtest_view, name='backtest'), #HW2
 ]
