@@ -276,7 +276,6 @@ def strategy(request):
         return JsonResponse(redata)
     return render(request, 'strategy_hw2.html')
 
-import matplotlib
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
@@ -289,56 +288,105 @@ from datetime import datetime
 
 class TestStrategy(bt.Strategy):
     params = (
-        # (1) 開盤 or 收盤
-        ("entry_strategy_type", ""),
-        ("exit_strategy_type", ""),
+        # 開盤或收盤策略參數
+        ("entry_strategy_type", ""),  # 進場策略類型
+        ("exit_strategy_type", ""),   # 出場策略類型
 
         # RSI 超買超賣
-        ("rsi_short_period", 7),
-        ("rsi_long_period", 14),
+        ("rsi_short_period", 7),  # 短期 RSI 週期
+        ("rsi_long_period", 14),  # 長期 RSI 週期
     )
 
     def __init__(self, params=None):
-        # Keep a reference to the "close" line in the data[0] dataseries
-        self.dataopen = self.datas[0].open
-        self.dataclose = self.datas[0].close
-        self.order = None
-        self.buyprice = None
-        self.buycomm = None
+        # 保持對 data[0] 中 "close" 行的引用
+        self.dataopen = self.datas[0].open  # 開盤價
+        self.dataclose = self.datas[0].close  # 收盤價
+        self.order = None  # 訂單變數
+        self.buyprice = None  # 買入價格
+        self.buycomm = None  # 買入手續費
 
         # RSI 超買超賣
         self.rsi_short = bt.indicators.RSI(
-            self.dataclose, period=self.params.rsi_short_period)
+            self.dataclose, period=self.params.rsi_short_period
+        )
 
         self.rsi_long = bt.indicators.RSI(
-            self.dataclose, period=self.params.rsi_long_period)
-        self._next_buy_date = datetime(2016, 1, 5)
+            self.dataclose, period=self.params.rsi_long_period
+        )
+
+        self.buy_sell = []
+
+    # 記錄日志方法
+    def log(self, txt, dt=None):
+        '''記錄策略的日志信息'''
+        dt = dt or self.datas[0].datetime.date(0)
+        #print('%s, %s' % (dt.isoformat(), txt))
+        
+
+    # 訂單通知
+    def notify_order(self, order):
+        if order.status in [order.Submitted, order.Accepted]:
+            return
+
+        # 訂單完成
+        if order.status in [order.Completed]:
+            if order.isbuy():
+                self.log('BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+                         (order.executed.price,
+                          order.executed.value,
+                          order.executed.comm))
+                self.buyprice = order.executed.price
+                self.buycomm = order.executed.comm
+
+                dt = self.datas[0].datetime.date(0)
+                price = order.executed.price
+                self.buy_sell.append((dt,"1000",str(price),str(price*1000)))
+            elif order.issell():
+                self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+                         (order.executed.price,
+                          order.executed.value,
+                          order.executed.comm))
+                dt = self.datas[0].datetime.date(0)
+                price = order.executed.price
+                self.buy_sell.append((dt,"-1000",str(price),str(price*1000)))
+
+            self.bar_executed = len(self)
+
+        # 訂單取消/保證金/拒絕
+        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
+            self.log('Order Canceled/Margin/Rejected')
+
+        self.order = None
+
+    # 交易通知
+    def notify_trade(self, trade):
+        if not trade.isclosed:
+            return
+
+        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
+                 (trade.pnl, trade.pnlcomm),)
+        
     def next(self):
-        
-        #print(self.rsi_short[0])
-        #print(self.rsi_long[0])
-        """
-        if self.data.datetime.date() >= self._next_buy_date.date():
-             self._next_buy_date += relativedelta(months=1)
-             self.buy(size=1)
-        """
-        
-        if self.rsi_short[0] > self.rsi_long[0]:
-                #print('BUY CREATE, %.2f' % self.dataopen[0])
-                self.order = self.buy(size=1)
-        
-        elif self.rsi_short[0] < self.rsi_long[0] * 0.999:
-                #print('SELL CREATE, %.2f' % self.dataopen[0])
-                self.order = self.sell(size=1)
+        # 檢查是否有未完成的訂單，如果有，則不再發送新訂單
+        if self.order:
+            return
+
+        # 如果目前沒有持倉
+        if not self.position:
+            if self.rsi_short[0] > self.rsi_long[0]:
+                # 如果短期 RSI 超過長期 RSI，創建買入訂單
+                self.log('BUY CREATE, %.2f' % self.dataopen[0])
+                self.order = self.buy()
+
+        # 如果已有持倉
+        else:
+            if self.rsi_short[0] < self.rsi_long[0] * 0.999:
+                # 如果短期 RSI 低於長期 RSI 的 99.9%，創建賣出訂單
+                self.log('SELL CREATE, %.2f' % self.dataopen[0])
+                self.order = self.sell()
 
 def generate_plot(cerebro):
     """生成 Matplotlib 圖表並返回其 URL。"""
-    #plt.figure(figsize=(6,4))
-    #plt.plot([1, 2, 3, 4], [10, 20, 25, 30])  # 示例數據
-    #plt.title("Example Plot")
-
-    
-
     fig = cerebro.plot()[0][0]  # cerebro.plot() 返回圖表數組, 選擇第一個圖表
     buf = BytesIO()
     fig.savefig(buf, format='png')
@@ -350,6 +398,7 @@ def generate_plot(cerebro):
     graph = base64.b64encode(image_png)
     graph = graph.decode('utf-8')
     return 'data:image/png;base64,' + graph
+
 
 def backtest_view(request):
     chart_url = None
@@ -364,7 +413,6 @@ def backtest_view(request):
         commission = request.POST.get('commission')
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
-
 
         cerebro = bt.Cerebro()
         cerebro.addstrategy(TestStrategy,
@@ -389,42 +437,46 @@ def backtest_view(request):
         cerebro.broker.setcommission(commission=float(commission)/100)
         #cerebro.broker.setcommission(commission=0)
         cerebro.addsizer(bt.sizers.FixedSize, stake=1000)
+
+        print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
+
         result = cerebro.run()
-        #cerebro.plot(iplot=False)
 
         # 生成圖表
         chart_url = generate_plot(cerebro)
 
-
-
-        initial_cash = 2000000
-        final_cash = 2000309
+        initial_cash = initial_cash
+        final_cash = str(cerebro.broker.get_cash())
 
         # 策略績效
-        sharpe_ratio = -3.89
-        max_drawdown = "12.31%"
+        sharpe_ratio = str(result[0].analyzers.SharpeRatio.get_analysis()["sharperatio"])
+        max_drawdown =str( result[0].analyzers.DrawDown.get_analysis()["max"]["drawdown"])
 
+        final_capital = str(round(cerebro.broker.getvalue(),4))  
+
+        annual_returns = result[0].analyzers.AnnualReturn.get_analysis()
+
+        # 將字典轉換為指定格式的列表
+        annual_returns = [(year, round(return_, 3)) for year, return_ in annual_returns.items()]
         # 年度報酬率 (舉例)
-        annual_returns = [
-            (2021, -0.062),
-            (2022, -0.033),
-            (2023, 0.035),
-            (2024, 0.065),
-        ]
+        #annual_returns = [
+        #    (2021, -0.062),
+        #    (2022, -0.033),
+        #]
 
+        strategy = result[0]
+
+        # 從策略中獲取 buy_sell 列表
+        buy_sell_records = strategy.buy_sell
+        trade_records = []
+        for record in buy_sell_records:
+            trade_records_ele = {'date': record[0], 'amount': record[1], 'price': record[2], 'value': record[3]}
+            trade_records.append(trade_records_ele)
         # 交易紀錄 (舉例)
-        trade_records = [
-            {'date': "2024-05-06T00:00:00", 'amount': 1000, 'price': 791, 'value': -791000},
-            {'date': "2024-05-31T00:00:00", 'amount': -1000, 'price': 838, 'value': 838000},
-            {'date': "2024-06-06T00:00:00", 'amount': 1000, 'price': 893, 'value': -893000},
-            {'date': "2024-07-03T00:00:00", 'amount': -1000, 'price': 976, 'value': 976000},
-            {'date': "2024-07-04T00:00:00", 'amount': 1000, 'price': 1000, 'value': -1000000},
-            {'date': "2024-07-18T00:00:00", 'amount': -1000, 'price': 988, 'value': 988000},
-            {'date': "2024-08-08T00:00:00", 'amount': 1000, 'price': 901, 'value': -901000},
-            {'date': "2024-08-09T00:00:00", 'amount': -1000, 'price': 927, 'value': 927000},
-            {'date': "2024-08-12T00:00:00", 'amount': 1000, 'price': 942, 'value': -942000},
-            {'date': "2024-08-23T00:00:00", 'amount': -1000, 'price': 944, 'value': 944000},
-        ]
+        #trade_records = [
+        #    {'date': "2024-05-06T00:00:00", 'amount': 1000, 'price': 791, 'value': -791000},
+        #    {'date': "2024-05-31T00:00:00", 'amount': -1000, 'price': 838, 'value': 838000},
+        #]
 
         context = {
             'initial_cash': initial_cash,
@@ -437,4 +489,5 @@ def backtest_view(request):
         }
     
         return render(request, 'strategy_hw2-backtrader.html', context)
+        
     return render(request, 'strategy_hw2-backtrader.html')
