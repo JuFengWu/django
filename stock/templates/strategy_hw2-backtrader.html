@@ -31,6 +31,10 @@
         }
 
     </style>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
     <div class="container" id="form-container">
@@ -106,6 +110,87 @@
                 {% endif %}
             </div>
         </div>
+
+        {% if chart_url %}
+
+         <!-- 資產變化 -->
+         <div class="section-title">資產變化</div>
+            <table class="table">
+                <tr>
+                    <td>期初資產</td>
+                    <td>{{ initial_cash }}</td>
+                </tr>
+                <tr>
+                    <td>期末資產</td>
+                    <td>{{ final_cash }}</td>
+                </tr>
+            </table>
+    
+            <!-- 策略績效 -->
+            <div class="section-title">策略績效</div>
+            <table class="table">
+                <tr>
+                    <td>SharpeRatio</td>
+                    <td>{{ sharpe_ratio }}</td>
+                </tr>
+                <tr>
+                    <td>MaxDrawdown</td>
+                    <td>{{ max_drawdown }}</td>
+                </tr>
+            </table>
+    
+            <!-- 年度報酬率 -->
+            <div class="section-title">年度報酬率</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Annual Return(%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for year, return in annual_returns %}
+                    <tr>
+                        <td>{{ year }}</td>
+                        <td>{{ return }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <!-- 交易紀錄 -->
+            <div class="section-title">交易紀錄</div>
+            <div class="table-container">
+                <table id="datatable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in trade_records %}
+                        <tr>
+                            <td>{{ record.date }}</td>
+                            <td>{{ record.amount }}</td>
+                            <td>{{ record.price }}</td>
+                            <td>{{ record.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        
+        <script>
+            $(document).ready(function() {
+                $('#datatable').DataTable();
+            });
+        </script>
+
     </div>
 </body>
 </html>

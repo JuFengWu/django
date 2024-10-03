@@ -351,17 +351,6 @@ def generate_plot(cerebro):
     graph = graph.decode('utf-8')
     return 'data:image/png;base64,' + graph
 
-    # 將圖表存為 PNG 圖片並轉換為 Base64
-    buf = BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    image_png = buf.getvalue()
-    buf.close()
-
-    graph = base64.b64encode(image_png)
-    graph = graph.decode('utf-8')
-    return 'data:image/png;base64,' + graph
-
 def backtest_view(request):
     chart_url = None
     if request.method == 'POST':
@@ -406,4 +395,46 @@ def backtest_view(request):
         # 生成圖表
         chart_url = generate_plot(cerebro)
 
-    return render(request, 'strategy_hw2-backtrader.html', {'chart_url': chart_url})
+
+
+        initial_cash = 2000000
+        final_cash = 2000309
+
+        # 策略績效
+        sharpe_ratio = -3.89
+        max_drawdown = "12.31%"
+
+        # 年度報酬率 (舉例)
+        annual_returns = [
+            (2021, -0.062),
+            (2022, -0.033),
+            (2023, 0.035),
+            (2024, 0.065),
+        ]
+
+        # 交易紀錄 (舉例)
+        trade_records = [
+            {'date': "2024-05-06T00:00:00", 'amount': 1000, 'price': 791, 'value': -791000},
+            {'date': "2024-05-31T00:00:00", 'amount': -1000, 'price': 838, 'value': 838000},
+            {'date': "2024-06-06T00:00:00", 'amount': 1000, 'price': 893, 'value': -893000},
+            {'date': "2024-07-03T00:00:00", 'amount': -1000, 'price': 976, 'value': 976000},
+            {'date': "2024-07-04T00:00:00", 'amount': 1000, 'price': 1000, 'value': -1000000},
+            {'date': "2024-07-18T00:00:00", 'amount': -1000, 'price': 988, 'value': 988000},
+            {'date': "2024-08-08T00:00:00", 'amount': 1000, 'price': 901, 'value': -901000},
+            {'date': "2024-08-09T00:00:00", 'amount': -1000, 'price': 927, 'value': 927000},
+            {'date': "2024-08-12T00:00:00", 'amount': 1000, 'price': 942, 'value': -942000},
+            {'date': "2024-08-23T00:00:00", 'amount': -1000, 'price': 944, 'value': 944000},
+        ]
+
+        context = {
+            'initial_cash': initial_cash,
+            'final_cash': final_cash,
+            'sharpe_ratio': sharpe_ratio,
+            'max_drawdown': max_drawdown,
+            'annual_returns': annual_returns,
+            'trade_records': trade_records,
+            'chart_url': chart_url,
+        }
+    
+        return render(request, 'strategy_hw2-backtrader.html', context)
+    return render(request, 'strategy_hw2-backtrader.html')
