@@ -8,6 +8,8 @@ from talib.abstract import RSI
 from django.http import JsonResponse
 from django.shortcuts import render
 import yfinance as yf
+import random
+from datetime import datetime, timedelta
 
 def getData(prod, st, en):  # 更新資料源為 yahoo finance
     bakfile = 'data//YF_%s_%s_%s_stock_daily_adj.csv' % (prod, st, en)
@@ -97,7 +99,7 @@ def use_rsi(prod = '0050', startDay = '2013-01-01', endDay = '2022-05-01', over_
     #ChartTrade(data, trade, addp=addp)
      # 給交易明細定義欄位名稱
     trade.columns=['product','bs','order_time','order_price','cover_time','cover_price','order_unit']
-    return trade
+    return trade,data
     # 計算出每筆的報酬率
     #trade['ret']=(((trade['cover_price']-trade['order_price'])/trade['order_price'])) *trade['order_unit']
 
@@ -105,17 +107,12 @@ def strategy(request):
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
-        short_rsi = request.POST.get('short_rsi')
-        long_rsi = request.POST.get('long_rsi')
+        over_sell = request.POST.get('over_sell')
+        over_buy = request.POST.get('over_buy')
         stock_code = request.POST.get('stock_code')
-        
-        print(start_date)
-        print(end_date)
-        print(short_rsi)
-        print(long_rsi)
-        print(stock_code)
 
-        trades = use_rsi()
+
+        trades, df = use_rsi(prod = stock_code, startDay =start_date, endDay = end_date, over_buy = int(over_buy), over_sell = int(over_sell))
         trades['ret']=(((trades['cover_price']-trades['order_price'])/trades['order_price'])) *trades['order_unit']
         simulate = 0
         stock_table = []
@@ -135,12 +132,52 @@ def strategy(request):
         trades['acc_ret'] = (1+trades['ret']).cumprod() # acc_ret = Profit
         trades['acc_max_cap'] = trades['acc_ret'].cummax()
         trades['dd'] = (trades['acc_ret'] / trades['acc_max_cap'])
+        
+        profie = []
+        draw_down = []
 
-        print(stock_table)
+        print(len(trades['acc_ret']))
+
+        for i in range(len(trades['acc_ret'])):
+            print(trades["order_time"][i])
+            print( type(trades["order_time"][i]))
+            profie.append([int(trades["order_time"][i].timestamp() * 1000),trades['acc_ret'][i]])  # 日期轉換為毫秒
+            draw_down.append([int(trades["order_time"][i].timestamp() * 1000),trades['dd'][i]]) 
+        print(draw_down)
+        print(profie)
+
+        """
+
+        start_date = datetime(2024, 5, 30)
+        end_date = datetime(2024, 8, 30)
+        dates = [(start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range((end_date - start_date).days + 1)]
+        
+        prices = [random.uniform(800, 1000) for _ in range(len(dates))]
+        volumes = [random.randint(0, 1000000) for _ in range(len(dates))]
+        """
+
+        dates = df.index.strftime('%Y-%m-%d').tolist()
+
+        # 提取 OHLC 数据
+        ohlc = df[['open', 'high', 'low', 'close']].values.tolist()
+
+        # 提取成交量数据
+        volumes = df['volume'].tolist()
 
         redata = {
             'datatable_headers': datatable_headers,
             'stock_table': stock_table,  # 假設數據
+            'draw_down':draw_down,
+            'profie' : profie,
+            'dates': dates,
+            'ohlc': [
+                [int(date.timestamp() * 1000)] + ohlc_values 
+                for date, ohlc_values in zip(df.index, ohlc)
+            ],
+            'volumes': [
+                [int(date.timestamp() * 1000), volume] 
+                for date, volume in zip(df.index, volumes)
+            ]
         }
         return JsonResponse(redata)
     return render(request, 'strategy_hw2.html')
