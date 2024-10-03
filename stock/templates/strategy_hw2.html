@@ -85,7 +85,7 @@
         <div class="form-section">
             <label for="over_sell">輸入參數：</label>
             <label for="over_sell">超賣區間</label>
-            <input type="number" id="over_sell" name="over_sell" value="20">
+            <input type="number" id="over_sell" name="over_sell" value="40">
             <label for="over_buy">超買區間</label>
             <input type="number" id="over_buy" name="over_buy" value="80">
         </div>
@@ -93,7 +93,7 @@
         <!-- 日期選擇 -->
         <div class="form-section">
             <label for="start_date">開始日期：</label>
-            <input type="date" id="start_date" name="start_date" value="2021-01-01">
+            <input type="date" id="start_date" name="start_date" value="2013-01-01">
             <label for="end_date">結束日期：</label>
             <input type="date" id="end_date" name="end_date" value="2023-01-01">
         </div>
@@ -101,10 +101,7 @@
         <table id="datatable" >
             <thead>
                 <tr>
-                    <!--th>Buy 1 Time</th>
-                    <th>Buy 2 Time</th>
-                    <th>Sell 1 Time</th>
-                    <th>Sell 2 Time</th-->
+
                 </tr>
             </thead>
             <tbody></tbody>
@@ -113,6 +110,18 @@
         <div id="chartA"></div>
 
         <div id="chart-container" style="height: 400px; min-width: 310px"></div>
+
+        <table id="analysis-results" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>指標</th>
+                    <th>數值</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 表格内容将由 JavaScript 填充 -->
+            </tbody>
+        </table>
 
     </form>
     <script>
@@ -226,6 +235,16 @@
                         color: '#808080'
                     }]
                 });
+
+
+                var tableBody = $('#analysis-results tbody');
+                tableBody.empty(); // 清空现有内容
+
+                for (var key in data.analysis_results) {
+                    var value = data.analysis_results[key];
+                    var row = '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
+                    tableBody.append(row);
+                }
 
                 },
                 error: function(error) {
