@@ -486,6 +486,7 @@ def backtest_view(request):
             'annual_returns': annual_returns,
             'trade_records': trade_records,
             'chart_url': chart_url,
+            
         }
     
         return render(request, 'strategy_hw2-backtrader.html', context)
