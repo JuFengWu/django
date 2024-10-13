@@ -18,7 +18,7 @@ def test_view(request):
         print(selected_stocks)
         print(selected_stocks2)
         
-        data = spider_data(selected_stocks[0],start_date,end_date)
+        spider_data = spider_data(selected_stocks[0],start_date,end_date)
         data2= spider_data(selected_stocks2[0],start_date,end_date)
 
         log1, log2, spread, moving_avg_result, moving_std_result, upperline, downline = strategy(data,data2, window_size = int(window_size))
@@ -79,12 +79,7 @@ def test_view(request):
 
             price_at_spread = spread[dates.index(date)]
             sell2TimeStockSpread.append([price_at_spread[0],price_at_spread[1]])
-        """
-        print(buy1timeStock)
-        print(buy2timeStock)
-        print(sell1TimeStock)
-        print(sell2TimeStock)
-"""         
+                
         show_upperline = []
         show_downline = []
         show_moving_avg_result=[]

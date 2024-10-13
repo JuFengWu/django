@@ -24,4 +24,6 @@ urlpatterns = [
     path('strategy_hw2/', hw2_views.strategy, name='strategy'), #HW2
     path('strategy_hw2-2/', hw2_views.backtest_view, name='backtest'), #HW2
     path('login/', hw3_views.login, name='login'),
+    path('stock_chart_hw3/', hw3_views.stock_chart_hw3, name='stock_chart_hw3'),
+    path('api/stock_data_api/', hw3_views.stock_data_api, name='stock_data_api'),
 ]
