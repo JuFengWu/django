@@ -99,6 +99,9 @@
                 method: "POST",
                 contentType: "application/json",  // 設置為 JSON 格式
                 data: JSON.stringify(formData),  // 傳送 JSON 數據
+                headers: {
+                    'Authorization': 'Bearer Leo_ABCDEFG'  // 添加 token 到 headers
+                },
                 success: function(data) {
                     // 提取標記數據
                     const buy1Markers = data.buy1timeStock.map(([timestamp, price]) => ({
@@ -325,8 +328,11 @@
                         destroy: false // 如果表格已初始化，重新加載數據
                         });
                 },
-                error: function(error) {
-                    console.error("Error:", error);
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // 檢查狀態碼並彈出相應的訊息框
+                    if (jqXHR.status !== 200) {
+                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
+                    }
                 }
             });
         });

@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import datetime
 from web_tool.strategy import strategy,spider_data, buy_and_sell
+from rest_framework import status
+import requests
 def login(request):
     if request.method == 'POST':
         # 處理表單數據 (可以根據需要添加具體邏輯)
@@ -29,15 +31,20 @@ def login(request):
 def stock_chart_hw3(request):
     return render(request, 'stock_chart_hw3.html')
 
+VALID_TOKEN  = "Leo_ABCDEFG"
+
 @api_view(['POST'])
 def stock_data_api(request):
+    token = request.headers.get('Authorization')
+    print(token)
+    if not token or token != f'Bearer {VALID_TOKEN}':
+        return Response({"error": "Invalid or missing token"}, status=status.HTTP_403_FORBIDDEN)
+
     selected_stocks = request.data.get('selected_stocks')
     selected_stocks2 = request.data.get('selected_stocks2')
     start_date = request.data.get('start_date')
     end_date = request.data.get('end_date')
     window_size = request.data.get('window_size')
-    print(selected_stocks)
-    print(selected_stocks2)
     
     data = spider_data(selected_stocks[0],start_date,end_date)
     data2= spider_data(selected_stocks2[0],start_date,end_date)
@@ -148,4 +155,4 @@ def stock_data_api(request):
     }
 
     # 返回 JSON 格式的數據
-    return Response(out_data)
+    return Response(out_data, status=status.HTTP_200_OK)
