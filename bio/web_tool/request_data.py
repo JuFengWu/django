@@ -32,11 +32,6 @@ def get_split_data():
     # 讀取 JSON 檔案並轉換為字典
     with open(file_path, 'r', encoding='utf-8') as file:
         data_dict = json.load(file)
-    #print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features'])
-    #print(data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence'])
-
-    #print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features'])
-    #print(data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence'])
 
     positive_squence = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence']
     positive_features = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features']
@@ -55,13 +50,13 @@ def get_positive_sequence_range(positive_features):
     count = 0
     for i in positive_features:
         if count%4 == 0:
-            color = "red"
+            color = "yellow"
         elif count%4 == 1:
-            color = "blue"
-        elif count%4 == 2:
             color = "orange"
+        elif count%4 == 2:
+            color = "yellow"
         elif count%4 == 3:
-            color = "green"
+            color = "orange"
         count += 1
         rangeSequence.append((i["start"],i["stop"],color))
     return rangeSequence

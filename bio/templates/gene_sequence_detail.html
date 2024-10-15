@@ -13,6 +13,8 @@
     <style>
         .orange { background-color: orange; }
         .green { background-color: green; }
+        .blue { background-color: blue; }
+        .yellow { background-color: yellow; }
         .container {
             display: flex;
             justify-content: space-between;
@@ -58,9 +60,10 @@
             {% endfor %}
         </tbody>
     </table>
-    <h1>DNA Sequences and Graph</h1>
+    <h1>DNA Sequences and Graph (spliced)</h1>
     <div class="container">
         <!-- Left column: Matplotlib generated image -->
+
         <div class="left">
             <h2>Graph</h2>
             <img src="{{ matplotlib_image_url }}" alt="Matplotlib Plot" />

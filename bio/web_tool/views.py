@@ -158,7 +158,7 @@ def gene_sequence_detail(request, gene_sequence_name):
     full_sequence = ''.join(sequences)
 
     # Create a new string where parts within the range are wrapped in HTML <span> tags
-    colored_sequence = ""
+    colored_sequence = "1 &#9"
     for i, char in enumerate(full_sequence, 1):  # 1-based index
         # Check which color to apply based on the index
         color = None
@@ -169,13 +169,15 @@ def gene_sequence_detail(request, gene_sequence_name):
         
         # Apply the color if within range
         if color:
+            
             colored_sequence += f'<span class="{color}">{char}</span>'
         else:
             colored_sequence += char
 
         # Add line breaks for every 50 characters (adjust if necessary)
         if i % 50 == 0:
-            colored_sequence += "<br/>"
+            value = i//50
+            colored_sequence += "<br/>" + str(value*50+1) +"&#9"
 
     # Append the entire colored sequence as a single entry
     highlighted_sequences.append(colored_sequence)
@@ -199,9 +201,3 @@ def gene_sequence_detail(request, gene_sequence_name):
         "positiveData" : positiveData}
     
     return render(request, 'gene_sequence_detail.html', context)
-    """
-    context = {
-        'gene_sequence_name': gene_sequence_name,
-    }
-    return render(request, 'gene_sequence_detail.html', context)
-    """

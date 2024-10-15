@@ -21,15 +21,25 @@ def login(request):
             isPasswdOk = True
 
         if isPasswdOk and isUserNameOk:
-            messages.success(request,"wrong username or passwd")
-            return redirect('strategy_hw2-backtrader.html')
+            messages.success(request,"登入成功")
+            request.session['username'] = username
+            return redirect('stock_chart_hw3')
 
         else:
             return render(request, 'login.html')
     return render(request, 'login.html')
 
 def stock_chart_hw3(request):
+    if not request.session.get('username'):
+        return redirect('login')  # 未登入，重定向到登入頁面
+    
     return render(request, 'stock_chart_hw3.html')
+
+def logout(request):
+    # 清除 session 資料
+    request.session.flush()
+    messages.success(request, "成功登出")
+    return redirect('login')  # 重定向回登入頁面
 
 VALID_TOKEN  = "Leo_ABCDEFG"
 
@@ -134,6 +144,8 @@ def stock_data_api(request):
     end_date = request.data.get('end_date')
     window_size = request.data.get('window_size')
 
+    username = request.session.get('username')
+
     # 假設你進行了一些計算，並生成以下數據
     out_data = {
         'stock_data': data,  # 假設數據
@@ -151,7 +163,8 @@ def stock_data_api(request):
         'buy1timeStock': buy1timeStock,
         'buy2timeStock': buy2timeStock,
         'sell1TimeStock': sell1TimeStock,
-        'sell2TimeStock': sell2TimeStock
+        'sell2TimeStock': sell2TimeStock,
+        "username":username
     }
 
     # 返回 JSON 格式的數據

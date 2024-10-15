@@ -27,6 +27,8 @@
 </head>
 <body>
 
+    <a href="{% url 'logout' %}" class="btn btn-danger">登出</a>
+
     <!-- 表單開始 -->
     <form id="stock-form" method="post">
         {% csrf_token %}
