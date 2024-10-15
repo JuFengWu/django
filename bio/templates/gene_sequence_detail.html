@@ -39,7 +39,7 @@
 <body>
     <h1>Gene Sequence Detail</h1>
     <p>Gene Sequence Name: {{ gene_sequence_name }}</p>
-
+    <h1>DNA Sequences and Graph (spliced)</h1>
     <table id="positiveGeneTable" class="display">
         <thead>
             <tr>
@@ -60,7 +60,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <h1>DNA Sequences and Graph (spliced)</h1>
+    
     <div class="container">
         <!-- Left column: Matplotlib generated image -->
 
@@ -79,9 +79,51 @@
             </div>
         </div>
     </div>
+
+    <h1>DNA Sequences and Graph (unspliced)</h1>
+    <table id="unsplicedTable" class="display">
+        <thead>
+            <tr>
+                <th>Exon</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Length</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in unsplicedData%}
+            <tr>
+                <td>{{ row.Exon }}</a></td>
+                <td>{{ row.Start }}</td>
+                <td>{{ row.End }}</a></td>
+                <td>{{ row.Length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        
+    <div class="container">
+        <!-- Left column: Matplotlib generated image -->
+        <div class="left">
+            <h2>Graph</h2>
+            <img src="{{ unspliced_matplotlib_image_url }}" alt="Matplotlib Plot" />
+        </div>
+        <!-- Right column: DNA Sequences -->
+        <div class="right">
+            <h2>DNA Sequences</h2>
+            <div>
+                {% for sequence in unspliced_sequences %}
+                    <div>{{ sequence|safe }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function() {
             $('#positiveGeneTable').DataTable();  // 初始化 DataTables
+        });
+        $(document).ready(function() {
+            $('#unsplicedTable').DataTable();  // 初始化 DataTables
         });
     </script>
 </body>

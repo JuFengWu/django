@@ -78,11 +78,14 @@ def browse_result(request):
 
 # HW2 start 
 
-def draw_colored_ranges(buf,ranges, total_length=1000):
+def draw_colored_ranges(buf,ranges, total_length=10000):
     fig, ax = plt.subplots(figsize=(10, 1))
 
     last_position = 0  # 用於跟踪繪製的區間起始位置
-    
+
+    print("----")
+    print(ranges)
+    print("--end--")
     # 遍歷範圍列表，繪製不同顏色的區間
     for start, end, color in ranges:
         # 添加之前未填充部分（灰色）
@@ -136,6 +139,11 @@ def gene_sequence_detail(request, gene_sequence_name):
     spliced_color_ranges = get_positive_sequence_range(spliced_features)
     sequences = split_string_into_tuples(spliced_squence)
     
+    unspliced_table = get_positive_table_data(unspliced_features)
+    unspliced_color_ranges = get_positive_sequence_range(unspliced_features)
+    unsequences = split_string_into_tuples(unspliced_squence)
+
+    
     """
     # Sample data, replace with your method of fetching sequence data
     sequences = (
@@ -181,22 +189,62 @@ def gene_sequence_detail(request, gene_sequence_name):
     # Append the entire colored sequence as a single entry
     highlighted_sequences.append(colored_sequence)
 
+
+    # Prepare data with color flags
+    unsplice_highlighted_sequences = []
+        
+    # Flatten the sequences into one string for easier index handlin
+    unfull_sequence = ''.join(unsequences)
+    # Create a new string where parts within the range are wrapped i
+    uncolored_sequence = "1 &#9"
+    for i, char in enumerate(unfull_sequence, 1):  # 1-based index
+        # Check which color to apply based on the index
+        color = None
+        for start, end, color_name in unspliced_color_ranges:
+            if start <= i <= end:
+                color = color_name
+                break
+        
+        # Apply the color if within range
+        if color:
+            uncolored_sequence += f'<span class="{color}">{char}</span>'
+        else:
+            uncolored_sequence += char
+        # Add line breaks for every 50 characters (adjust if necessa
+        if i % 50 == 0:
+            value = i//50
+            uncolored_sequence += "<br/>" + str(value*50+1) +"&#9"
+    # Append the entire colored sequence as a single entry
+    unsplice_highlighted_sequences.append(uncolored_sequence)
+
     spliced_buf = io.BytesIO()
 
-    draw_colored_ranges(spliced_buf,spliced_color_ranges, total_length=1000)
+    draw_colored_ranges(spliced_buf,spliced_color_ranges, total_length=len(spliced_color_ranges))
     
     spliced_string = base64.b64encode(spliced_buf.read())
     spliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
 
+
+    unspliced_buf = io.BytesIO()
+    draw_colored_ranges(unspliced_buf,unspliced_color_ranges, total_length=len(unspliced_color_ranges))
+        
+    spliced_string = base64.b64encode(unspliced_buf.read())
+    unspliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
+
     #positiveData = [{"Exon" : "b","Start":"d","End":'f',"Length":'h'},
     #                {"Exon" : "a","Start":"d","End":'f',"Length":'g'}]
     splicedData = spliced_table
+    unsplicedData = unspliced_table
 
     context = {
         'gene_sequence_name': gene_sequence_name,
         'spliced_sequences': highlighted_sequences,
         'spliced_matplotlib_image_url': 
         'data:image/png;base64,' + spliced_matplotlib_image_url,
-        "splicedData" : splicedData}
+        "splicedData" : splicedData,
+        'unspliced_sequences': unsplice_highlighted_sequences,
+        'unspliced_matplotlib_image_url': 
+        'data:image/png;base64,' + unspliced_matplotlib_image_url,
+        "unsplicedData" : unsplicedData}
     
     return render(request, 'gene_sequence_detail.html', context)
