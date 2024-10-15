@@ -39,6 +39,13 @@ def get_split_data():
     negative_squence = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence']
     negative_features = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features']
 
+    positiveNeagtive = data_dict['fields']['spliced_sequence_context']['data']['strand']
+
+    positiveNeagtive2 = data_dict['fields']['unspliced_sequence_context']['data']['strand']
+
+    print(positiveNeagtive)
+    print(positiveNeagtive2)
+
     return positive_squence,positive_features,negative_squence,negative_features
 def get_positive_table_data(positive_features):
     print(positive_features)

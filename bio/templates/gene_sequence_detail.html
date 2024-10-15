@@ -50,7 +50,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in positiveData%}
+            {% for row in splicedData%}
             <tr>
                 <td>{{ row.Exon }}</a></td>
                 <td>{{ row.Start }}</td>
@@ -66,14 +66,14 @@
 
         <div class="left">
             <h2>Graph</h2>
-            <img src="{{ matplotlib_image_url }}" alt="Matplotlib Plot" />
+            <img src="{{ spliced_matplotlib_image_url }}" alt="Matplotlib Plot" />
         </div>
 
         <!-- Right column: DNA Sequences -->
         <div class="right">
             <h2>DNA Sequences</h2>
             <div>
-                {% for sequence in sequences %}
+                {% for sequence in spliced_sequences %}
                     <div>{{ sequence|safe }}</div>
                 {% endfor %}
             </div>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django + D3.js Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 8px;
+            background: lightgray;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Django + D3.js Bar Chart</h2>
+    <div id="chart"></div>
+    <div class="tooltip" id="tooltip" style="opacity:0;"></div>
+
+    <script>
+        // 從 Django 模板獲取數據，轉換為 JavaScript 格式
+        const data = {{ data|safe }};
+
+        // 設置圖表的寬和高
+        const width = 500;
+        const height = 300;
+        const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+
+        // 創建 SVG
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // 創建一個 tooltip
+        const tooltip = d3.select("#tooltip");
+
+        // 設定 x 軸和 y 軸的比例尺
+        const x = d3.scaleBand()
+            .domain(data.map(d => d.name))
+            .range([0, width])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)])
+            .range([height, 0]);
+
+        // 繪製 x 軸
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x));
+
+        // 繪製 y 軸
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // 繪製長條圖
+        svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d.name))
+            .attr("y", d => y(d.value))
+            .attr("width", x.bandwidth())
+            .attr("height", d => height - y(d.value))
+            .on("mouseover", function(event, d) {
+                tooltip.style("opacity", 1)
+                    .html(`Name: ${d.name}<br>Value: ${d.value}`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip.style("opacity", 0);
+            });
+    </script>
+</body>
+</html>

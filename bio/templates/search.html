@@ -44,6 +44,7 @@
                 <th>Gene Sequence Name</th>
                 <th>Gene Name</th>
                 <th>Other Name</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
@@ -53,6 +54,7 @@
                 <td><a href="{% url 'gene_sequence_detail' data.gene_sequence_name %}">{{ data.gene_sequence_name }}</a></td>
                 <td>{{ data.gene_name }}</td>
                 <td>{{ data.other_name }}</td>
+                <td><a href="{% url 'transcript' data.gene_sequence_name %}">details</a></td>
             </tr>
         </tbody>
     </table>

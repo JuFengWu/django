@@ -130,12 +130,11 @@ def draw_colored_ranges(buf,ranges, total_length=1000):
     buf.seek(0)
 
 def gene_sequence_detail(request, gene_sequence_name):
-    get_data_from_web(gene_sequence_name)
-    positive_squence,positive_features,negative_squence,negative_features = get_split_data()
-    table = get_positive_table_data(positive_features)
-    color_ranges = get_positive_sequence_range(positive_features)
-    print(color_ranges)
-    sequences = split_string_into_tuples(positive_squence)
+    #get_data_from_web(gene_sequence_name)
+    spliced_squence,spliced_features,unspliced_squence,unspliced_features  = get_split_data()
+    spliced_table = get_positive_table_data(spliced_features)
+    spliced_color_ranges = get_positive_sequence_range(spliced_features)
+    sequences = split_string_into_tuples(spliced_squence)
     
     """
     # Sample data, replace with your method of fetching sequence data
@@ -162,7 +161,7 @@ def gene_sequence_detail(request, gene_sequence_name):
     for i, char in enumerate(full_sequence, 1):  # 1-based index
         # Check which color to apply based on the index
         color = None
-        for start, end, color_name in color_ranges:
+        for start, end, color_name in spliced_color_ranges:
             if start <= i <= end:
                 color = color_name
                 break
@@ -182,22 +181,22 @@ def gene_sequence_detail(request, gene_sequence_name):
     # Append the entire colored sequence as a single entry
     highlighted_sequences.append(colored_sequence)
 
-    buf = io.BytesIO()
+    spliced_buf = io.BytesIO()
 
-    draw_colored_ranges(buf,color_ranges, total_length=1000)
+    draw_colored_ranges(spliced_buf,spliced_color_ranges, total_length=1000)
     
-    string = base64.b64encode(buf.read())
-    matplotlib_image_url = urllib.parse.quote(string)
+    spliced_string = base64.b64encode(spliced_buf.read())
+    spliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
 
     #positiveData = [{"Exon" : "b","Start":"d","End":'f',"Length":'h'},
     #                {"Exon" : "a","Start":"d","End":'f',"Length":'g'}]
-    positiveData = table
+    splicedData = spliced_table
 
     context = {
         'gene_sequence_name': gene_sequence_name,
-        'sequences': highlighted_sequences,
-        'matplotlib_image_url': 
-        'data:image/png;base64,' + matplotlib_image_url,
-        "positiveData" : positiveData}
+        'spliced_sequences': highlighted_sequences,
+        'spliced_matplotlib_image_url': 
+        'data:image/png;base64,' + spliced_matplotlib_image_url,
+        "splicedData" : splicedData}
     
     return render(request, 'gene_sequence_detail.html', context)

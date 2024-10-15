@@ -1,424 +1,368 @@
 {
-    "class": "transcript",
-    "name": "Y110A7A.10.1",
     "fields": {
         "strand": {
             "description": "strand orientation of the sequence",
-            "data": "+"
+            "data": "-"
         },
-        "unspliced_sequence_context_with_padding": {
-            "description": "the unpliced sequence of the sequence",
+        "protein_sequence": {
             "data": {
-                "negative_strand": {
-                    "features": [
-                        {
-                            "stop": 2000,
-                            "start": 1,
-                            "type": "padding"
-                        },
-                        {
-                            "type": "three_prime_UTR",
-                            "start": 2001,
-                            "stop": 2236
-                        },
-                        {
-                            "stop": 2674,
-                            "start": 2001,
-                            "type": "exon"
-                        },
-                        {
-                            "type": "intron",
-                            "start": 2675,
-                            "stop": 2754
-                        },
-                        {
-                            "stop": 3186,
-                            "type": "exon",
-                            "start": 2755
-                        },
-                        {
-                            "stop": 3413,
-                            "type": "intron",
-                            "start": 3187
-                        },
-                        {
-                            "stop": 3679,
-                            "start": 3414,
-                            "type": "exon"
-                        },
-                        {
-                            "stop": 3860,
-                            "start": 3680,
-                            "type": "intron"
-                        },
-                        {
-                            "type": "exon",
-                            "start": 3861,
-                            "stop": 4120
-                        },
-                        {
-                            "type": "intron",
-                            "start": 4121,
-                            "stop": 4167
-                        },
-                        {
-                            "stop": 4341,
-                            "type": "exon",
-                            "start": 4168
-                        },
-                        {
-                            "stop": 4341,
-                            "start": 4341,
-                            "type": "five_prime_UTR"
-                        },
-                        {
-                            "type": "padding",
-                            "start": 4342,
-                            "stop": 6341
-                        }
-                    ],
-                    "sequence": "aaatcgaaaaaaaaatgatagaaagtttagaacaaattcaatttttgtttatatcgatgagaaagaacttgagaaaacatataattttatttaagaatgttcaatttttgtgaaatatcgaaaaaccaacacccttgactatatgcgtattcaaggaaaaacgtgtttggcttttgaagtaattatttcgggatactgtagttaaaaattgaatttttggtttttgaaaaatattagagagatggtatggtgtggtattactgtagcttaagacaatatgcacttttttttggtattaatatattatttcaatgacacaattttcagtcacctgatctgccgatagatcagctcgccaatgaaactggattccgattcgtctccggaatgcaattcgaccaaaatggctatcttctcattggagatgcaaaaggtcattcgatcaaggttagaattttcaaaaaaagtttttcaagtatatggaaaatttttagattttttttggtttaaaataaaaaatttaaatttagaatatttttaaatgtttcagctgttcgacactgactacagtttcctgcatcgtatctccagtgattttcctcttccctatatgtcttcattccatgtaaacagtaaaggccaagtaattatcctcgatgtgaacgcggaacagaagcttcactgggtgaagatggagtcgatcgacgaaattcagaaatggttgccaccgaaagctgaaagacgtcccacgcaaggattttatcaagcaaatgctcgtcgaggtgaattcaaacgttcacaattttgagttttgtcgatttttctggatgttctcgtttgaaccagcatttcatttcactttctacccgacgttttttttataattgttctctttctgttcaatttttttattcaaataattcttcaacattcataaactacctcccccctataataagctctccctattaaatcaatataatattgactcataatttcttatcagtttttattgagtcaacaactctcatttctagacactctttccccatgcatccatcgaggtgaacatttgagtttcgattcttttaatgttttttatccataactttcagaaaatctgcatttccaaaacctaaatttgaggtctggaaatttgcaaagtattcctctgctctacagatttttcaaattgtgagttatttcaagtactttttatctgttgttgttgaatagttttagtttagtaatgaacgtatttttaatatatatatatatatgttttgtgcaagaaaccaaaaacttaaaattagcatggaattctagtttggaagcttcgtatcccttgtgctcattggacttgttggctcacagtttgctccaacatatgctgctcttttgacatgcgtcttcgcaataatcggatcatctgtatttttgttgtgcgatgtttttaatattaatgagactgaaccagatgaatgggttttttgggtaagaatatattgaattatttatttttttcgagttttctacaggaaagcgtcttcatttcatcattctcatttttgttcacaatcaatacactgaccatgttgtacagttcgattcgatggaataatacggcctggtggctggcaacggtatgttatgcaaaatgtgaaaacgcgctccacggcaattgacaacgcccgcccccaaaccatgggtctcgttagatatttgtcggcaaaaccgtaaattcaaactttttgacttaattccgccactttggcgaaataagcaaaaatgaaaataaaaacatttgaatgtacggattcgcctccaaatacctaacgagacccatggtttgggggcggagcgttttcaaattgccgtggagcgcgaaagaaaatcaatttcaggttgtctgcgctttggtgacagtctcgtttcttctcagtctgttacatgtgatgaaaaaccaaacgaaaggtcatattactgttaaacaggaggagaatgttgtgcgatttaatacgcggatgaaccgccgacggatttgaatttatatcaataaatgtacaatttgacaattcatataaatactgataataaatacatttaagacacaaataaaacgtaagtaacttagaagaaagtgatcagagaactgtgggtttactatcagatcggatgggggacaagtggatgtaattgaaccgagtatatgtaagtaattgatttaaatatataaCTATTCCGGGATGGATTTAGGAAGAGTAGTTGGATGAACCAATCGGGAATCAGATGATGAAGGAGTATCCGGAGATGGAGAATCCCATGAATCCGGTCTTGGTTCCGGTGATTCAGGTGGCTTAGTGGGATCATCAGTGAGAAGAGCCTTCTCCATATATTTCCTGGATATTGGCAAAGCCGTAAAAACTTGTCCGGGTCCGTTACGAAGAGGTTTTGAAGTATCACTTGTGACAGCGTCAAATGCGGGCGTACGAAGTGGAGTTTTGATAGCATCCGCGTGGGTTTCAAGACTGAAGTGAGAGTAATAGCGAACGAAGTCACTTATAGTTGTCAGGTAGACATTGCTGTGCTCGAATCCCCATCCTTCTTCGTTTTGTTCGATTAGACAATGTGAGACACGTTCTCCGTGAAGTACACTCAATACGAGCTTATCACCctgaaaaatattcaattcaattcaaaaattagcgtgaatgaggatgaaaagttattcttctgataaaatcataaactaacATGAGAAGAGGATCCTCGAATCAAGAAAATACCATCTTGTGGCTCTCTTTTCAATCCAACAGCCTTGTCAAGTTGAGCGATCCGATAGCGAGCATGAATCAGAGCATTCGCAGCATTTTCCTTAGAAGTTCCACACATCAAATATTGTGCCGGTGTCCACTTCAATTCCATATCGACAAGAAGTTGAGTGACTTTCGTTGGCTCACTGTTTATCATTTCCGCTCCAGCATCAAGCATTGCAGCCATTCTCGAACAAAGTGCTGGTTCCATTTTATCATAGACTGCACTACGAAGTTCCATAAGCTTGCAGAGTCGTGTTTTTGAATTGGATCTTTTCATCGCGATTTCATCCAAAATTCCGGAGAGCGTCTTTTTCTTATCCTTTGATGACGTCAGTTCAGTGTTTATTCGTCGAATACTTTCTTCCACAAActgcaaaataaaaaagataaaattcaaaactataatggttaaaaattgaggatttgctctaaaatcatttttaaaaaaccgagaaaaaaattgagcaaaaattaataatccagctttgaaaatattgagttttggctaaataacaattttaaattgaacttcttttttttgctttagaattgtttttttttggttttggatgttttttttcttcaaaaaacgcttacTGTCTTATTATTTGCAAATGCTCCTTTGAGCATTTCACTTGTTGTCTGCGATCCCTGTATTTGTGTAACGACGTCTGTTTCAGCTTCTAACAAATTATTCAGTTTTCCAAGTTTAATCTCATTGTCCCGAACTGATTGATTCAAAGCATGATAGAGACTTTCAGCTCGTTCCATTTCTTGATGAGCTGAATCATATAGCTTGGCTCCTCTCTCAAATGCCAAATGTACTGCTCTCAAATTTTCCATTTCCAAGCGTTCTCTCCAATctaaaaaaagcattaaatttactaatttttatttttttcaatcactcagacgcgaaattttgccactttcgcgataaaaatatggtacgaggtcttgaaacgacaagagaaattccgcagcaattaaagtttgaaattacagtatttttaaatttagcgtttgcgttataaaataatttacCATGATCATTTTTTGCACTGAGAATCATACGCTGCTGAAGTTGCCCCTTCTTGAAAAATGGTTTTCCATTTTGAGAGTTACGACGAACAGAAACTGGATATAAAAGACGAACATCAAGTGCATCATTGAAAATATTGAGAGAAATATTTCGATGAAATTCAATTAATCTGACAACAGAATCGTGAGTTAATGAATCTGTATTGAATCCGCATTTTCCATCTTTAACAACGATTCGGAGAAGTTTCACTTGGGCGGCAAATctgaaaaaaggactattaatattgaatactaattttgaaaaacccacTTCACAGAAAGTGTATAATCTCCAGGTGTACTAGCATTTCTCACAATAAATGATCCATCAGGTTGATCAGAAAGTGCTTTCGAAACTGCAGATCTATCAGCATCAGCCCAGTACCATCCTTGTTCCATAAGACTATGAGTGACTCCATGAGGAGTTCCAGGTGTTGTGCTCATtctgaatccttatatatatatatatatatataattaacggaggagaagaatctgtggtgtttttgccgaagtagactaaatctggcacaagaccaagccgagaccaaaaagcaaagcattgaaatttgtgaaaacaccaaaaaaaaccaacaaaaaaagtatgtataacatggtctgtagaccaatggaaatatcaacgagaaaaaaaattcgaagaatgcaaataattaaataattttatttgaaatatttacacccataaatactagcaattcgtcccgactattaagtgctcgcttttttgaaaattttcatcataagaaccattgatacgaagctcataaaaatcagaacaatgagcatgaccttgaaacagtcataaccacatttgtaggcgtgacgctcaactcgctcactttgaatctggaaattttaagactattatttgaagtttatatagtgaagaaattaccccgagagctgttttattatcatcgacttctttcgccattaatattgctctttctgtatcttctttaatcacatctccagcagccgacatcatcgttttgaatgatctcgccatagtggccaaactatttgctagctcctcctcgacaagctcatttttcatgaattcctgatcttctataaaatttgacgaattttgaacaatcattggatactaatttttaccagatgtgtcttgtgctctatgtttattagatgaaagcaactgcttccgaagatctgatcgatagatggatcgttgagtagctcggagtccagctgcggattctttttcaaaatcgtaactttccgcctcgttatctgcaatataaacattaaaatgaaatattgaataattcaaaaaccattcttggagtctgcaacagttacttggacatcgggaaatacacgtggaattttttcaatcactttcaggcgctcctcggctgacgactggaaaacttactgacaatttcataacagttgcgaaattcacaaaatatttaaagctgttcaacttgttttctttacttaaatctaaattgaaaagagggacataaaatctacggaacatttgcataatattttaggattaaatttttaattgaaacaaatcaaacaaattcaaattaagtttagaaattatgtaaaaatttgtatctttaaagcaaaattacaagatcgaatttgcttgtctaaaatatctacaaaccttgctttcagcttcagcgagtaatttcagttgcaagacttcctgtcggtactcgtggagaatatcatttgtggttctggaaaagtaaaactataaatattaaaaaatgtattttgaaaaactcactcatcgttttgaagtgtataaatcattttattgagaatctttgtagctgcagaaacctgaaataagaaaaataattaattaaacagaacttaaaatgtgatacttgctttccaaacgtttgctgacatatcctcttttgtcaagcgctttgttcgctcgagaagtcgtagaaatttcagctcattttcagaaatatacgccatttcattgatgttttgacaaaattagataaaaaaataaaaataaacgttgacaacttgaaaacaaataagttcggccacggccgagaaatacaaaaatgcaaatgcgctcatgcgcgaaaaaattttcaagtcatcctttttgtcgaggactgagagattcttcttgttttatgtaatttttctataggtttctgccgtttatattttaaaatcatatttgtctagattatctttatattttcagagaatggcccgtcgttacgatagtagaacgaccatcttctctccggagggaagactgtatcaagtcgaatatgctatggaggctatcagccatgctggaacttgcctcggcattctctcatcggaaggaatcgtcgttgctgctgagagaaagaacgttcacaagttgctggatgattctgtcatgactgaaaaggtctaccgtct"
+                "sequence": "MNEKEEEVSLNQIKLKPRISLFNGCTIIIGVIIGSGIFVSPKGVLLEAGSAGMSLLIWLLSGVFAMIGAVCYSELGTLIPKSGGDYAYIYEAFGPLPSFLFLWVALVIINPTSLAIIAITCATYALQPFYSCPVPDVVVNLFAGCIIAVLTFINCWDVRMATRTNDFFTITKLIALTLIITCGGYWLSLGHIDNLVMPDVAEGSQTKLSAIAMAFYSGVFSFSGFSYLNFVTEELKNPFRNLPRAIYISIPIVTIVYMLVNIAYFSVLTVDEILDSDAVAITFADKILGTFGSKILMPLFVSFSCVGSLNGILITCSRMFFSGARNSQLPELFAMISIRQLTPIPSLIFLGGTSIVMLFIGNVFQLINYLSFAESLVVFSSVAGLLKLRFTMPENVLNARPIKISLLWPILFFLMCLFLLILPFFHSDPWELIYGVFLVLSGIPIYVLFVYNKYRPGFIQSVWIGFTHFIQKLFYCVPELSSS"
+            },
+            "desciprion": "The sequence of the protein"
+        },
+        "predicted_exon_structure": {
+            "data": [
+                {
+                    "len": 281,
+                    "no": 1,
+                    "end": 281,
+                    "start": 1
                 },
-                "strand": "+",
-                "positive_strand": {
-                    "sequence": "agacggtagaccttttcagtcatgacagaatcatccagcaacttgtgaacgttctttctctcagcagcaacgacgattccttccgatgagagaatgccgaggcaagttccagcatggctgatagcctccatagcatattcgacttgatacagtcttccctccggagagaagatggtcgttctactatcgtaacgacgggccattctctgaaaatataaagataatctagacaaatatgattttaaaatataaacggcagaaacctatagaaaaattacataaaacaagaagaatctctcagtcctcgacaaaaaggatgacttgaaaattttttcgcgcatgagcgcatttgcatttttgtatttctcggccgtggccgaacttatttgttttcaagttgtcaacgtttatttttatttttttatctaattttgtcaaaacatcaatgaaatggcgtatatttctgaaaatgagctgaaatttctacgacttctcgagcgaacaaagcgcttgacaaaagaggatatgtcagcaaacgtttggaaagcaagtatcacattttaagttctgtttaattaattatttttcttatttcaggtttctgcagctacaaagattctcaataaaatgatttatacacttcaaaacgatgagtgagtttttcaaaatacattttttaatatttatagttttacttttccagaaccacaaatgatattctccacgagtaccgacaggaagtcttgcaactgaaattactcgctgaagctgaaagcaaggtttgtagatattttagacaagcaaattcgatcttgtaattttgctttaaagatacaaatttttacataatttctaaacttaatttgaatttgtttgatttgtttcaattaaaaatttaatcctaaaatattatgcaaatgttccgtagattttatgtccctcttttcaatttagatttaagtaaagaaaacaagttgaacagctttaaatattttgtgaatttcgcaactgttatgaaattgtcagtaagttttccagtcgtcagccgaggagcgcctgaaagtgattgaaaaaattccacgtgtatttcccgatgtccaagtaactgttgcagactccaagaatggtttttgaattattcaatatttcattttaatgtttatattgcagataacgaggcggaaagttacgattttgaaaaagaatccgcagctggactccgagctactcaacgatccatctatcgatcagatcttcggaagcagttgctttcatctaataaacatagagcacaagacacatctggtaaaaattagtatccaatgattgttcaaaattcgtcaaattttatagaagatcaggaattcatgaaaaatgagcttgtcgaggaggagctagcaaatagtttggccactatggcgagatcattcaaaacgatgatgtcggctgctggagatgtgattaaagaagatacagaaagagcaatattaatggcgaaagaagtcgatgataataaaacagctctcggggtaatttcttcactatataaacttcaaataatagtcttaaaatttccagattcaaagtgagcgagttgagcgtcacgcctacaaatgtggttatgactgtttcaaggtcatgctcattgttctgatttttatgagcttcgtatcaatggttcttatgatgaaaattttcaaaaaagcgagcacttaatagtcgggacgaattgctagtatttatgggtgtaaatatttcaaataaaattatttaattatttgcattcttcgaattttttttctcgttgatatttccattggtctacagaccatgttatacatactttttttgttggttttttttggtgttttcacaaatttcaatgctttgctttttggtctcggcttggtcttgtgccagatttagtctacttcggcaaaaacaccacagattcttctcctccgttaattatatatatatatatatatataaggattcagaATGAGCACAACACCTGGAACTCCTCATGGAGTCACTCATAGTCTTATGGAACAAGGATGGTACTGGGCTGATGCTGATAGATCTGCAGTTTCGAAAGCACTTTCTGATCAACCTGATGGATCATTTATTGTGAGAAATGCTAGTACACCTGGAGATTATACACTTTCTGTGAAgtgggtttttcaaaattagtattcaatattaatagtccttttttcagATTTGCCGCCCAAGTGAAACTTCTCCGAATCGTTGTTAAAGATGGAAAATGCGGATTCAATACAGATTCATTAACTCACGATTCTGTTGTCAGATTAATTGAATTTCATCGAAATATTTCTCTCAATATTTTCAATGATGCACTTGATGTTCGTCTTTTATATCCAGTTTCTGTTCGTCGTAACTCTCAAAATGGAAAACCATTTTTCAAGAAGGGGCAACTTCAGCAGCGTATGATTCTCAGTGCAAAAAATGATCATGgtaaattattttataacgcaaacgctaaatttaaaaatactgtaatttcaaactttaattgctgcggaatttctcttgtcgtttcaagacctcgtaccatatttttatcgcgaaagtggcaaaatttcgcgtctgagtgattgaaaaaaataaaaattagtaaatttaatgctttttttagATTGGAGAGAACGCTTGGAAATGGAAAATTTGAGAGCAGTACATTTGGCATTTGAGAGAGGAGCCAAGCTATATGATTCAGCTCATCAAGAAATGGAACGAGCTGAAAGTCTCTATCATGCTTTGAATCAATCAGTTCGGGACAATGAGATTAAACTTGGAAAACTGAATAATTTGTTAGAAGCTGAAACAGACGTCGTTACACAAATACAGGGATCGCAGACAACAAGTGAAATGCTCAAAGGAGCATTTGCAAATAATAAGACAgtaagcgttttttgaagaaaaaaaacatccaaaaccaaaaaaaaacaattctaaagcaaaaaaaagaagttcaatttaaaattgttatttagccaaaactcaatattttcaaagctggattattaatttttgctcaatttttttctcggttttttaaaaatgattttagagcaaatcctcaatttttaaccattatagttttgaattttatcttttttattttgcagTTTGTGGAAGAAAGTATTCGACGAATAAACACTGAACTGACGTCATCAAAGGATAAGAAAAAGACGCTCTCCGGAATTTTGGATGAAATCGCGATGAAAAGATCCAATTCAAAAACACGACTCTGCAAGCTTATGGAACTTCGTAGTGCAGTCTATGATAAAATGGAACCAGCACTTTGTTCGAGAATGGCTGCAATGCTTGATGCTGGAGCGGAAATGATAAACAGTGAGCCAACGAAAGTCACTCAACTTCTTGTCGATATGGAATTGAAGTGGACACCGGCACAATATTTGATGTGTGGAACTTCTAAGGAAAATGCTGCGAATGCTCTGATTCATGCTCGCTATCGGATCGCTCAACTTGACAAGGCTGTTGGATTGAAAAGAGAGCCACAAGATGGTATTTTCTTGATTCGAGGATCCTCTTCTCATgttagtttatgattttatcagaagaataacttttcatcctcattcacgctaatttttgaattgaattgaatatttttcagGGTGATAAGCTCGTATTGAGTGTACTTCACGGAGAACGTGTCTCACATTGTCTAATCGAACAAAACGAAGAAGGATGGGGATTCGAGCACAGCAATGTCTACCTGACAACTATAAGTGACTTCGTTCGCTATTACTCTCACTTCAGTCTTGAAACCCACGCGGATGCTATCAAAACTCCACTTCGTACGCCCGCATTTGACGCTGTCACAAGTGATACTTCAAAACCTCTTCGTAACGGACCCGGACAAGTTTTTACGGCTTTGCCAATATCCAGGAAATATATGGAGAAGGCTCTTCTCACTGATGATCCCACTAAGCCACCTGAATCACCGGAACCAAGACCGGATTCATGGGATTCTCCATCTCCGGATACTCCTTCATCATCTGATTCCCGATTGGTTCATCCAACTACTCTTCCTAAATCCATCCCGGAATAGttatatatttaaatcaattacttacatatactcggttcaattacatccacttgtcccccatccgatctgatagtaaacccacagttctctgatcactttcttctaagttacttacgttttatttgtgtcttaaatgtatttattatcagtatttatatgaattgtcaaattgtacatttattgatataaattcaaatccgtcggcggttcatccgcgtattaaatcgcacaacattctcctcctgtttaacagtaatatgacctttcgtttggtttttcatcacatgtaacagactgagaagaaacgagactgtcaccaaagcgcagacaacctgaaattgattttctttcgcgctccacggcaatttgaaaacgctccgcccccaaaccatgggtctcgttaggtatttggaggcgaatccgtacattcaaatgtttttattttcatttttgcttatttcgccaaagtggcggaattaagtcaaaaagtttgaatttacggttttgccgacaaatatctaacgagacccatggtttgggggcgggcgttgtcaattgccgtggagcgcgttttcacattttgcataacataccgttgccagccaccaggccgtattattccatcgaatcgaactgtacaacatggtcagtgtattgattgtgaacaaaaatgagaatgatgaaatgaagacgctttcctgtagaaaactcgaaaaaaataaataattcaatatattcttacccaaaaaacccattcatctggttcagtctcattaatattaaaaacatcgcacaacaaaaatacagatgatccgattattgcgaagacgcatgtcaaaagagcagcatatgttggagcaaactgtgagccaacaagtccaatgagcacaagggatacgaagcttccaaactagaattccatgctaattttaagtttttggtttcttgcacaaaacatatatatatatatattaaaaatacgttcattactaaactaaaactattcaacaacaacagataaaaagtacttgaaataactcacaatttgaaaaatctgtagagcagaggaatactttgcaaatttccagacctcaaatttaggttttggaaatgcagattttctgaaagttatggataaaaaacattaaaagaatcgaaactcaaatgttcacctcgatggatgcatggggaaagagtgtctagaaatgagagttgttgactcaataaaaactgataagaaattatgagtcaatattatattgatttaatagggagagcttattataggggggaggtagtttatgaatgttgaagaattatttgaataaaaaaattgaacagaaagagaacaattataaaaaaaacgtcgggtagaaagtgaaatgaaatgctggttcaaacgagaacatccagaaaaatcgacaaaactcaaaattgtgaacgtttgaattcacctcgacgagcatttgcttgataaaatccttgcgtgggacgtctttcagctttcggtggcaaccatttctgaatttcgtcgatcgactccatcttcacccagtgaagcttctgttccgcgttcacatcgaggataattacttggcctttactgtttacatggaatgaagacatatagggaagaggaaaatcactggagatacgatgcaggaaactgtagtcagtgtcgaacagctgaaacatttaaaaatattctaaatttaaattttttattttaaaccaaaaaaaatctaaaaattttccatatacttgaaaaactttttttgaaaattctaaccttgatcgaatgaccttttgcatctccaatgagaagatagccattttggtcgaattgcattccggagacgaatcggaatccagtttcattggcgagctgatctatcggcagatcaggtgactgaaaattgtgtcattgaaataatatattaataccaaaaaaaagtgcatattgtcttaagctacagtaataccacaccataccatctctctaatatttttcaaaaaccaaaaattcaatttttaactacagtatcccgaaataattacttcaaaagccaaacacgtttttccttgaatacgcatatagtcaagggtgttggtttttcgatatttcacaaaaattgaacattcttaaataaaattatatgttttctcaagttctttctcatcgatataaacaaaaattgaatttgttctaaactttctatcatttttttttcgattt",
-                    "features": [
-                        {
-                            "stop": 2000,
-                            "type": "padding",
-                            "start": 1
-                        },
-                        {
-                            "stop": 2001,
-                            "start": 2001,
-                            "type": "five_prime_UTR"
-                        },
-                        {
-                            "type": "exon",
-                            "start": 2001,
-                            "stop": 2174
-                        },
-                        {
-                            "stop": 2221,
-                            "type": "intron",
-                            "start": 2175
-                        },
-                        {
-                            "type": "exon",
-                            "start": 2222,
-                            "stop": 2481
-                        },
-                        {
-                            "start": 2482,
-                            "type": "intron",
-                            "stop": 2662
-                        },
-                        {
-                            "start": 2663,
-                            "type": "exon",
-                            "stop": 2928
-                        },
-                        {
-                            "type": "intron",
-                            "start": 2929,
-                            "stop": 3155
-                        },
-                        {
-                            "start": 3156,
-                            "type": "exon",
-                            "stop": 3587
-                        },
-                        {
-                            "stop": 3667,
-                            "type": "intron",
-                            "start": 3588
-                        },
-                        {
-                            "stop": 4341,
-                            "type": "exon",
-                            "start": 3668
-                        },
-                        {
-                            "start": 4106,
-                            "type": "three_prime_UTR",
-                            "stop": 4341
-                        },
-                        {
-                            "start": 4342,
-                            "type": "padding",
-                            "stop": 6341
-                        }
-                    ]
+                {
+                    "start": 328,
+                    "end": 773,
+                    "no": 2,
+                    "len": 446
+                },
+                {
+                    "start": 822,
+                    "end": 918,
+                    "no": 3,
+                    "len": 97
+                },
+                {
+                    "no": 4,
+                    "len": 914,
+                    "start": 1046,
+                    "end": 1959
                 }
-            }
+            ],
+            "description": "predicted exon structure within the transcript"
         },
         "spliced_sequence_context": {
             "description": "the spliced sequence of the sequence",
             "data": {
                 "negative_strand": {
-                    "sequence": "aatgttgtgcgatttaatacgcggatgaaccgccgacggatttgaatttatatcaataaatgtacaatttgacaattcatataaatactgataataaatacatttaagacacaaataaaacgtaagtaacttagaagaaagtgatcagagaactgtgggtttactatcagatcggatgggggacaagtggatgtaattgaaccgagtatatgtaagtaattgatttaaatatataaCTATTCCGGGATGGATTTAGGAAGAGTAGTTGGATGAACCAATCGGGAATCAGATGATGAAGGAGTATCCGGAGATGGAGAATCCCATGAATCCGGTCTTGGTTCCGGTGATTCAGGTGGCTTAGTGGGATCATCAGTGAGAAGAGCCTTCTCCATATATTTCCTGGATATTGGCAAAGCCGTAAAAACTTGTCCGGGTCCGTTACGAAGAGGTTTTGAAGTATCACTTGTGACAGCGTCAAATGCGGGCGTACGAAGTGGAGTTTTGATAGCATCCGCGTGGGTTTCAAGACTGAAGTGAGAGTAATAGCGAACGAAGTCACTTATAGTTGTCAGGTAGACATTGCTGTGCTCGAATCCCCATCCTTCTTCGTTTTGTTCGATTAGACAATGTGAGACACGTTCTCCGTGAAGTACACTCAATACGAGCTTATCACCATGAGAAGAGGATCCTCGAATCAAGAAAATACCATCTTGTGGCTCTCTTTTCAATCCAACAGCCTTGTCAAGTTGAGCGATCCGATAGCGAGCATGAATCAGAGCATTCGCAGCATTTTCCTTAGAAGTTCCACACATCAAATATTGTGCCGGTGTCCACTTCAATTCCATATCGACAAGAAGTTGAGTGACTTTCGTTGGCTCACTGTTTATCATTTCCGCTCCAGCATCAAGCATTGCAGCCATTCTCGAACAAAGTGCTGGTTCCATTTTATCATAGACTGCACTACGAAGTTCCATAAGCTTGCAGAGTCGTGTTTTTGAATTGGATCTTTTCATCGCGATTTCATCCAAAATTCCGGAGAGCGTCTTTTTCTTATCCTTTGATGACGTCAGTTCAGTGTTTATTCGTCGAATACTTTCTTCCACAAATGTCTTATTATTTGCAAATGCTCCTTTGAGCATTTCACTTGTTGTCTGCGATCCCTGTATTTGTGTAACGACGTCTGTTTCAGCTTCTAACAAATTATTCAGTTTTCCAAGTTTAATCTCATTGTCCCGAACTGATTGATTCAAAGCATGATAGAGACTTTCAGCTCGTTCCATTTCTTGATGAGCTGAATCATATAGCTTGGCTCCTCTCTCAAATGCCAAATGTACTGCTCTCAAATTTTCCATTTCCAAGCGTTCTCTCCAATCATGATCATTTTTTGCACTGAGAATCATACGCTGCTGAAGTTGCCCCTTCTTGAAAAATGGTTTTCCATTTTGAGAGTTACGACGAACAGAAACTGGATATAAAAGACGAACATCAAGTGCATCATTGAAAATATTGAGAGAAATATTTCGATGAAATTCAATTAATCTGACAACAGAATCGTGAGTTAATGAATCTGTATTGAATCCGCATTTTCCATCTTTAACAACGATTCGGAGAAGTTTCACTTGGGCGGCAAATTTCACAGAAAGTGTATAATCTCCAGGTGTACTAGCATTTCTCACAATAAATGATCCATCAGGTTGATCAGAAAGTGCTTTCGAAACTGCAGATCTATCAGCATCAGCCCAGTACCATCCTTGTTCCATAAGACTATGAGTGACTCCATGAGGAGTTCCAGGTGTTGTGCTCATt",
                     "features": [
                         {
-                            "type": "three_prime_UTR",
+                            "stop": 8,
                             "start": 1,
-                            "stop": 236
-                        },
-                        {
-                            "stop": 674,
-                            "start": 1,
-                            "type": "exon"
-                        },
-                        {
-                            "stop": 1106,
-                            "type": "exon",
-                            "start": 675
-                        },
-                        {
-                            "stop": 1372,
-                            "type": "exon",
-                            "start": 1107
-                        },
-                        {
-                            "stop": 1632,
-                            "start": 1373,
-                            "type": "exon"
-                        },
-                        {
-                            "type": "five_prime_UTR",
-                            "start": 1806,
-                            "stop": 1806
-                        },
-                        {
-                            "type": "exon",
-                            "start": 1633,
-                            "stop": 1806
-                        }
-                    ]
-                },
-                "positive_strand": {
-                    "sequence": "aATGAGCACAACACCTGGAACTCCTCATGGAGTCACTCATAGTCTTATGGAACAAGGATGGTACTGGGCTGATGCTGATAGATCTGCAGTTTCGAAAGCACTTTCTGATCAACCTGATGGATCATTTATTGTGAGAAATGCTAGTACACCTGGAGATTATACACTTTCTGTGAAATTTGCCGCCCAAGTGAAACTTCTCCGAATCGTTGTTAAAGATGGAAAATGCGGATTCAATACAGATTCATTAACTCACGATTCTGTTGTCAGATTAATTGAATTTCATCGAAATATTTCTCTCAATATTTTCAATGATGCACTTGATGTTCGTCTTTTATATCCAGTTTCTGTTCGTCGTAACTCTCAAAATGGAAAACCATTTTTCAAGAAGGGGCAACTTCAGCAGCGTATGATTCTCAGTGCAAAAAATGATCATGATTGGAGAGAACGCTTGGAAATGGAAAATTTGAGAGCAGTACATTTGGCATTTGAGAGAGGAGCCAAGCTATATGATTCAGCTCATCAAGAAATGGAACGAGCTGAAAGTCTCTATCATGCTTTGAATCAATCAGTTCGGGACAATGAGATTAAACTTGGAAAACTGAATAATTTGTTAGAAGCTGAAACAGACGTCGTTACACAAATACAGGGATCGCAGACAACAAGTGAAATGCTCAAAGGAGCATTTGCAAATAATAAGACATTTGTGGAAGAAAGTATTCGACGAATAAACACTGAACTGACGTCATCAAAGGATAAGAAAAAGACGCTCTCCGGAATTTTGGATGAAATCGCGATGAAAAGATCCAATTCAAAAACACGACTCTGCAAGCTTATGGAACTTCGTAGTGCAGTCTATGATAAAATGGAACCAGCACTTTGTTCGAGAATGGCTGCAATGCTTGATGCTGGAGCGGAAATGATAAACAGTGAGCCAACGAAAGTCACTCAACTTCTTGTCGATATGGAATTGAAGTGGACACCGGCACAATATTTGATGTGTGGAACTTCTAAGGAAAATGCTGCGAATGCTCTGATTCATGCTCGCTATCGGATCGCTCAACTTGACAAGGCTGTTGGATTGAAAAGAGAGCCACAAGATGGTATTTTCTTGATTCGAGGATCCTCTTCTCATGGTGATAAGCTCGTATTGAGTGTACTTCACGGAGAACGTGTCTCACATTGTCTAATCGAACAAAACGAAGAAGGATGGGGATTCGAGCACAGCAATGTCTACCTGACAACTATAAGTGACTTCGTTCGCTATTACTCTCACTTCAGTCTTGAAACCCACGCGGATGCTATCAAAACTCCACTTCGTACGCCCGCATTTGACGCTGTCACAAGTGATACTTCAAAACCTCTTCGTAACGGACCCGGACAAGTTTTTACGGCTTTGCCAATATCCAGGAAATATATGGAGAAGGCTCTTCTCACTGATGATCCCACTAAGCCACCTGAATCACCGGAACCAAGACCGGATTCATGGGATTCTCCATCTCCGGATACTCCTTCATCATCTGATTCCCGATTGGTTCATCCAACTACTCTTCCTAAATCCATCCCGGAATAGttatatatttaaatcaattacttacatatactcggttcaattacatccacttgtcccccatccgatctgatagtaaacccacagttctctgatcactttcttctaagttacttacgttttatttgtgtcttaaatgtatttattatcagtatttatatgaattgtcaaattgtacatttattgatataaattcaaatccgtcggcggttcatccgcgtattaaatcgcacaacatt",
-                    "features": [
-                        {
-                            "stop": 174,
-                            "start": 1,
-                            "type": "exon"
-                        },
-                        {
-                            "stop": 1,
-                            "type": "five_prime_UTR",
-                            "start": 1
-                        },
-                        {
-                            "type": "exon",
-                            "start": 175,
-                            "stop": 434
-                        },
-                        {
-                            "stop": 700,
-                            "type": "exon",
-                            "start": 435
-                        },
-                        {
-                            "start": 701,
-                            "type": "exon",
-                            "stop": 1132
-                        },
-                        {
-                            "type": "exon",
-                            "start": 1133,
-                            "stop": 1806
-                        },
-                        {
-                            "stop": 1806,
-                            "type": "three_prime_UTR",
-                            "start": 1571
-                        }
-                    ]
-                },
-                "strand": "+"
-            }
-        },
-        "time_cached": 1727172379,
-        "name": {
-            "data": {
-                "id": "Y110A7A.10.1",
-                "label": "Y110A7A.10.1",
-                "taxonomy": "c_elegans",
-                "class": "transcript"
-            },
-            "description": "The name and WormBase internal ID of Y110A7A.10.1"
-        },
-        "predicted_units": {
-            "description": "features contained within the transcript",
-            "data": null
-        },
-        "unspliced_sequence_context": {
-            "data": {
-                "strand": "+",
-                "negative_strand": {
-                    "sequence": "aatgttgtgcgatttaatacgcggatgaaccgccgacggatttgaatttatatcaataaatgtacaatttgacaattcatataaatactgataataaatacatttaagacacaaataaaacgtaagtaacttagaagaaagtgatcagagaactgtgggtttactatcagatcggatgggggacaagtggatgtaattgaaccgagtatatgtaagtaattgatttaaatatataaCTATTCCGGGATGGATTTAGGAAGAGTAGTTGGATGAACCAATCGGGAATCAGATGATGAAGGAGTATCCGGAGATGGAGAATCCCATGAATCCGGTCTTGGTTCCGGTGATTCAGGTGGCTTAGTGGGATCATCAGTGAGAAGAGCCTTCTCCATATATTTCCTGGATATTGGCAAAGCCGTAAAAACTTGTCCGGGTCCGTTACGAAGAGGTTTTGAAGTATCACTTGTGACAGCGTCAAATGCGGGCGTACGAAGTGGAGTTTTGATAGCATCCGCGTGGGTTTCAAGACTGAAGTGAGAGTAATAGCGAACGAAGTCACTTATAGTTGTCAGGTAGACATTGCTGTGCTCGAATCCCCATCCTTCTTCGTTTTGTTCGATTAGACAATGTGAGACACGTTCTCCGTGAAGTACACTCAATACGAGCTTATCACCctgaaaaatattcaattcaattcaaaaattagcgtgaatgaggatgaaaagttattcttctgataaaatcataaactaacATGAGAAGAGGATCCTCGAATCAAGAAAATACCATCTTGTGGCTCTCTTTTCAATCCAACAGCCTTGTCAAGTTGAGCGATCCGATAGCGAGCATGAATCAGAGCATTCGCAGCATTTTCCTTAGAAGTTCCACACATCAAATATTGTGCCGGTGTCCACTTCAATTCCATATCGACAAGAAGTTGAGTGACTTTCGTTGGCTCACTGTTTATCATTTCCGCTCCAGCATCAAGCATTGCAGCCATTCTCGAACAAAGTGCTGGTTCCATTTTATCATAGACTGCACTACGAAGTTCCATAAGCTTGCAGAGTCGTGTTTTTGAATTGGATCTTTTCATCGCGATTTCATCCAAAATTCCGGAGAGCGTCTTTTTCTTATCCTTTGATGACGTCAGTTCAGTGTTTATTCGTCGAATACTTTCTTCCACAAActgcaaaataaaaaagataaaattcaaaactataatggttaaaaattgaggatttgctctaaaatcatttttaaaaaaccgagaaaaaaattgagcaaaaattaataatccagctttgaaaatattgagttttggctaaataacaattttaaattgaacttcttttttttgctttagaattgtttttttttggttttggatgttttttttcttcaaaaaacgcttacTGTCTTATTATTTGCAAATGCTCCTTTGAGCATTTCACTTGTTGTCTGCGATCCCTGTATTTGTGTAACGACGTCTGTTTCAGCTTCTAACAAATTATTCAGTTTTCCAAGTTTAATCTCATTGTCCCGAACTGATTGATTCAAAGCATGATAGAGACTTTCAGCTCGTTCCATTTCTTGATGAGCTGAATCATATAGCTTGGCTCCTCTCTCAAATGCCAAATGTACTGCTCTCAAATTTTCCATTTCCAAGCGTTCTCTCCAATctaaaaaaagcattaaatttactaatttttatttttttcaatcactcagacgcgaaattttgccactttcgcgataaaaatatggtacgaggtcttgaaacgacaagagaaattccgcagcaattaaagtttgaaattacagtatttttaaatttagcgtttgcgttataaaataatttacCATGATCATTTTTTGCACTGAGAATCATACGCTGCTGAAGTTGCCCCTTCTTGAAAAATGGTTTTCCATTTTGAGAGTTACGACGAACAGAAACTGGATATAAAAGACGAACATCAAGTGCATCATTGAAAATATTGAGAGAAATATTTCGATGAAATTCAATTAATCTGACAACAGAATCGTGAGTTAATGAATCTGTATTGAATCCGCATTTTCCATCTTTAACAACGATTCGGAGAAGTTTCACTTGGGCGGCAAATctgaaaaaaggactattaatattgaatactaattttgaaaaacccacTTCACAGAAAGTGTATAATCTCCAGGTGTACTAGCATTTCTCACAATAAATGATCCATCAGGTTGATCAGAAAGTGCTTTCGAAACTGCAGATCTATCAGCATCAGCCCAGTACCATCCTTGTTCCATAAGACTATGAGTGACTCCATGAGGAGTTCCAGGTGTTGTGCTCATt",
-                    "features": [
-                        {
-                            "start": 1,
-                            "type": "three_prime_UTR",
-                            "stop": 236
-                        },
-                        {
-                            "stop": 674,
-                            "type": "exon",
-                            "start": 1
-                        },
-                        {
-                            "stop": 754,
-                            "start": 675,
-                            "type": "intron"
-                        },
-                        {
-                            "start": 755,
-                            "type": "exon",
-                            "stop": 1186
-                        },
-                        {
-                            "stop": 1413,
-                            "start": 1187,
-                            "type": "intron"
-                        },
-                        {
-                            "stop": 1679,
-                            "type": "exon",
-                            "start": 1414
-                        },
-                        {
-                            "stop": 1860,
-                            "type": "intron",
-                            "start": 1680
-                        },
-                        {
-                            "start": 1861,
-                            "type": "exon",
-                            "stop": 2120
-                        },
-                        {
-                            "type": "intron",
-                            "start": 2121,
-                            "stop": 2167
-                        },
-                        {
-                            "stop": 2341,
-                            "type": "exon",
-                            "start": 2168
-                        },
-                        {
-                            "stop": 2341,
-                            "start": 2341,
                             "type": "five_prime_UTR"
-                        }
-                    ]
-                },
-                "positive_strand": {
-                    "features": [
+                        },
                         {
-                            "type": "five_prime_UTR",
                             "start": 1,
-                            "stop": 1
-                        },
-                        {
-                            "stop": 174,
                             "type": "exon",
-                            "start": 1
+                            "stop": 281
                         },
                         {
-                            "type": "intron",
-                            "start": 175,
-                            "stop": 221
-                        },
-                        {
-                            "start": 222,
                             "type": "exon",
-                            "stop": 481
+                            "start": 282,
+                            "stop": 727
                         },
                         {
-                            "start": 482,
-                            "type": "intron",
-                            "stop": 662
-                        },
-                        {
-                            "stop": 928,
-                            "start": 663,
-                            "type": "exon"
-                        },
-                        {
-                            "stop": 1155,
-                            "start": 929,
-                            "type": "intron"
-                        },
-                        {
-                            "stop": 1587,
                             "type": "exon",
-                            "start": 1156
+                            "start": 728,
+                            "stop": 824
                         },
                         {
-                            "stop": 1667,
-                            "type": "intron",
-                            "start": 1588
+                            "stop": 1738,
+                            "type": "three_prime_UTR",
+                            "start": 1461
                         },
                         {
-                            "start": 1668,
+                            "start": 825,
                             "type": "exon",
-                            "stop": 2341
-                        },
-                        {
-                            "stop": 2341,
-                            "start": 2106,
-                            "type": "three_prime_UTR"
+                            "stop": 1738
                         }
                     ],
-                    "sequence": "aATGAGCACAACACCTGGAACTCCTCATGGAGTCACTCATAGTCTTATGGAACAAGGATGGTACTGGGCTGATGCTGATAGATCTGCAGTTTCGAAAGCACTTTCTGATCAACCTGATGGATCATTTATTGTGAGAAATGCTAGTACACCTGGAGATTATACACTTTCTGTGAAgtgggtttttcaaaattagtattcaatattaatagtccttttttcagATTTGCCGCCCAAGTGAAACTTCTCCGAATCGTTGTTAAAGATGGAAAATGCGGATTCAATACAGATTCATTAACTCACGATTCTGTTGTCAGATTAATTGAATTTCATCGAAATATTTCTCTCAATATTTTCAATGATGCACTTGATGTTCGTCTTTTATATCCAGTTTCTGTTCGTCGTAACTCTCAAAATGGAAAACCATTTTTCAAGAAGGGGCAACTTCAGCAGCGTATGATTCTCAGTGCAAAAAATGATCATGgtaaattattttataacgcaaacgctaaatttaaaaatactgtaatttcaaactttaattgctgcggaatttctcttgtcgtttcaagacctcgtaccatatttttatcgcgaaagtggcaaaatttcgcgtctgagtgattgaaaaaaataaaaattagtaaatttaatgctttttttagATTGGAGAGAACGCTTGGAAATGGAAAATTTGAGAGCAGTACATTTGGCATTTGAGAGAGGAGCCAAGCTATATGATTCAGCTCATCAAGAAATGGAACGAGCTGAAAGTCTCTATCATGCTTTGAATCAATCAGTTCGGGACAATGAGATTAAACTTGGAAAACTGAATAATTTGTTAGAAGCTGAAACAGACGTCGTTACACAAATACAGGGATCGCAGACAACAAGTGAAATGCTCAAAGGAGCATTTGCAAATAATAAGACAgtaagcgttttttgaagaaaaaaaacatccaaaaccaaaaaaaaacaattctaaagcaaaaaaaagaagttcaatttaaaattgttatttagccaaaactcaatattttcaaagctggattattaatttttgctcaatttttttctcggttttttaaaaatgattttagagcaaatcctcaatttttaaccattatagttttgaattttatcttttttattttgcagTTTGTGGAAGAAAGTATTCGACGAATAAACACTGAACTGACGTCATCAAAGGATAAGAAAAAGACGCTCTCCGGAATTTTGGATGAAATCGCGATGAAAAGATCCAATTCAAAAACACGACTCTGCAAGCTTATGGAACTTCGTAGTGCAGTCTATGATAAAATGGAACCAGCACTTTGTTCGAGAATGGCTGCAATGCTTGATGCTGGAGCGGAAATGATAAACAGTGAGCCAACGAAAGTCACTCAACTTCTTGTCGATATGGAATTGAAGTGGACACCGGCACAATATTTGATGTGTGGAACTTCTAAGGAAAATGCTGCGAATGCTCTGATTCATGCTCGCTATCGGATCGCTCAACTTGACAAGGCTGTTGGATTGAAAAGAGAGCCACAAGATGGTATTTTCTTGATTCGAGGATCCTCTTCTCATgttagtttatgattttatcagaagaataacttttcatcctcattcacgctaatttttgaattgaattgaatatttttcagGGTGATAAGCTCGTATTGAGTGTACTTCACGGAGAACGTGTCTCACATTGTCTAATCGAACAAAACGAAGAAGGATGGGGATTCGAGCACAGCAATGTCTACCTGACAACTATAAGTGACTTCGTTCGCTATTACTCTCACTTCAGTCTTGAAACCCACGCGGATGCTATCAAAACTCCACTTCGTACGCCCGCATTTGACGCTGTCACAAGTGATACTTCAAAACCTCTTCGTAACGGACCCGGACAAGTTTTTACGGCTTTGCCAATATCCAGGAAATATATGGAGAAGGCTCTTCTCACTGATGATCCCACTAAGCCACCTGAATCACCGGAACCAAGACCGGATTCATGGGATTCTCCATCTCCGGATACTCCTTCATCATCTGATTCCCGATTGGTTCATCCAACTACTCTTCCTAAATCCATCCCGGAATAGttatatatttaaatcaattacttacatatactcggttcaattacatccacttgtcccccatccgatctgatagtaaacccacagttctctgatcactttcttctaagttacttacgttttatttgtgtcttaaatgtatttattatcagtatttatatgaattgtcaaattgtacatttattgatataaattcaaatccgtcggcggttcatccgcgtattaaatcgcacaacatt"
-                }
+                    "sequence": "acgcaaaaATGAACGAAAAAGAAGAAGAAGTATCGCTGAATCAGATCAAGCTCAAGCCACGTATTTCACTTTTCAATGGCTGCACAATCATTATCGGAGTTATTATTGGATCAGGAATCTTTGTGTCACCAAAAGGAGTCCTCCTTGAAGCCGGCAGTGCTGGAATGTCTCTGCTCATTTGGCTCCTCAGTGGAGTATTTGCCATGATTGGAGCTGTATGTTATTCAGAGCTCGGGACACTAATCCCCAAGTCTGGAGGAGATTACGCGTATATTTATGAGGCGTTTGGTCCTCTTCCGTCATTTCTTTTTCTTTGGGTAGCTCTTGTCATTATCAATCCAACATCTTTGGCGATTATTGCCATAACATGTGCAACTTACGCTCTTCAACCATTCTACTCATGTCCTGTACCGGACGTTGTTGTCAATCTTTTCGCCGGATGCATAATTGCTGTTCTCACATTCATCAACTGTTGGGATGTTCGAATGGCAACAAGAACTAACGATTTCTTCACAATCACCAAATTAATTGCTCTCACTCTCATTATTACTTGTGGAGGATATTGGCTCTCATTGGGGCATATTGATAATCTTGTGATGCCCGATGTAGCAGAAGGAAGTCAAACAAAATTATCAGCTATTGCAATGGCGTTCTATTCTGGAGTTTTCTCATTTTCGGGGTTCTCTTATCTGAATTTTGTTACCGAAGAACTAAAAAACCCGTTCAGGAACCTTCCACGCGCAATCTACATTTCCATTCCTATTGTTACAATTGTCTATATGCTCGTCAATATTGCATATTTTTCAGTATTAACCGTTGATGAGATTCTCGATTCCGATGCAGTGGCCATCACATTTGCCGACAAAATTCTCGGAACCTTCGGAAGCAAGATACTCATGCCATTGTTTGTTTCCTTTTCCTGCGTAGGTTCCCTTAATGGAATTCTCATCACATGCTCCAGAATGTTCTTTTCTGGAGCTCGAAACAGTCAACTACCTGAACTGTTTGCAATGATCTCAATCAGACAACTTACTCCGATTCCATCATTAATTTTCCTTGGTGGAACTTCAATCGTCATGCTCTTCATTGGTAACGTGTTCCAGCTTATTAACTATCTGTCATTTGCTGAATCACTCGTTGTTTTCTCTTCTGTCGCTGGGCTTTTGAAATTGAGATTCACAATGCCTGAAAATGTGCTAAACGCCCGTCCAATCAAAATCAGTCTCCTGTGGCCAATACTGTTTTTCCTTATGTGCCTCTTTCTTTTGATCCTTCCATTCTTCCACAGTGATCCATGGGAACTCATTTACGGAGTTTTCTTGGTACTTTCAGGAATTCCCATCTACGTTCTCTTCGTCTACAATAAATACCGTCCAGGATTCATTCAATCTGTGTGGATAGGCTTCACACATTTCATTCAAAAATTGTTCTATTGTGTCCCAGAACTCTCCAGTTCCTGAaaattctgttttattgtcatatccaaacccgtgactctttccgttgttcttttttatttccacagtgtgcattttttgtttttttgtttggttttttttgctcccagatctttctgcgcttccgttatcaagcggacatatctcaaattgacacagcatttttttgctattttatccgctccatatctaaaatatatctttatgtcatcattgaaagttttggtttttagcacctaataacttattttctcgaatagaaataaaacgttctcaatttt"
+                },
+                "positive_strand": {
+                    "features": [
+                        {
+                            "type": "exon",
+                            "start": 1,
+                            "stop": 914
+                        },
+                        {
+                            "start": 1,
+                            "type": "three_prime_UTR",
+                            "stop": 278
+                        },
+                        {
+                            "type": "exon",
+                            "start": 915,
+                            "stop": 1011
+                        },
+                        {
+                            "type": "exon",
+                            "start": 1012,
+                            "stop": 1457
+                        },
+                        {
+                            "stop": 1738,
+                            "type": "exon",
+                            "start": 1458
+                        },
+                        {
+                            "type": "five_prime_UTR",
+                            "start": 1731,
+                            "stop": 1738
+                        }
+                    ],
+                    "sequence": "aaaattgagaacgttttatttctattcgagaaaataagttattaggtgctaaaaaccaaaactttcaatgatgacataaagatatattttagatatggagcggataaaatagcaaaaaaatgctgtgtcaatttgagatatgtccgcttgataacggaagcgcagaaagatctgggagcaaaaaaaaccaaacaaaaaaacaaaaaatgcacactgtggaaataaaaaagaacaacggaaagagtcacgggtttggatatgacaataaaacagaatttTCAGGAACTGGAGAGTTCTGGGACACAATAGAACAATTTTTGAATGAAATGTGTGAAGCCTATCCACACAGATTGAATGAATCCTGGACGGTATTTATTGTAGACGAAGAGAACGTAGATGGGAATTCCTGAAAGTACCAAGAAAACTCCGTAAATGAGTTCCCATGGATCACTGTGGAAGAATGGAAGGATCAAAAGAAAGAGGCACATAAGGAAAAACAGTATTGGCCACAGGAGACTGATTTTGATTGGACGGGCGTTTAGCACATTTTCAGGCATTGTGAATCTCAATTTCAAAAGCCCAGCGACAGAAGAGAAAACAACGAGTGATTCAGCAAATGACAGATAGTTAATAAGCTGGAACACGTTACCAATGAAGAGCATGACGATTGAAGTTCCACCAAGGAAAATTAATGATGGAATCGGAGTAAGTTGTCTGATTGAGATCATTGCAAACAGTTCAGGTAGTTGACTGTTTCGAGCTCCAGAAAAGAACATTCTGGAGCATGTGATGAGAATTCCATTAAGGGAACCTACGCAGGAAAAGGAAACAAACAATGGCATGAGTATCTTGCTTCCGAAGGTTCCGAGAATTTTGTCGGCAAATGTGATGGCCACTGCATCGGAATCGAGAATCTCATCAACGGTTAATACTGAAAAATATGCAATATTGACGAGCATATAGACAATTGTAACAATAGGAATGGAAATGTAGATTGCGCGTGGAAGGTTCCTGAACGGGTTTTTTAGTTCTTCGGTAACAAAATTCAGATAAGAGAACCCCGAAAATGAGAAAACTCCAGAATAGAACGCCATTGCAATAGCTGATAATTTTGTTTGACTTCCTTCTGCTACATCGGGCATCACAAGATTATCAATATGCCCCAATGAGAGCCAATATCCTCCACAAGTAATAATGAGAGTGAGAGCAATTAATTTGGTGATTGTGAAGAAATCGTTAGTTCTTGTTGCCATTCGAACATCCCAACAGTTGATGAATGTGAGAACAGCAATTATGCATCCGGCGAAAAGATTGACAACAACGTCCGGTACAGGACATGAGTAGAATGGTTGAAGAGCGTAAGTTGCACATGTTATGGCAATAATCGCCAAAGATGTTGGATTGATAATGACAAGAGCTACCCAAAGAAAAAGAAATGACGGAAGAGGACCAAACGCCTCATAAATATACGCGTAATCTCCTCCAGACTTGGGGATTAGTGTCCCGAGCTCTGAATAACATACAGCTCCAATCATGGCAAATACTCCACTGAGGAGCCAAATGAGCAGAGACATTCCAGCACTGCCGGCTTCAAGGAGGACTCCTTTTGGTGACACAAAGATTCCTGATCCAATAATAACTCCGATAATGATTGTGCAGCCATTGAAAAGTGAAATACGTGGCTTGAGCTTGATCTGATTCAGCGATACTTCTTCTTCTTTTTCGTTCATttttgcgt"
+                },
+                "strand": "-"
+            }
+        },
+        "unspliced_sequence_context_with_padding": {
+            "data": {
+                "positive_strand": {
+                    "features": [
+                        {
+                            "stop": 2000,
+                            "type": "padding",
+                            "start": 1
+                        },
+                        {
+                            "stop": 2278,
+                            "type": "three_prime_UTR",
+                            "start": 2001
+                        },
+                        {
+                            "stop": 2914,
+                            "type": "exon",
+                            "start": 2001
+                        },
+                        {
+                            "type": "intron",
+                            "start": 2915,
+                            "stop": 3041
+                        },
+                        {
+                            "start": 3042,
+                            "type": "exon",
+                            "stop": 3138
+                        },
+                        {
+                            "stop": 3186,
+                            "start": 3139,
+                            "type": "intron"
+                        },
+                        {
+                            "start": 3187,
+                            "type": "exon",
+                            "stop": 3632
+                        },
+                        {
+                            "stop": 3678,
+                            "type": "intron",
+                            "start": 3633
+                        },
+                        {
+                            "type": "exon",
+                            "start": 3679,
+                            "stop": 3959
+                        },
+                        {
+                            "stop": 3959,
+                            "start": 3952,
+                            "type": "five_prime_UTR"
+                        },
+                        {
+                            "stop": 5959,
+                            "start": 3960,
+                            "type": "padding"
+                        }
+                    ],
+                    "sequence": "attagaattacaacatgccacgtgaaagttttagataagaaaatctgatccacgagtttctggatattttgaaatcattgaaagacggtgtttcccgattggatagtataaaatatctctagaacaacaacataaaagtcggagaaacaatttcagcagttgtcttgagggttagagaattaaaaaaaatttgtttttgaaaattaacttctcaaagttttttattatttaaatgtttaatttaagcaattcaacttaccaatgcatacagtaaccgggctaacattgagggagcatgccgttttgatatttacaacgttttttcttggctttgtgtctcgacttgtctccaaataagcttgaacgtctccttttgacgtaagcagcaagattagaagaaacgaatcatcactgaacaccgaatagtcaataattgaatcatcggcagagagctcgtcgagttccaaactgcacacgtaaggattttccatcatctttcggcgggctggaaaattatcaaattgaattgtttatttgaaacatccaatgaatctagagcaatttaaagttgttcacgtttaaaaaaaaaatattttcacaaaccttttttgccactttgtcggtggacacttcctttttgtgaacgcgctccagctttggtattgttcagaagtggaagcaataatgattctgaagaagttgacgtatcagaacttgaatttgccgatgttttacgagaatttgtacttcgtttgaagaacatattagcgaattttgtgtgtgtatccagttggccgtgcggctcttactgatagtgtctgacatagaccgagattctgggatccctccccctagagtgattggggtgccaaacacatgcttcacagcaataaattaccctttcagttgagtgtatgagggtgagattttcaaaaaaatactagcagggttatgtttcagtgattgacaagacatttggaagagataaatgacgaggtataccctgagcaaaagaacaaatggcactagttaaaatgtctggtgtacttttgaactgacttctttgaaacaaattttggaaaactatttagaaaggaaaattaaataaatattttgcggtgaaaaaattcgacttattgtcttgtcttatcaatcatatgactagggtatcagcttgatagggagttttttgatgtgtaaaagcgcaaagaaatggtaatagataaaacaatataaaagttacaaagccattctattttaaaattaaatttattcgtgaagagaagtaaaatgaaaaattcccctttcacccttgtttctgtctgtatcttttcactctcccttttgtccactctgtctcactcctccacaggaaatgggcatagaagactgctgacgcgtttttcgtggacataggaaacatttcgcgctaaaaatgtttcccgcattgttcgatacttcttatagtaagtcaaataattttaaatggtataacaattgtagatattaccctaatgcgaagatttatggagaaagaatacggtaaccggtctcgaaacgaatgaaaatgttacataagaaaaaaggaaaagaagtgtgtaccgttgaggagtacattaattttgctctttttaagcagttaattttctgaaactaaaaaaattatactggaaaaccttcttaaaattatgcatcttagagacatccacaaaggaaaaaagttttgattattttttttcaaaattcgaatatcaattaaattttcaaaatgaatgaagcaaaaaaacttaaaattgaagcggaacttggcaactgtccacatgaggagacagtgcattgtctacatcatttttccttgtctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctctgggtaaataattaaaacgttttgcatgttttttgctttataattaacaattttaaaattgagaacgttttatttctattcgagaaaataagttattaggtgctaaaaaccaaaactttcaatgatgacataaagatatattttagatatggagcggataaaatagcaaaaaaatgctgtgtcaatttgagatatgtccgcttgataacggaagcgcagaaagatctgggagcaaaaaaaaccaaacaaaaaaacaaaaaatgcacactgtggaaataaaaaagaacaacggaaagagtcacgggtttggatatgacaataaaacagaatttTCAGGAACTGGAGAGTTCTGGGACACAATAGAACAATTTTTGAATGAAATGTGTGAAGCCTATCCACACAGATTGAATGAATCCTGGACGGTATTTATTGTAGACGAAGAGAACGTAGATGGGAATTCCTGAAAGTACCAAGAAAACTCCGTAAATGAGTTCCCATGGATCACTGTGGAAGAATGGAAGGATCAAAAGAAAGAGGCACATAAGGAAAAACAGTATTGGCCACAGGAGACTGATTTTGATTGGACGGGCGTTTAGCACATTTTCAGGCATTGTGAATCTCAATTTCAAAAGCCCAGCGACAGAAGAGAAAACAACGAGTGATTCAGCAAATGACAGATAGTTAATAAGCTGGAACACGTTACCAATGAAGAGCATGACGATTGAAGTTCCACCAAGGAAAATTAATGATGGAATCGGAGTAAGTTGTCTGATTGAGATCATTGCAAACAGTTCAGGTAGTTGACTGTTTCGAGCTCCAGAAAAGAACATTCTGGAGCATGTGATGAGAATTCCATTAAGGGAACCTACGCAGGAAAAGGAAACAAACAATGGCATGAGTATCTTGCTTCCGAAGGTTCCGAGAATTTTGTCGGCAAATGTGATGGCCACTGCATCGGAATCGAGAATctaaaaatattgagataaaaaatgagtttgtatgaacttattcttttgatggaatatctggggatattgaaacatattgctcgaaatcttgaaaaattaaactaagtgcactaatttttgagattacCTCATCAACGGTTAATACTGAAAAATATGCAATATTGACGAGCATATAGACAATTGTAACAATAGGAATGGAAATGTAGATTGCGCGTGGAAGGTTCctgaaaatattgtttaaatatttcattcaaaatataatcatgacaaacCTGAACGGGTTTTTTAGTTCTTCGGTAACAAAATTCAGATAAGAGAACCCCGAAAATGAGAAAACTCCAGAATAGAACGCCATTGCAATAGCTGATAATTTTGTTTGACTTCCTTCTGCTACATCGGGCATCACAAGATTATCAATATGCCCCAATGAGAGCCAATATCCTCCACAAGTAATAATGAGAGTGAGAGCAATTAATTTGGTGATTGTGAAGAAATCGTTAGTTCTTGTTGCCATTCGAACATCCCAACAGTTGATGAATGTGAGAACAGCAATTATGCATCCGGCGAAAAGATTGACAACAACGTCCGGTACAGGACATGAGTAGAATGGTTGAAGAGCGTAAGTTGCACATGTTATGGCAATAATCGCCAAAGATGTTGGATTGATAATGACAAGAGCTACCCAAAGAAAAAGAAATGACGGAAGAGGACCAAACGCctgaaaacagcaacgattagaattattcatgcaaactgccgttcacCTCATAAATATACGCGTAATCTCCTCCAGACTTGGGGATTAGTGTCCCGAGCTCTGAATAACATACAGCTCCAATCATGGCAAATACTCCACTGAGGAGCCAAATGAGCAGAGACATTCCAGCACTGCCGGCTTCAAGGAGGACTCCTTTTGGTGACACAAAGATTCCTGATCCAATAATAACTCCGATAATGATTGTGCAGCCATTGAAAAGTGAAATACGTGGCTTGAGCTTGATCTGATTCAGCGATACTTCTTCTTCTTTTTCGTTCATttttgcgtctgcaaaaggaacgatatgtgtaagaatggtgaaaaggtcgagtaaaaagagaagaaaggcaataaaaactttagagatggttgagaggatgaatgcaaaggacacagaacactgtacacgaaaagtgacgaaatatgagcattgtaaatagataatagagtagtttagagacaaaaagagatatgatcagacaaaagattttcataatttcaggagaggaatgagtcacgaacgacaacggaattccgacaactatcatgtgttctaacaactattgtaatcgctaaataataggaaacacgaacgagaaaaacggatgttttttgctgtttatcgctcgacttgtcgagctcagctgccgcttttaaatattctgcgacaacaaaacaaaagtcttaactgtggtcctctgagaacaaatatggaaaaatttagaagcgacttatcaaaagagactgaaggaaagcgccgatcaaaattttaatttgatatcaagagggcaaggacatctagtacaagtacggattgcctagcattgatatgatcagatttttcgaattctctcaaaacattttgctattcgctaccaaagaacacagttcaagaaaataaaatgttctgcaagaaaaaaatatgtgggaaagttttgtaccattcaactaaaaacgagctgtagtttgtgtggattgaaaataaatgagtgttcaagaaaaaaaaaaacgcaaatagggctaaataagtaaatttagatctgcagaaacaaaaattccacgctgattattttgctgcaacagctttcaaatttttttttgatataaaactcataacaaagtttaatttatccaatttatgaacaaaaattttaaggatatggtttgaagtaaagaattagaaaacggaccggcgtggaatttttgttttcgcggacccgaaatcccaaaatcagttgtgcttattcgatttttaatctagttttgaggtaaaaattacaagttgaaagataatcaatgtaaaaatttggtgtcaatgaacacttcgtttttttgcggattcactctttcaaagctcaggcctatctggcaaacagccaattttgatttaaaaaacaggtaatggaagaggtgattgggtaggcggaaggagtagtagaaggagttagttcatcttcttattcctccagctggtagtgagtcgattcaaagtgtaatggctatgggtgcacacagacgcttccctacacgagacacggcagtcatcagagaacgagggaccatcagagacgtagacgtttagagtgacagaaacggaaagaaaactgggggaatacacggctgccaaaagcgtgatgcgtggacgacctgagttggcaaactgccagagagtgatccttgcaaaaaatcgttaggttaagaataaacaaagcattttttcattggaaagagcgaagaggaagcttttttgtttgctgaaaaaattgcactttcatgaaaatcgcaacattttttcccgtctgactgtctttcttgatctgtttacccactgaaaacataaagcaatgttcactttcaattatatcaaaaaatttgataaagtacatgtgtgggcggagatagacattaactgggacataaatttattggaatcaagattgcaaaacgaattagatttctcaaatgatctcatcctcgttcctgaagacggaagttgctccggtcactgttgatacttttttcgaaatattcattttttctgaaaatttcagattcacagaaagttttcaaggtcacaagtagaatatcaacttactgagcaaataactgcggtagtctttaatgaagtacataacaactaaaggatctaaagcagggtatagagccaaacaaactgaagtcatgtttgcaatcattcctagctcaacaccaattatagggcataagaataggatcgttgttggagtgtacataaagatgattggaacaattgtctaaatcatagaact"
+                },
+                "negative_strand": {
+                    "features": [
+                        {
+                            "stop": 2000,
+                            "type": "padding",
+                            "start": 1
+                        },
+                        {
+                            "stop": 2008,
+                            "type": "five_prime_UTR",
+                            "start": 2001
+                        },
+                        {
+                            "start": 2001,
+                            "type": "exon",
+                            "stop": 2281
+                        },
+                        {
+                            "stop": 2327,
+                            "start": 2282,
+                            "type": "intron"
+                        },
+                        {
+                            "type": "exon",
+                            "start": 2328,
+                            "stop": 2773
+                        },
+                        {
+                            "start": 2774,
+                            "type": "intron",
+                            "stop": 2821
+                        },
+                        {
+                            "stop": 2918,
+                            "start": 2822,
+                            "type": "exon"
+                        },
+                        {
+                            "stop": 3045,
+                            "start": 2919,
+                            "type": "intron"
+                        },
+                        {
+                            "type": "exon",
+                            "start": 3046,
+                            "stop": 3959
+                        },
+                        {
+                            "start": 3682,
+                            "type": "three_prime_UTR",
+                            "stop": 3959
+                        },
+                        {
+                            "type": "padding",
+                            "start": 3960,
+                            "stop": 5959
+                        }
+                    ],
+                    "sequence": "agttctatgatttagacaattgttccaatcatctttatgtacactccaacaacgatcctattcttatgccctataattggtgttgagctaggaatgattgcaaacatgacttcagtttgtttggctctataccctgctttagatcctttagttgttatgtacttcattaaagactaccgcagttatttgctcagtaagttgatattctacttgtgaccttgaaaactttctgtgaatctgaaattttcagaaaaaatgaatatttcgaaaaaagtatcaacagtgaccggagcaacttccgtcttcaggaacgaggatgagatcatttgagaaatctaattcgttttgcaatcttgattccaataaatttatgtcccagttaatgtctatctccgcccacacatgtactttatcaaattttttgatataattgaaagtgaacattgctttatgttttcagtgggtaaacagatcaagaaagacagtcagacgggaaaaaatgttgcgattttcatgaaagtgcaattttttcagcaaacaaaaaagcttcctcttcgctctttccaatgaaaaaatgctttgtttattcttaacctaacgattttttgcaaggatcactctctggcagtttgccaactcaggtcgtccacgcatcacgcttttggcagccgtgtattcccccagttttctttccgtttctgtcactctaaacgtctacgtctctgatggtccctcgttctctgatgactgccgtgtctcgtgtagggaagcgtctgtgtgcacccatagccattacactttgaatcgactcactaccagctggaggaataagaagatgaactaactccttctactactccttccgcctacccaatcacctcttccattacctgttttttaaatcaaaattggctgtttgccagataggcctgagctttgaaagagtgaatccgcaaaaaaacgaagtgttcattgacaccaaatttttacattgattatctttcaacttgtaatttttacctcaaaactagattaaaaatcgaataagcacaactgattttgggatttcgggtccgcgaaaacaaaaattccacgccggtccgttttctaattctttacttcaaaccatatccttaaaatttttgttcataaattggataaattaaactttgttatgagttttatatcaaaaaaaaatttgaaagctgttgcagcaaaataatcagcgtggaatttttgtttctgcagatctaaatttacttatttagccctatttgcgtttttttttttcttgaacactcatttattttcaatccacacaaactacagctcgtttttagttgaatggtacaaaactttcccacatatttttttcttgcagaacattttattttcttgaactgtgttctttggtagcgaatagcaaaatgttttgagagaattcgaaaaatctgatcatatcaatgctaggcaatccgtacttgtactagatgtccttgccctcttgatatcaaattaaaattttgatcggcgctttccttcagtctcttttgataagtcgcttctaaatttttccatatttgttctcagaggaccacagttaagacttttgttttgttgtcgcagaatatttaaaagcggcagctgagctcgacaagtcgagcgataaacagcaaaaaacatccgtttttctcgttcgtgtttcctattatttagcgattacaatagttgttagaacacatgatagttgtcggaattccgttgtcgttcgtgactcattcctctcctgaaattatgaaaatcttttgtctgatcatatctctttttgtctctaaactactctattatctatttacaatgctcatatttcgtcacttttcgtgtacagtgttctgtgtcctttgcattcatcctctcaaccatctctaaagtttttattgcctttcttctctttttactcgaccttttcaccattcttacacatatcgttccttttgcagacgcaaaaATGAACGAAAAAGAAGAAGAAGTATCGCTGAATCAGATCAAGCTCAAGCCACGTATTTCACTTTTCAATGGCTGCACAATCATTATCGGAGTTATTATTGGATCAGGAATCTTTGTGTCACCAAAAGGAGTCCTCCTTGAAGCCGGCAGTGCTGGAATGTCTCTGCTCATTTGGCTCCTCAGTGGAGTATTTGCCATGATTGGAGCTGTATGTTATTCAGAGCTCGGGACACTAATCCCCAAGTCTGGAGGAGATTACGCGTATATTTATGAGgtgaacggcagtttgcatgaataattctaatcgttgctgttttcagGCGTTTGGTCCTCTTCCGTCATTTCTTTTTCTTTGGGTAGCTCTTGTCATTATCAATCCAACATCTTTGGCGATTATTGCCATAACATGTGCAACTTACGCTCTTCAACCATTCTACTCATGTCCTGTACCGGACGTTGTTGTCAATCTTTTCGCCGGATGCATAATTGCTGTTCTCACATTCATCAACTGTTGGGATGTTCGAATGGCAACAAGAACTAACGATTTCTTCACAATCACCAAATTAATTGCTCTCACTCTCATTATTACTTGTGGAGGATATTGGCTCTCATTGGGGCATATTGATAATCTTGTGATGCCCGATGTAGCAGAAGGAAGTCAAACAAAATTATCAGCTATTGCAATGGCGTTCTATTCTGGAGTTTTCTCATTTTCGGGGTTCTCTTATCTGAATTTTGTTACCGAAGAACTAAAAAACCCGTTCAGgtttgtcatgattatattttgaatgaaatatttaaacaatattttcagGAACCTTCCACGCGCAATCTACATTTCCATTCCTATTGTTACAATTGTCTATATGCTCGTCAATATTGCATATTTTTCAGTATTAACCGTTGATGAGgtaatctcaaaaattagtgcacttagtttaatttttcaagatttcgagcaatatgtttcaatatccccagatattccatcaaaagaataagttcatacaaactcattttttatctcaatatttttagATTCTCGATTCCGATGCAGTGGCCATCACATTTGCCGACAAAATTCTCGGAACCTTCGGAAGCAAGATACTCATGCCATTGTTTGTTTCCTTTTCCTGCGTAGGTTCCCTTAATGGAATTCTCATCACATGCTCCAGAATGTTCTTTTCTGGAGCTCGAAACAGTCAACTACCTGAACTGTTTGCAATGATCTCAATCAGACAACTTACTCCGATTCCATCATTAATTTTCCTTGGTGGAACTTCAATCGTCATGCTCTTCATTGGTAACGTGTTCCAGCTTATTAACTATCTGTCATTTGCTGAATCACTCGTTGTTTTCTCTTCTGTCGCTGGGCTTTTGAAATTGAGATTCACAATGCCTGAAAATGTGCTAAACGCCCGTCCAATCAAAATCAGTCTCCTGTGGCCAATACTGTTTTTCCTTATGTGCCTCTTTCTTTTGATCCTTCCATTCTTCCACAGTGATCCATGGGAACTCATTTACGGAGTTTTCTTGGTACTTTCAGGAATTCCCATCTACGTTCTCTTCGTCTACAATAAATACCGTCCAGGATTCATTCAATCTGTGTGGATAGGCTTCACACATTTCATTCAAAAATTGTTCTATTGTGTCCCAGAACTCTCCAGTTCCTGAaaattctgttttattgtcatatccaaacccgtgactctttccgttgttcttttttatttccacagtgtgcattttttgtttttttgtttggttttttttgctcccagatctttctgcgcttccgttatcaagcggacatatctcaaattgacacagcatttttttgctattttatccgctccatatctaaaatatatctttatgtcatcattgaaagttttggtttttagcacctaataacttattttctcgaatagaaataaaacgttctcaattttaaaattgttaattataaagcaaaaaacatgcaaaacgttttaattatttacccagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagagacaaggaaaaatgatgtagacaatgcactgtctcctcatgtggacagttgccaagttccgcttcaattttaagtttttttgcttcattcattttgaaaatttaattgatattcgaattttgaaaaaaaataatcaaaacttttttcctttgtggatgtctctaagatgcataattttaagaaggttttccagtataatttttttagtttcagaaaattaactgcttaaaaagagcaaaattaatgtactcctcaacggtacacacttcttttccttttttcttatgtaacattttcattcgtttcgagaccggttaccgtattctttctccataaatcttcgcattagggtaatatctacaattgttataccatttaaaattatttgacttactataagaagtatcgaacaatgcgggaaacatttttagcgcgaaatgtttcctatgtccacgaaaaacgcgtcagcagtcttctatgcccatttcctgtggaggagtgagacagagtggacaaaagggagagtgaaaagatacagacagaaacaagggtgaaaggggaatttttcattttacttctcttcacgaataaatttaattttaaaatagaatggctttgtaacttttatattgttttatctattaccatttctttgcgcttttacacatcaaaaaactccctatcaagctgataccctagtcatatgattgataagacaagacaataagtcgaattttttcaccgcaaaatatttatttaattttcctttctaaatagttttccaaaatttgtttcaaagaagtcagttcaaaagtacaccagacattttaactagtgccatttgttcttttgctcagggtatacctcgtcatttatctcttccaaatgtcttgtcaatcactgaaacataaccctgctagtatttttttgaaaatctcaccctcatacactcaactgaaagggtaatttattgctgtgaagcatgtgtttggcaccccaatcactctagggggagggatcccagaatctcggtctatgtcagacactatcagtaagagccgcacggccaactggatacacacacaaaattcgctaatatgttcttcaaacgaagtacaaattctcgtaaaacatcggcaaattcaagttctgatacgtcaacttcttcagaatcattattgcttccacttctgaacaataccaaagctggagcgcgttcacaaaaaggaagtgtccaccgacaaagtggcaaaaaaggtttgtgaaaatattttttttttaaacgtgaacaactttaaattgctctagattcattggatgtttcaaataaacaattcaatttgataattttccagcccgccgaaagatgatggaaaatccttacgtgtgcagtttggaactcgacgagctctctgccgatgattcaattattgactattcggtgttcagtgatgattcgtttcttctaatcttgctgcttacgtcaaaaggagacgttcaagcttatttggagacaagtcgagacacaaagccaagaaaaaacgttgtaaatatcaaaacggcatgctccctcaatgttagcccggttactgtatgcattggtaagttgaattgcttaaattaaacatttaaataataaaaaactttgagaagttaattttcaaaaacaaattttttttaattctctaaccctcaagacaactgctgaaattgtttctccgacttttatgttgttgttctagagatattttatactatccaatcgggaaacaccgtctttcaatgatttcaaaatatccagaaactcgtggatcagattttcttatctaaaactttcacgtggcatgttgtaattctaat"
+                },
+                "strand": "-"
             },
             "description": "the unpliced sequence of the sequence"
         },
-        "protein_sequence": {
-            "desciprion": "The sequence of the protein",
+        "predicted_units": {
+            "data": null,
+            "description": "features contained within the transcript"
+        },
+        "time_cached": 1728975967,
+        "name": {
+            "description": "The name and WormBase internal ID of F07C3.7.1",
             "data": {
-                "sequence": "MSTTPGTPHGVTHSLMEQGWYWADADRSAVSKALSDQPDGSFIVRNASTPGDYTLSVKFAAQVKLLRIVVKDGKCGFNTDSLTHDSVVRLIEFHRNISLNIFNDALDVRLLYPVSVRRNSQNGKPFFKKGQLQQRMILSAKNDHDWRERLEMENLRAVHLAFERGAKLYDSAHQEMERAESLYHALNQSVRDNEIKLGKLNNLLEAETDVVTQIQGSQTTSEMLKGAFANNKTFVEESIRRINTELTSSKDKKKTLSGILDEIAMKRSNSKTRLCKLMELRSAVYDKMEPALCSRMAAMLDAGAEMINSEPTKVTQLLVDMELKWTPAQYLMCGTSKENAANALIHARYRIAQLDKAVGLKREPQDGIFLIRGSSSHGDKLVLSVLHGERVSHCLIEQNEEGWGFEHSNVYLTTISDFVRYYSHFSLETHADAIKTPLRTPAFDAVTSDTSKPLRNGPGQVFTALPISRKYMEKALLTDDPTKPPESPEPRPDSWDSPSPDTPSSSDSRLVHPTTLPKSIPE"
+                "class": "transcript",
+                "label": "F07C3.7.1",
+                "id": "F07C3.7.1",
+                "taxonomy": "c_elegans"
             }
         },
-        "predicted_exon_structure": {
-            "data": [
-                {
-                    "len": 174,
-                    "no": 1,
-                    "start": 1,
-                    "end": 174
+        "unspliced_sequence_context": {
+            "data": {
+                "negative_strand": {
+                    "features": [
+                        {
+                            "type": "five_prime_UTR",
+                            "start": 1,
+                            "stop": 8
+                        },
+                        {
+                            "type": "exon",
+                            "start": 1,
+                            "stop": 281
+                        },
+                        {
+                            "stop": 327,
+                            "type": "intron",
+                            "start": 282
+                        },
+                        {
+                            "type": "exon",
+                            "start": 328,
+                            "stop": 773
+                        },
+                        {
+                            "stop": 821,
+                            "start": 774,
+                            "type": "intron"
+                        },
+                        {
+                            "stop": 918,
+                            "type": "exon",
+                            "start": 822
+                        },
+                        {
+                            "stop": 1045,
+                            "start": 919,
+                            "type": "intron"
+                        },
+                        {
+                            "start": 1046,
+                            "type": "exon",
+                            "stop": 1959
+                        },
+                        {
+                            "stop": 1959,
+                            "start": 1682,
+                            "type": "three_prime_UTR"
+                        }
+                    ],
+                    "sequence": "acgcaaaaATGAACGAAAAAGAAGAAGAAGTATCGCTGAATCAGATCAAGCTCAAGCCACGTATTTCACTTTTCAATGGCTGCACAATCATTATCGGAGTTATTATTGGATCAGGAATCTTTGTGTCACCAAAAGGAGTCCTCCTTGAAGCCGGCAGTGCTGGAATGTCTCTGCTCATTTGGCTCCTCAGTGGAGTATTTGCCATGATTGGAGCTGTATGTTATTCAGAGCTCGGGACACTAATCCCCAAGTCTGGAGGAGATTACGCGTATATTTATGAGgtgaacggcagtttgcatgaataattctaatcgttgctgttttcagGCGTTTGGTCCTCTTCCGTCATTTCTTTTTCTTTGGGTAGCTCTTGTCATTATCAATCCAACATCTTTGGCGATTATTGCCATAACATGTGCAACTTACGCTCTTCAACCATTCTACTCATGTCCTGTACCGGACGTTGTTGTCAATCTTTTCGCCGGATGCATAATTGCTGTTCTCACATTCATCAACTGTTGGGATGTTCGAATGGCAACAAGAACTAACGATTTCTTCACAATCACCAAATTAATTGCTCTCACTCTCATTATTACTTGTGGAGGATATTGGCTCTCATTGGGGCATATTGATAATCTTGTGATGCCCGATGTAGCAGAAGGAAGTCAAACAAAATTATCAGCTATTGCAATGGCGTTCTATTCTGGAGTTTTCTCATTTTCGGGGTTCTCTTATCTGAATTTTGTTACCGAAGAACTAAAAAACCCGTTCAGgtttgtcatgattatattttgaatgaaatatttaaacaatattttcagGAACCTTCCACGCGCAATCTACATTTCCATTCCTATTGTTACAATTGTCTATATGCTCGTCAATATTGCATATTTTTCAGTATTAACCGTTGATGAGgtaatctcaaaaattagtgcacttagtttaatttttcaagatttcgagcaatatgtttcaatatccccagatattccatcaaaagaataagttcatacaaactcattttttatctcaatatttttagATTCTCGATTCCGATGCAGTGGCCATCACATTTGCCGACAAAATTCTCGGAACCTTCGGAAGCAAGATACTCATGCCATTGTTTGTTTCCTTTTCCTGCGTAGGTTCCCTTAATGGAATTCTCATCACATGCTCCAGAATGTTCTTTTCTGGAGCTCGAAACAGTCAACTACCTGAACTGTTTGCAATGATCTCAATCAGACAACTTACTCCGATTCCATCATTAATTTTCCTTGGTGGAACTTCAATCGTCATGCTCTTCATTGGTAACGTGTTCCAGCTTATTAACTATCTGTCATTTGCTGAATCACTCGTTGTTTTCTCTTCTGTCGCTGGGCTTTTGAAATTGAGATTCACAATGCCTGAAAATGTGCTAAACGCCCGTCCAATCAAAATCAGTCTCCTGTGGCCAATACTGTTTTTCCTTATGTGCCTCTTTCTTTTGATCCTTCCATTCTTCCACAGTGATCCATGGGAACTCATTTACGGAGTTTTCTTGGTACTTTCAGGAATTCCCATCTACGTTCTCTTCGTCTACAATAAATACCGTCCAGGATTCATTCAATCTGTGTGGATAGGCTTCACACATTTCATTCAAAAATTGTTCTATTGTGTCCCAGAACTCTCCAGTTCCTGAaaattctgttttattgtcatatccaaacccgtgactctttccgttgttcttttttatttccacagtgtgcattttttgtttttttgtttggttttttttgctcccagatctttctgcgcttccgttatcaagcggacatatctcaaattgacacagcatttttttgctattttatccgctccatatctaaaatatatctttatgtcatcattgaaagttttggtttttagcacctaataacttattttctcgaatagaaataaaacgttctcaatttt"
                 },
-                {
-                    "len": 260,
-                    "no": 2,
-                    "start": 222,
-                    "end": 481
+                "positive_strand": {
+                    "sequence": "aaaattgagaacgttttatttctattcgagaaaataagttattaggtgctaaaaaccaaaactttcaatgatgacataaagatatattttagatatggagcggataaaatagcaaaaaaatgctgtgtcaatttgagatatgtccgcttgataacggaagcgcagaaagatctgggagcaaaaaaaaccaaacaaaaaaacaaaaaatgcacactgtggaaataaaaaagaacaacggaaagagtcacgggtttggatatgacaataaaacagaatttTCAGGAACTGGAGAGTTCTGGGACACAATAGAACAATTTTTGAATGAAATGTGTGAAGCCTATCCACACAGATTGAATGAATCCTGGACGGTATTTATTGTAGACGAAGAGAACGTAGATGGGAATTCCTGAAAGTACCAAGAAAACTCCGTAAATGAGTTCCCATGGATCACTGTGGAAGAATGGAAGGATCAAAAGAAAGAGGCACATAAGGAAAAACAGTATTGGCCACAGGAGACTGATTTTGATTGGACGGGCGTTTAGCACATTTTCAGGCATTGTGAATCTCAATTTCAAAAGCCCAGCGACAGAAGAGAAAACAACGAGTGATTCAGCAAATGACAGATAGTTAATAAGCTGGAACACGTTACCAATGAAGAGCATGACGATTGAAGTTCCACCAAGGAAAATTAATGATGGAATCGGAGTAAGTTGTCTGATTGAGATCATTGCAAACAGTTCAGGTAGTTGACTGTTTCGAGCTCCAGAAAAGAACATTCTGGAGCATGTGATGAGAATTCCATTAAGGGAACCTACGCAGGAAAAGGAAACAAACAATGGCATGAGTATCTTGCTTCCGAAGGTTCCGAGAATTTTGTCGGCAAATGTGATGGCCACTGCATCGGAATCGAGAATctaaaaatattgagataaaaaatgagtttgtatgaacttattcttttgatggaatatctggggatattgaaacatattgctcgaaatcttgaaaaattaaactaagtgcactaatttttgagattacCTCATCAACGGTTAATACTGAAAAATATGCAATATTGACGAGCATATAGACAATTGTAACAATAGGAATGGAAATGTAGATTGCGCGTGGAAGGTTCctgaaaatattgtttaaatatttcattcaaaatataatcatgacaaacCTGAACGGGTTTTTTAGTTCTTCGGTAACAAAATTCAGATAAGAGAACCCCGAAAATGAGAAAACTCCAGAATAGAACGCCATTGCAATAGCTGATAATTTTGTTTGACTTCCTTCTGCTACATCGGGCATCACAAGATTATCAATATGCCCCAATGAGAGCCAATATCCTCCACAAGTAATAATGAGAGTGAGAGCAATTAATTTGGTGATTGTGAAGAAATCGTTAGTTCTTGTTGCCATTCGAACATCCCAACAGTTGATGAATGTGAGAACAGCAATTATGCATCCGGCGAAAAGATTGACAACAACGTCCGGTACAGGACATGAGTAGAATGGTTGAAGAGCGTAAGTTGCACATGTTATGGCAATAATCGCCAAAGATGTTGGATTGATAATGACAAGAGCTACCCAAAGAAAAAGAAATGACGGAAGAGGACCAAACGCctgaaaacagcaacgattagaattattcatgcaaactgccgttcacCTCATAAATATACGCGTAATCTCCTCCAGACTTGGGGATTAGTGTCCCGAGCTCTGAATAACATACAGCTCCAATCATGGCAAATACTCCACTGAGGAGCCAAATGAGCAGAGACATTCCAGCACTGCCGGCTTCAAGGAGGACTCCTTTTGGTGACACAAAGATTCCTGATCCAATAATAACTCCGATAATGATTGTGCAGCCATTGAAAAGTGAAATACGTGGCTTGAGCTTGATCTGATTCAGCGATACTTCTTCTTCTTTTTCGTTCATttttgcgt",
+                    "features": [
+                        {
+                            "start": 1,
+                            "type": "three_prime_UTR",
+                            "stop": 278
+                        },
+                        {
+                            "stop": 914,
+                            "type": "exon",
+                            "start": 1
+                        },
+                        {
+                            "stop": 1041,
+                            "start": 915,
+                            "type": "intron"
+                        },
+                        {
+                            "stop": 1138,
+                            "type": "exon",
+                            "start": 1042
+                        },
+                        {
+                            "stop": 1186,
+                            "type": "intron",
+                            "start": 1139
+                        },
+                        {
+                            "stop": 1632,
+                            "type": "exon",
+                            "start": 1187
+                        },
+                        {
+                            "stop": 1678,
+                            "start": 1633,
+                            "type": "intron"
+                        },
+                        {
+                            "stop": 1959,
+                            "start": 1679,
+                            "type": "exon"
+                        },
+                        {
+                            "start": 1952,
+                            "type": "five_prime_UTR",
+                            "stop": 1959
+                        }
+                    ]
                 },
-                {
-                    "len": 266,
-                    "end": 928,
-                    "no": 3,
-                    "start": 663
-                },
-                {
-                    "end": 1587,
-                    "no": 4,
-                    "start": 1156,
-                    "len": 432
-                },
-                {
-                    "no": 5,
-                    "start": 1668,
-                    "end": 2341,
-                    "len": 674
-                }
-            ],
-            "description": "predicted exon structure within the transcript"
+                "strand": "-"
+            },
+            "description": "the unpliced sequence of the sequence"
         }
     },
-    "uri": "rest/widget/transcript/Y110A7A.10.1/sequences"
+    "uri": "rest/widget/transcript/F07C3.7.1/sequences",
+    "class": "transcript",
+    "name": "F07C3.7.1"
 }

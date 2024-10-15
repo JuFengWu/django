@@ -32,13 +32,28 @@ def get_split_data():
     # 讀取 JSON 檔案並轉換為字典
     with open(file_path, 'r', encoding='utf-8') as file:
         data_dict = json.load(file)
+    
+    splicedPositiveNeagtive = data_dict['fields']['spliced_sequence_context']['data']['strand']
 
-    positive_squence = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['sequence']
-    positive_features = data_dict['fields']['spliced_sequence_context']['data']['positive_strand']['features']
-    negative_squence = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['sequence']
-    negative_features = data_dict['fields']['spliced_sequence_context']['data']['negative_strand']['features']
+    if splicedPositiveNeagtive == "+":
+        strand = "positive_strand"
+    else:
+        strand = "negative_strand"
 
-    return positive_squence,positive_features,negative_squence,negative_features
+    spliced_squence = data_dict['fields']['spliced_sequence_context']['data'][strand]['sequence']
+    spliced_features = data_dict['fields']['spliced_sequence_context']['data'][strand]['features']
+
+    unsplicedPositiveNeagtive = data_dict['fields']['unspliced_sequence_context']['data']['strand']
+
+    if unsplicedPositiveNeagtive == "+":
+        strand = "positive_strand"
+    else:
+        strand = "negative_strand"
+
+    unspliced_squence = data_dict['fields']['unspliced_sequence_context']['data'][strand]['sequence']
+    unspliced_features = data_dict['fields']['unspliced_sequence_context']['data'][strand]['features']
+
+    return spliced_squence,spliced_features,unspliced_squence,unspliced_features
 def get_positive_table_data(positive_features):
     print(positive_features)
     table = []
@@ -68,10 +83,10 @@ def split_string_into_tuples(s, chunk_size=50):
 
 if __name__ == "__main__":
     #get_data_from_web("Y110A7A.10.1")
-    positive_squence,positive_features,negative_squence,negative_features = get_split_data()
-    table = get_positive_table_data(positive_features)
-    sequence_range = get_positive_sequence_range(positive_features)
-    new_squence = split_string_into_tuples(positive_squence)
+    spliced_squence,spliced_features,unspliced_squence,unspliced_features = get_split_data()
+    table = get_positive_table_data(unspliced_features)
+    sequence_range = get_positive_sequence_range(unspliced_features)
+    new_squence = split_string_into_tuples(unspliced_squence)
     print(table)
     print(sequence_range)
     print(new_squence)
