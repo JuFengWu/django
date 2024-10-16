@@ -34,9 +34,10 @@ def get_filtered_data(file_path, ref_id):
 
 def expand_position_value(data_list):
     result = []
-    for start, end, value in data_list:
-        for pos in range(start, end + 1):
-            result.append({"position": pos, "value": value})
+    for item in data_list:
+        start, end, values = item
+        read_count = end - start + 1  # 計算 read_count
+        result.append({'start': start, 'end': end, 'read_count': read_count, 'values': values})
     return result
 
 if __name__ == "__main__":

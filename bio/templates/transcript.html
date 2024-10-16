@@ -30,68 +30,73 @@
     <h2>Django + D3.js Bar Chart for {{ gene_sequence_name }}</h2>
 
     <div id="chart2"></div>
-    <div id="chart1"></div>
+    <div id="histogram"></div>
     
 
     <div id="tooltip" class="tooltip" style="opacity:0;"></div>
 
     <script>
-        // ------------------ 第一個圖表: Bar Chart -------------------
+        
+        // 從 Django 內嵌數據，這裡的 'data' 是 Django 從 views.py 傳遞的上下文數據
         const barData = {{ barData|safe }};
 
-        // 設置圖表的寬和高
-        const width = 1000;
-        const height = 300;
-        const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+        // 設定圖表的大小
+        const margin = {top: 20, right: 30, bottom: 40, left: 30},
+            width = 1200 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
 
-        // 創建 SVG for Bar Chart
-        const svg1 = d3.select("#chart1")
+        const svg = d3.select("#histogram")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // 創建 tooltip
-        const tooltip = d3.select("#tooltip");
-
-        // 設定 x 軸和 y 軸的比例尺
+        // 設定 X 軸範圍 (基於 start 和 end)
         const x = d3.scaleLinear()
-            .domain([0, d3.max(barData, d => d.position)])  // Position 從 0 到最大位置
+            .domain([d3.min(barData, d => d.start), d3.max(barData, d => d.end)])  // 使用 start 和 end 設定 X 軸範圍
             .range([0, width]);
 
+        // 設定 Y 軸範圍 (基於 read_count)
         const y = d3.scaleLinear()
-            .domain([0, d3.max(barData, d => d.value)])  // Value 從 0 到最大值
+            .domain([0, d3.max(barData, d => d.read_count)])  // Y 軸最大值基於 read_count
             .range([height, 0]);
 
-        // 繪製 x 軸
-        svg1.append("g")
+        // 繪製 X 軸
+        svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).ticks(10));
 
-        // 繪製 y 軸
-        svg1.append("g")
+        // 繪製 Y 軸
+        svg.append("g")
             .call(d3.axisLeft(y));
 
-        // 繪製長條圖
-        svg1.selectAll(".bar")
-            .data(barData)
-            .enter().append("rect")
-            .attr("class", "bar")
-            .attr("x", d => x(d.position))  // 使用 position 決定 x 軸位置
-            .attr("y", d => y(d.value))     // 使用 value 決定 y 軸高度
-            .attr("width", width / barData.length - 2)  // 設定每個條形的寬度，留空隙
-            .attr("height", d => height - y(d.value))  // 條形高度
-            .attr("fill", "steelblue")
-            .on("mouseover", function(event, d) {
-                tooltip.style("opacity", 1)
-                    .html(`Position: ${d.position}<br>Value: ${d.value}`)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 20) + "px");
-            })
-            .on("mouseout", function() {
-                tooltip.style("opacity", 0);
-            });
+        // 建立工具提示
+        const tooltip = d3.select(".tooltip");
+
+        // 繪製長條
+        svg.selectAll(".bar")
+        .data(barData)
+        .enter()
+        .append("rect")
+        .attr("x", d => x(d.start))  // 使用 start 作為 X 軸位置
+        .attr("y", d => y(d.values))  // y 基於 values
+        .attr("width", d => x(d.end) - x(d.start))  // 長條寬度由 start 到 end 決定
+        .attr("height", d => height - y(d.values))  // 高度基於 values，從 y 軸的底部到 values 的位置
+        .attr("fill", "steelblue")
+        .on("mouseover", function(event, d) {
+            tooltip.transition().duration(200).style("opacity", 0.9);
+            tooltip.html(`start: ${d.start}<br>end: ${d.end}<br>read_count: ${d.read_count}<br>values: ${d.values}`)
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            d3.select(this).attr("fill", "orange");  // 當滑鼠移過時改變顏色
+        })
+        .on("mouseout", function(d) {
+            tooltip.transition().duration(500).style("opacity", 0);
+            d3.select(this).attr("fill", "steelblue");  // 恢復原始顏色
+        });
+        
+
         // ------------------ 第二個圖表: Gene Structure -------------------
         const barHorizontal = {{ barHorizontal|safe }};
 
