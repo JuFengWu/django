@@ -37,7 +37,7 @@
 
     <script>
         // ------------------ 第一個圖表: Bar Chart -------------------
-        const data = {{ data|safe }};
+        const barData = {{ barData|safe }};
 
         // 設置圖表的寬和高
         const width = 1000;
@@ -57,11 +57,11 @@
 
         // 設定 x 軸和 y 軸的比例尺
         const x = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.position)])  // Position 從 0 到最大位置
+            .domain([0, d3.max(barData, d => d.position)])  // Position 從 0 到最大位置
             .range([0, width]);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.value)])  // Value 從 0 到最大值
+            .domain([0, d3.max(barData, d => d.value)])  // Value 從 0 到最大值
             .range([height, 0]);
 
         // 繪製 x 軸
@@ -75,12 +75,12 @@
 
         // 繪製長條圖
         svg1.selectAll(".bar")
-            .data(data)
+            .data(barData)
             .enter().append("rect")
             .attr("class", "bar")
             .attr("x", d => x(d.position))  // 使用 position 決定 x 軸位置
             .attr("y", d => y(d.value))     // 使用 value 決定 y 軸高度
-            .attr("width", width / data.length - 2)  // 設定每個條形的寬度，留空隙
+            .attr("width", width / barData.length - 2)  // 設定每個條形的寬度，留空隙
             .attr("height", d => height - y(d.value))  // 條形高度
             .attr("fill", "steelblue")
             .on("mouseover", function(event, d) {
@@ -93,7 +93,7 @@
                 tooltip.style("opacity", 0);
             });
         // ------------------ 第二個圖表: Gene Structure -------------------
-        const data2 = {{ data2|safe }};
+        const barHorizontal = {{ barHorizontal|safe }};
 
         const svg2 = d3.select("#chart2")
             .append("svg")
@@ -113,7 +113,7 @@
 
         // 畫出區塊
         svg2.selectAll(".bar")
-            .data(data2)
+            .data(barHorizontal)
             .enter().append("rect")
             .attr("class", d => d.type.toLowerCase())  // UTR, CDS, EXON 類型
             .attr("x", d => x2(d.start))
