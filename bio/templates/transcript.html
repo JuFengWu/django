@@ -27,11 +27,13 @@
 </head>
 <body>
 
-    <h2>Django + D3.js Bar Chart for {{ gene_sequence_name }}</h2>
+    <h2>detail for {{ gene_sequence_name }}</h2>
 
     <div id="chart2"></div>
+    <div id = "chart_other_list"></div>
     <div id="histogram"></div>
-    
+    <div id="histogram2"></div>
+    <div id="histogram3"></div>
 
     <div id="tooltip" class="tooltip" style="opacity:0;"></div>
 
@@ -39,109 +41,127 @@
         
         // 從 Django 內嵌數據，這裡的 'data' 是 Django 從 views.py 傳遞的上下文數據
         const barData = {{ barData|safe }};
+        const barData2 = {{ barData2|safe }};
+        const barData3 = {{ barData3|safe }};
 
-        // 設定圖表的大小
-        const margin = {top: 20, right: 30, bottom: 40, left: 30},
-            width = 1200 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+        vertical_bar(barData,"#histogram")
+        vertical_bar(barData2,"#histogram2")
+        vertical_bar(barData3,"#histogram3")
 
-        const svg = d3.select("#histogram")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+        function vertical_bar(barData, chartElementId){
+            // 設定圖表的大小
+            const margin = {top: 20, right: 30, bottom: 40, left: 30},
+                width = 1200 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
 
-        // 設定 X 軸範圍 (基於 start 和 end)
-        const x = d3.scaleLinear()
-            .domain([d3.min(barData, d => d.start), d3.max(barData, d => d.end)])  // 使用 start 和 end 設定 X 軸範圍
-            .range([0, width]);
+            const svg = d3.select(chartElementId)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // 設定 Y 軸範圍 (基於 read_count)
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(barData, d => d.read_count)])  // Y 軸最大值基於 read_count
-            .range([height, 0]);
+            // 設定 X 軸範圍 (基於 start 和 end)
+            const x = d3.scaleLinear()
+                .domain([d3.min(barData, d => d.start), d3.max(barData, d => d.end)])  // 使用 start 和 end 設定 X 軸範圍
+                .range([0, width]);
 
-        // 繪製 X 軸
-        svg.append("g")
-            .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x).ticks(10));
+            // 設定 Y 軸範圍 (基於 read_count)
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(barData, d => d.read_count)])  // Y 軸最大值基於 read_count
+                .range([height, 0]);
 
-        // 繪製 Y 軸
-        svg.append("g")
-            .call(d3.axisLeft(y));
+            // 繪製 X 軸
+            svg.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(10));
 
-        // 建立工具提示
-        const tooltip = d3.select(".tooltip");
+            // 繪製 Y 軸
+            svg.append("g")
+                .call(d3.axisLeft(y));
 
-        // 繪製長條
-        svg.selectAll(".bar")
-        .data(barData)
-        .enter()
-        .append("rect")
-        .attr("x", d => x(d.start))  // 使用 start 作為 X 軸位置
-        .attr("y", d => y(d.values))  // y 基於 values
-        .attr("width", d => x(d.end) - x(d.start))  // 長條寬度由 start 到 end 決定
-        .attr("height", d => height - y(d.values))  // 高度基於 values，從 y 軸的底部到 values 的位置
-        .attr("fill", "steelblue")
-        .on("mouseover", function(event, d) {
-            tooltip.transition().duration(200).style("opacity", 0.9);
-            tooltip.html(`start: ${d.start}<br>end: ${d.end}<br>read_count: ${d.read_count}<br>values: ${d.values}`)
-                .style("left", (event.pageX + 5) + "px")
-                .style("top", (event.pageY - 28) + "px");
-            d3.select(this).attr("fill", "orange");  // 當滑鼠移過時改變顏色
-        })
-        .on("mouseout", function(d) {
-            tooltip.transition().duration(500).style("opacity", 0);
-            d3.select(this).attr("fill", "steelblue");  // 恢復原始顏色
-        });
-        
+            // 建立工具提示
+            const tooltip = d3.select(".tooltip");
 
+            // 繪製長條
+            svg.selectAll(".bar")
+            .data(barData)
+            .enter()
+            .append("rect")
+            .attr("x", d => x(d.start))  // 使用 start 作為 X 軸位置
+            .attr("y", d => y(d.values))  // y 基於 values
+            .attr("width", d => x(d.end) - x(d.start))  // 長條寬度由 start 到 end 決定
+            .attr("height", d => height - y(d.values))  // 高度基於 values，從 y 軸的底部到 values 的位置
+            .attr("fill", "steelblue")
+            .on("mouseover", function(event, d) {
+                tooltip.transition().duration(200).style("opacity", 0.9);
+                tooltip.html(`start: ${d.start}<br>end: ${d.end}<br>read_count: ${d.read_count}<br>values: ${d.values}`)
+                    .style("left", (event.pageX + 5) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+                d3.select(this).attr("fill", "orange");  // 當滑鼠移過時改變顏色
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition().duration(500).style("opacity", 0);
+                d3.select(this).attr("fill", "steelblue");  // 恢復原始顏色
+            });
+        }
         // ------------------ 第二個圖表: Gene Structure -------------------
         const barHorizontal = {{ barHorizontal|safe }};
+        drawBarChart(barHorizontal,"#chart2")
+        const other_list = {{ other_list|safe }};
+        drawBarChart(other_list,"#chart_other_list")
 
-        const svg2 = d3.select("#chart2")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", 100)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+        function drawBarChart(barHorizontal, chartElementId) {
+            const margin = { top: 10, right: 30, bottom: 30, left: 40 };
+            const width = 960 - margin.left - margin.right;
 
-        const x2 = d3.scaleLinear()
-            .domain([0, 1000])
-            .range([0, width]);
+            const maxEnd = d3.max(barHorizontal, d => d.end);
 
-        // 繪製 x 軸
-        svg2.append("g")
-            .attr("transform", `translate(0,50)`)
-            .call(d3.axisBottom(x2).ticks(10));
+            // 創建 SVG
+            const svg2 = d3.select(chartElementId)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", 100)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // 畫出區塊
-        svg2.selectAll(".bar")
-            .data(barHorizontal)
-            .enter().append("rect")
-            .attr("class", d => d.type.toLowerCase())  // UTR, CDS, EXON 類型
-            .attr("x", d => x2(d.start))
-            .attr("width", d => x2(d.end) - x2(d.start))
-            .attr("y", 20)
-            .attr("height", 20)
-            .attr("fill", d => d.color)
-            .on("mouseover", function(event, d) {
-                tooltip.style("opacity", 1)
-                    .html(`
-                        <table>
-                            <tr><td>Type:</td><td>${d.type}</td></tr>
-                            <tr><td>Start:</td><td>${d.start}</td></tr>
-                            <tr><td>End:</td><td>${d.end}</td></tr>
-                            <tr><td>Length:</td><td>${d.end - d.start} bp</td></tr>
-                        </table>
-                    `)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 20) + "px");
-            })
-            .on("mouseout", function() {
-                tooltip.style("opacity", 0);
-            });
+            // 創建 x 軸比例尺
+            const x2 = d3.scaleLinear()
+                .domain([0, maxEnd])
+                .range([0, width]);
+
+            // 繪製 x 軸
+            svg2.append("g")
+                .attr("transform", `translate(0,50)`)
+                .call(d3.axisBottom(x2).ticks(10));
+
+            // 繪製區塊
+            svg2.selectAll(".bar")
+                .data(barHorizontal)
+                .enter().append("rect")
+                .attr("class", d => d.type.toLowerCase())  // UTR, CDS, EXON 類型
+                .attr("x", d => x2(d.start))
+                .attr("width", d => x2(d.end) - x2(d.start))
+                .attr("y", 20)
+                .attr("height", 20)
+                .attr("fill", d => d.color)
+                .on("mouseover", function(event, d) {
+                    tooltip.style("opacity", 1)
+                        .html(`
+                            <table>
+                                <tr><td>Type:</td><td>${d.type}</td></tr>
+                                <tr><td>Start:</td><td>${d.start}</td></tr>
+                                <tr><td>End:</td><td>${d.end}</td></tr>
+                                <tr><td>Length:</td><td>${d.end - d.start} bp</td></tr>
+                            </table>
+                        `)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 20) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.style("opacity", 0);
+                });
+        }
 
     </script>
 </body>
