@@ -16,15 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from web_tool import views,hw2_views,hw3_views
+from web_tool import views,hw2_views,hw3_views,hw4_views_test
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('test/', views.test_view, name='test_view'), # HW1
     path('strategy_hw2/', hw2_views.strategy, name='strategy'), #HW2
     path('strategy_hw2-2/', hw2_views.backtest_view, name='backtest'), #HW2
+
     path('login/', hw3_views.login, name='login'),
     path('logout/', hw3_views.logout, name='logout'),
     path('stock_chart_hw3/', hw3_views.stock_chart_hw3, name='stock_chart_hw3'),
     path('api/stock_data_api/', hw3_views.stock_data_api, name='stock_data_api'),
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register_test/', hw4_views_test.RegisterView.as_view(), name='register'),
+    path('api/login_test/', hw4_views_test.LoginView.as_view(), name='login_hw4_test'),
+    path('login-register-test/', hw4_views_test.login_register, name='login_register_test'),
+
+
+
 ]

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="username">Username:</label>
+        <input type="text" id="registerUsername" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="registerPassword" name="password" required><br><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="loginUsername" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="loginPassword" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        // Register Form Submission
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+
+            fetch('/api/register_test/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.detail === 'User created successfully') {
+                    document.getElementById('message').innerText = "Registration successful!";
+                } else {
+                    document.getElementById('message').innerText = data.detail;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Login Form Submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            fetch('/api/login_test/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access) {
+                    document.getElementById('message').innerText = "Login successful!";
+                    console.log('Access Token:', data.access);
+                    console.log('Refresh Token:', data.refresh);
+                } else {
+                    document.getElementById('message').innerText = "Login failed: " + data.detail;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

@@ -37,8 +37,26 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "web_tool"
+    "web_tool",
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),  # 短期 Token 有效期 10 分鐘
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 長期 Token 有效期 1 天
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
