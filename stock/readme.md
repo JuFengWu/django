@@ -5,8 +5,8 @@ localhost/strategy_hw2
 localhost/strategy_hw2-2
 localhost/stock_chart_hw3 #need to login
 
-localhost/login-register
-
+localhost/login-register-test
+localhost/hw4_login_registor
 
 
 HW2-1 not show in char

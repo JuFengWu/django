@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="username">Username:</label>
+        <input type="text" id="registerUsername" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="registerPassword" name="password" required><br><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="loginUsername" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="loginPassword" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        // Register Form Submission
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+
+            fetch('/api/register_hw4/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.detail === 'User created successfully') {
+                    document.getElementById('message').innerText = "Registration successful!";
+                } else {
+                    document.getElementById('message').innerText = data.detail;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Login Form Submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            fetch('/api/login_hw4/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access) {
+                    document.getElementById('message').innerText = "Login successful!";
+                    console.log('Access Token:', data.access);
+                    console.log('Refresh Token:', data.refresh);
+
+                    // 將 Token 存儲到 localStorage
+                    localStorage.setItem('access_token', data.access);
+                    localStorage.setItem('refresh_token', data.refresh);
+
+                    // 發送 API 請求，並處理過期情況
+                    makeApiRequest(username, data.access, data.refresh);
+                } else {
+                    document.getElementById('message').innerText = "Login failed: " + data.detail;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Function to make the API request with access token
+        function makeApiRequest(username, access_token, refresh_token) {
+            fetch('/api/stock_data_api_hw4_secrete/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + access_token  // 使用 access token 作為授權標頭
+                },
+                body: JSON.stringify({
+                    username: username
+                })
+            })
+            .then(stockResponse => {
+                if (stockResponse.status === 401) {
+                    // 如果 access token 無效，嘗試刷新 token
+                    refreshAccessToken(refresh_token, username);
+                } else {
+                    return stockResponse.json();
+                }
+            })
+            .then(stockData => {
+                if (stockData) {
+                    console.log('Stock Data API Response:', stockData);
+                    document.getElementById('message').innerText = "Stock data received!";
+                }
+            })
+            .catch(stockError => {
+                console.error('Error fetching stock data:', stockError);
+                document.getElementById('message').innerText = "Error fetching stock data.";
+            });
+        }
+
+        // Function to refresh the access token using refresh token
+        function refreshAccessToken(refresh_token, username) {
+            fetch('/api/token/refresh/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    refresh: refresh_token
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access) {
+                    console.log('New Access Token:', data.access);
+                    localStorage.setItem('access_token', data.access);
+
+                    // 使用新的 access token 再次請求 stock_data_api_hw4_secrete
+                    makeApiRequest(username, data.access, refresh_token);
+                } else {
+                    document.getElementById('message').innerText = "Failed to refresh access token.";
+                }
+            })
+            .catch(error => {
+                console.error('Error refreshing token:', error);
+            });
+        }
+    </script>
+</body>
+</html>
