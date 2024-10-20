@@ -43,7 +43,8 @@ urlpatterns = [
     path('api/register_hw4/', hw4_views.RegisterView.as_view(), name='register'),
     
     #path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+   
     path('stock_chart_hw4/', hw4_views.stock_chart_hw4, name='stock_chart_hw4'),
-    path('api/stock_data_api_hw4_secrete/', hw4_views.stock_data_api, name='stock_data_api_hw4_secrete'),
+    path('api/stock_data_api_hw4_secrete/', hw4_views.stock_data_api_hw4_secrete, name='stock_data_api_hw4_secrete'),
 
 ]

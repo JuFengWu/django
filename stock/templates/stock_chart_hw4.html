@@ -94,17 +94,34 @@
                 selected_stocks2: $('#stock-list2').val(),
                 start_date: $('#start_date').val(),
                 end_date: $('#end_date').val(),
-                window_size: $('#window_size').val()
+                window_size: $('#window_size').val(),
+                username: localStorage.getItem('username')
             };
+            const accessToken = localStorage.getItem('access_token');
+            const refreshToken = localStorage.getItem('refresh_token');
+            
+            /*
+            fetch('/api/stock_data_api_hw4_secrete/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken  // 使用 access token 作為授權標頭
+                },
+                body: JSON.stringify(formData)
+            })
+            */ 
+            
             $.ajax({
-                url: "/api/stock_data_api/",  // 改為你的 API URL
+                url: "/api/stock_data_api_hw4_secrete/",  // 改為你的 API URL
                 method: "POST",
                 contentType: "application/json",  // 設置為 JSON 格式
                 data: JSON.stringify(formData),  // 傳送 JSON 數據
                 headers: {
-                    'Authorization': 'Bearer Leo_ABCDEFG'  // 添加 token 到 headers
+                    
+                    'Authorization': 'Bearer '+ accessToken  // 添加 token 到 headers
                 },
                 success: function(data) {
+                    
                     // 提取標記數據
                     const buy1Markers = data.buy1timeStock.map(([timestamp, price]) => ({
                         x: timestamp,  // 直接使用 timestamp
@@ -329,20 +346,51 @@
                         columns: data.datatable_headers.map(header => ({ title: header })), // 使用後端提供的標題
                         destroy: false // 如果表格已初始化，重新加載數據
                         });
+                    
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401) {
+                        // 如果 token 過期，跳轉到登出頁面
+                        //window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
+                        refreshAccessTokenAndRetry(refreshToken);
+                    }
                     // 檢查狀態碼並彈出相應的訊息框
-                    if (jqXHR.status !== 200) {
+                    else if (jqXHR.status !== 200) {
                         alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
                     }
+                    
                 }
+                
             });
         });
-    
-        // 確保當數字顯示框中的值變更時，滑動條同步更新
-        document.getElementById('size_display').oninput = function() {
-            document.getElementById('window_size').value = this.value;
-        };
+
+        function refreshAccessTokenAndRetry(refreshToken,username) {
+            $.ajax({
+                url: '/api/token/refresh/',  // Django 的 Token 刷新 API
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    refresh: refreshToken  // 使用 refresh token 獲取新的 access token
+                }),
+                success: function(data) {
+                    if (data.access) {
+                        // 更新本地存儲中的 access token
+                        localStorage.setItem('access_token', data.access);
+
+                        // 使用新的 access token 重新發送原來的請求
+                        //sendRequestWithToken(data.access,user_name);
+                    } else {
+                        alert('Failed to refresh access token. Please log in again.');
+                        window.location.href = "{% url 'logout' %}";
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert('Error refreshing access token. Please log in again.');
+                    window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
+                }
+            });
+        }
+
     </script>
 
 </body>

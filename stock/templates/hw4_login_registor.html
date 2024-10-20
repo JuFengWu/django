@@ -77,12 +77,13 @@
                     console.log('Access Token:', data.access);
                     console.log('Refresh Token:', data.refresh);
 
-                    // 將 Token 存儲到 localStorage
+                    // 將 Token 和 username 存儲到 localStorage
                     localStorage.setItem('access_token', data.access);
                     localStorage.setItem('refresh_token', data.refresh);
+                    localStorage.setItem('username', username);
 
-                    // 發送 API 請求，並處理過期情況
-                    makeApiRequest(username, data.access, data.refresh);
+                    // 跳轉到 stock_chart_hw4.html
+                    window.location.href = "/stock_chart_hw4/";
                 } else {
                     document.getElementById('message').innerText = "Login failed: " + data.detail;
                 }

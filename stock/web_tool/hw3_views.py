@@ -45,6 +45,7 @@ VALID_TOKEN  = "Leo_ABCDEFG"
 
 @api_view(['POST'])
 def stock_data_api(request):
+    print("stock_data_api")
     token = request.headers.get('Authorization')
     print(token)
     if not token or token != f'Bearer {VALID_TOKEN}':

@@ -50,7 +50,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),  # 短期 Token 有效期 10 分鐘
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),  # 短期 Token 有效期 10 分鐘
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # 長期 Token 有效期 1 天
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,

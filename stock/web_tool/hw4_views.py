@@ -53,24 +53,23 @@ class LoginView(APIView):
                 'access': str(refresh.access_token),
             })
         else:
+            print("aaa")
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 def stock_chart_hw4(request):
-    if not request.session.get('username'):
-        return redirect('loginlogin_hw4')  # 未登入，重定向到登入頁面
-    
     return render(request, 'stock_chart_hw4.html')
 
 def hw4_logout(request):
     # 清除 session 資料
     request.session.flush()
     messages.success(request, "成功登出")
-    return redirect('loginlogin_hw4')  # 重定向回登入頁面
+    return redirect('login_hw4')  # 重定向回登入頁面
 
 VALID_TOKEN  = "Leo_ABCDEFG"
 
 @api_view(['POST'])
-def stock_data_api(request):
+def stock_data_api_hw4_secrete(request):
+    print("!!!!!stock_data_api_hw4_secrete!!!!!")
     auth = JWTAuthentication()
 
     try:
@@ -78,6 +77,7 @@ def stock_data_api(request):
         user, token = auth.authenticate(request)
     except Exception as e:
         print("Invalid token or token expired")
+        print("bb")
         return Response({"detail": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)
 
     # 取得傳入的 username
@@ -107,7 +107,7 @@ def stock_data_api(request):
         print("Invalid or missing token")
         return Response({"error": "Invalid or missing token"}, status=status.HTTP_403_FORBIDDEN)
     
-    return render(request, 'stock_chart_hw4.html')
+    #return render(request, 'stock_chart_hw4.html')
 
     selected_stocks = request.data.get('selected_stocks')
     selected_stocks2 = request.data.get('selected_stocks2')
