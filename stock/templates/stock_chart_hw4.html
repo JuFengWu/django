@@ -86,10 +86,7 @@
     </table>
 
     <script>
-        // 提交表單並生成圖表和表格
-        document.getElementById('submitBtn1').addEventListener('click', function() {
-            // 收集表單數據
-            const formData = {
+        const formData = {
                 selected_stocks: $('#stock-list').val(),
                 selected_stocks2: $('#stock-list2').val(),
                 start_date: $('#start_date').val(),
@@ -97,20 +94,18 @@
                 window_size: $('#window_size').val(),
                 username: localStorage.getItem('username')
             };
+        // 提交表單並生成圖表和表格
+        document.getElementById('submitBtn1').addEventListener('click', function() {
+            // 收集表單數據
+            
             const accessToken = localStorage.getItem('access_token');
             const refreshToken = localStorage.getItem('refresh_token');
+
+            sendRequestWithToken(accessToken);
             
-            /*
-            fetch('/api/stock_data_api_hw4_secrete/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken  // 使用 access token 作為授權標頭
-                },
-                body: JSON.stringify(formData)
-            })
-            */ 
-            
+        });
+
+        function sendRequestWithToken(accessToken){
             $.ajax({
                 url: "/api/stock_data_api_hw4_secrete/",  // 改為你的 API URL
                 method: "POST",
@@ -120,7 +115,27 @@
                     
                     'Authorization': 'Bearer '+ accessToken  // 添加 token 到 headers
                 },
-                success: function(data) {
+                success:  function(data) {  // 使用匿名函數接收成功回應
+                    run_data(data);  // 在成功回應後調用 run_data
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401) {
+                        // 如果 token 過期，跳轉到登出頁面
+                        //window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
+                        const refreshToken = localStorage.getItem('refresh_token');
+                        refreshAccessTokenAndRetry(refreshToken);
+                    }
+                    // 檢查狀態碼並彈出相應的訊息框
+                    else if (jqXHR.status !== 200) {
+                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
+                    }
+                    
+                }
+                
+            });
+        }
+
+        function run_data(data) {
                     
                     // 提取標記數據
                     const buy1Markers = data.buy1timeStock.map(([timestamp, price]) => ({
@@ -347,24 +362,9 @@
                         destroy: false // 如果表格已初始化，重新加載數據
                         });
                     
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status === 401) {
-                        // 如果 token 過期，跳轉到登出頁面
-                        //window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
-                        refreshAccessTokenAndRetry(refreshToken);
-                    }
-                    // 檢查狀態碼並彈出相應的訊息框
-                    else if (jqXHR.status !== 200) {
-                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
-                    }
-                    
                 }
-                
-            });
-        });
 
-        function refreshAccessTokenAndRetry(refreshToken,username) {
+        function refreshAccessTokenAndRetry(refreshToken) {
             $.ajax({
                 url: '/api/token/refresh/',  // Django 的 Token 刷新 API
                 method: 'POST',
@@ -378,7 +378,7 @@
                         localStorage.setItem('access_token', data.access);
 
                         // 使用新的 access token 重新發送原來的請求
-                        //sendRequestWithToken(data.access,user_name);
+                        sendRequestWithToken(data.access);
                     } else {
                         alert('Failed to refresh access token. Please log in again.');
                         window.location.href = "{% url 'logout' %}";
