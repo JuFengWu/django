@@ -65,8 +65,6 @@ def hw4_logout(request):
     messages.success(request, "成功登出")
     return redirect('login_hw4')  # 重定向回登入頁面
 
-VALID_TOKEN  = "Leo_ABCDEFG"
-
 @api_view(['POST'])
 def stock_data_api_hw4_secrete(request):
     print("!!!!!stock_data_api_hw4_secrete!!!!!")

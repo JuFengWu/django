@@ -69,6 +69,7 @@
 
         <!-- 提交按鈕 -->
         <button type="button" id="submitBtn1">提交按鈕 1</button>
+        <button type="button" id="traceBtn">Trace</button>
     </form>
 
     <div id="chartA"></div>
@@ -103,6 +104,21 @@
 
             sendRequestWithToken(accessToken);
             
+        });
+
+        document.getElementById('traceBtn').addEventListener('click', function() {
+            // 收集表單數據
+            const formData = {
+                selected_stocks: $('#stock-list').val(),
+                selected_stocks2: $('#stock-list2').val(),
+                start_date: $('#start_date').val(),
+                end_date: $('#end_date').val(),
+                window_size: $('#window_size').val(),
+                username: localStorage.getItem('username')
+            };
+
+            const accessToken = localStorage.getItem('access_token');
+            traceRequestWithToken(accessToken, formData, "/api/trace_stock_data/");
         });
 
         function sendRequestWithToken(accessToken){
@@ -389,6 +405,35 @@
                     window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
                 }
             });
+        }
+
+        function traceRequestWithToken(accessToken, formData, apiUrl) {
+            $.ajax({
+                url: apiUrl,  // Trace 的 API 路徑
+                method: "POST",
+                contentType: "application/json",  // 設置為 JSON 格式
+                data: JSON.stringify(formData),  // 傳送 JSON 數據
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken  // 添加 token 到 headers
+                },
+                success: function(data) {
+                    renderTraceResult(data);  // 顯示追踪的結果，更新圖表或提示
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401) {
+                        const refreshToken = localStorage.getItem('refresh_token');
+                        refreshAccessTokenAndRetry(refreshToken);
+                    } else if (jqXHR.status !== 200) {
+                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
+                    }
+                }
+            });
+        }
+
+        // 顯示 Trace 的結果
+        function renderTraceResult(data) {
+            alert("Trace successfully recorded! Trace ID: " + data.trace_id);
+            // 在這裡可以更新圖表或表格，根據追踪的結果進行視覺化展示
         }
 
     </script>
