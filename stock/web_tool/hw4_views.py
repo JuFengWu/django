@@ -12,6 +12,8 @@ from rest_framework import status
 import requests
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from .models import StockTrace
+
 def login_register(request):
     return render(request, 'hw4_login_registor.html')
 
@@ -64,6 +66,41 @@ def hw4_logout(request):
     request.session.flush()
     messages.success(request, "成功登出")
     return redirect('login_hw4')  # 重定向回登入頁面
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import StockTrace  # 假設你有一個模型來存儲追踪數據
+import json
+
+@csrf_exempt
+def trace_stock_data(request):
+    if request.method == 'POST':
+        # 解析前端傳過來的 JSON 數據
+        data = json.loads(request.body)
+
+        # 解析數據
+        selected_stocks = data.get('selected_stocks')
+        selected_stocks2 = data.get('selected_stocks2')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        window_size = data.get('window_size')
+
+        print("aaaa")
+
+        # 保存追踪數據到資料庫
+        trace_record = StockTrace.objects.create(
+            stock1=selected_stocks[0],
+            stock2=selected_stocks2[0],
+            start_date=start_date,
+            end_date=end_date,
+            window_size=window_size
+        )
+
+        # 返回追踪結果給前端
+        return JsonResponse({"message": "Trace successfully recorded!", "trace_id": trace_record.id})
+    
+
 
 @api_view(['POST'])
 def stock_data_api_hw4_secrete(request):

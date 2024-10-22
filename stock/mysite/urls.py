@@ -47,4 +47,6 @@ urlpatterns = [
     path('stock_chart_hw4/', hw4_views.stock_chart_hw4, name='stock_chart_hw4'),
     path('api/stock_data_api_hw4_secrete/', hw4_views.stock_data_api_hw4_secrete, name='stock_data_api_hw4_secrete'),
 
+    path('api/trace_stock_data/', hw4_views.trace_stock_data, name='trace_stock_data'),
+
 ]
