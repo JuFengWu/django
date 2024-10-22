@@ -12,8 +12,6 @@ from rest_framework import status
 import requests
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import StockTrace
-
 def login_register(request):
     return render(request, 'hw4_login_registor.html')
 
@@ -70,12 +68,13 @@ def hw4_logout(request):
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import StockTrace  # 假設你有一個模型來存儲追踪數據
 import json
 
-@csrf_exempt
+@api_view(['POST'])
 def trace_stock_data(request):
+    print("aaaa")
     if request.method == 'POST':
+        print("bbb")
         # 解析前端傳過來的 JSON 數據
         data = json.loads(request.body)
 
@@ -85,20 +84,21 @@ def trace_stock_data(request):
         start_date = data.get('start_date')
         end_date = data.get('end_date')
         window_size = data.get('window_size')
+        username= data.get('username')
 
         print("aaaa")
 
         # 保存追踪數據到資料庫
-        trace_record = StockTrace.objects.create(
-            stock1=selected_stocks[0],
-            stock2=selected_stocks2[0],
-            start_date=start_date,
-            end_date=end_date,
-            window_size=window_size
-        )
+        
+        selected_stocks[0]
+        selected_stocks2[0]
+        start_date
+        end_date
+        window_size
+        
 
         # 返回追踪結果給前端
-        return JsonResponse({"message": "Trace successfully recorded!", "trace_id": trace_record.id})
+        return JsonResponse({"message": "Trace successfully recorded!", "trace_id": username})
     
 
 
