@@ -89,11 +89,11 @@ def trace_stock_data(request):
 
         user = User.objects.get(username=username)
         print(username)
-        user.profile.selected_stocks = selected_stocks[0]
-        user.profile.selected_stocks2 = selected_stocks2[0] 
-        user.profile.end_date = end_date 
-        user.profile.start_date = start_date 
-        user.profile.window_size = window_size 
+        user.profile.selected_stocks = user.profile.selected_stocks + "," + selected_stocks[0] if user.profile.selected_stocks else selected_stocks[0]
+        user.profile.selected_stocks2 = user.profile.selected_stocks2 + "," + selected_stocks2[0] if user.profile.selected_stocks2 else selected_stocks2[0]
+        user.profile.start_date = user.profile.start_date + "," + start_date if user.profile.start_date else start_date
+        user.profile.end_date = user.profile.end_date + "," + end_date if user.profile.end_date else end_date
+        user.profile.window_size = user.profile.window_size + "," + window_size if user.profile.window_size else window_size 
         user.profile.save()
 
         # 保存追踪數據到資料庫
@@ -115,12 +115,12 @@ def show_trace(request):
 
         user = User.objects.get(username=username)
         print(user.username)
-        selected_stocks = user.profile.selected_stocks
-        selected_stocks2 = user.profile.selected_stocks2
-        end_date = user.profile.end_date
-        start_date = user.profile.start_date
-        window_size = user.profile.window_size
-        print(f"Username: {user.username}, Stock Date Start: {selected_stocks}")
+
+        selected_stocks = user.profile.selected_stocks.split(",") if user.profile.selected_stocks else []
+        selected_stocks2 = user.profile.selected_stocks2.split(",") if user.profile.selected_stocks2 else []
+        end_date = user.profile.end_date.split(",") if user.profile.end_date else []
+        start_date = user.profile.start_date.split(",") if user.profile.start_date else []
+        window_size = user.profile.window_size.split(",") if user.profile.window_size else []
 
         # 根據 username 查詢追蹤清單
         # traces = Trace.objects.filter(user__username=username)
@@ -132,14 +132,16 @@ def show_trace(request):
 
         trace_data = []
 
-        x =  {
-            "selected_stocks": selected_stocks,
-            "selected_stocks2": selected_stocks2,
-            "end_date": end_date,
-            "start_date": start_date,
-            "window_size": window_size,
-        }
-        trace_data.append(x)
+        for i in range(len(window_size)):
+
+            x =  {
+                "selected_stocks": selected_stocks[i],
+                "selected_stocks2": selected_stocks2[i],
+                "end_date": end_date[i],
+                "start_date": start_date[i],
+                "window_size": window_size[i],
+            }
+            trace_data.append(x)
 
         context = {
             "trace_data" : trace_data

@@ -26,3 +26,12 @@ for user in users_without_profile:
     Profile.objects.create(user=user)
 
 print(f"Created profiles for {users_without_profile.count()} users.")
+
+清空數據庫
+>>> for profile in Profile.objects.all():
+...     profile.selected_stocks = ""  # 清空 selected_stocks
+...     profile.selected_stocks2 = ""  # 清空 selected_stocks2
+...     profile.start_date = ""  # 清空 start_date
+...     profile.end_date = ""  # 清空 end_date
+...     profile.window_size = ""  # 清空 window_size
+...     profile.save()  # 保存修改
