@@ -413,12 +413,12 @@
                         sendRequestWithToken(data.access);
                     } else {
                         alert('Failed to refresh access token. Please log in again.');
-                        window.location.href = "{% url 'logout' %}";
+                        window.location.href = "{% url 'logout_hw4' %}";
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     alert('Error refreshing access token. Please log in again.');
-                    window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
+                    window.location.href = "{% url 'logout_hw4' %}";  // Django 的登出 URL
                 }
             });
         }
