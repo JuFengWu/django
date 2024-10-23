@@ -27,7 +27,12 @@
 </head>
 <body>
 
-    <a href="{% url 'logout' %}" class="btn btn-danger">登出</a>
+    <a href="{% url 'logout_hw4' %}" class="btn btn-danger">登出</a>
+    <form id="showTraceForm" method="POST" action="{% url 'show_trace_hw4' %}">
+        {% csrf_token %}
+        <input type="hidden" id="usernameField" name="username">
+        <button type="submit" class="btn btn-danger">顯示追蹤清單</button>
+    </form>
 
     <!-- 表單開始 -->
     <form id="stock-form" method="post">
@@ -87,6 +92,13 @@
     </table>
 
     <script>
+
+        document.getElementById('showTraceForm').addEventListener('submit', function(event) {
+                // 獲取 localStorage 中的 username 並設置到隱藏字段中
+                document.getElementById('usernameField').value = localStorage.getItem('username');
+            });
+
+
         const formData = {
                 selected_stocks: $('#stock-list').val(),
                 selected_stocks2: $('#stock-list2').val(),
@@ -98,6 +110,8 @@
         // 提交表單並生成圖表和表格
         document.getElementById('submitBtn1').addEventListener('click', function() {
             // 收集表單數據
+
+            event.preventDefault();
             
             const accessToken = localStorage.getItem('access_token');
             const refreshToken = localStorage.getItem('refresh_token');
@@ -107,6 +121,8 @@
         });
 
         document.getElementById('traceBtn').addEventListener('click', function() {
+            event.preventDefault();
+            event.stopPropagation();
             // 收集表單數據
             const formData = {
                 selected_stocks: $('#stock-list').val(),

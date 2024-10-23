@@ -38,7 +38,7 @@ urlpatterns = [
     path('login-register-test/', hw4_views_test.login_register, name='login_register_test'),
 
     path('hw4_login_registor/', hw4_views.login_register, name='login_hw4'),
-    path('hw4_logout/', hw4_views.hw4_logout, name='logout'),
+    path('hw4_logout/', hw4_views.hw4_logout, name='logout_hw4'),
     path('api/login_hw4/', hw4_views.LoginView.as_view(), name='login_hw4_test'),
     path('api/register_hw4/', hw4_views.RegisterView.as_view(), name='register'),
     
@@ -48,5 +48,7 @@ urlpatterns = [
     path('api/stock_data_api_hw4_secrete/', hw4_views.stock_data_api_hw4_secrete, name='stock_data_api_hw4_secrete'),
 
     path('api/trace_stock_data/', hw4_views.trace_stock_data, name='trace_stock_data'),
+    path('show_trace_hw4/', hw4_views.show_trace, name='show_trace_hw4'),
+    
 
 ]

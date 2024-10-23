@@ -69,12 +69,13 @@ def hw4_logout(request):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.contrib.auth.models import User
 
 @api_view(['POST'])
 def trace_stock_data(request):
-    print("aaaa")
+    
     if request.method == 'POST':
-        print("bbb")
+        
         # 解析前端傳過來的 JSON 數據
         data = json.loads(request.body)
 
@@ -86,25 +87,51 @@ def trace_stock_data(request):
         window_size = data.get('window_size')
         username= data.get('username')
 
-        print("aaaa")
+        user = User.objects.get(username=username)
+        print(username)
+        user.profile.selected_stocks = selected_stocks[0]
+        user.profile.selected_stocks2 = selected_stocks2[0] 
+        user.profile.end_date = end_date 
+        user.profile.start_date = start_date 
+        user.profile.window_size = window_size 
+        user.profile.save()
 
         # 保存追踪數據到資料庫
         
-        selected_stocks[0]
-        selected_stocks2[0]
-        start_date
-        end_date
-        window_size
+        print(selected_stocks[0])
+        print(selected_stocks2[0])
+        print(start_date)
+        print(end_date)
+        print(window_size)
         
 
         # 返回追踪結果給前端
         return JsonResponse({"message": "Trace successfully recorded!", "trace_id": username})
     
+def show_trace(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        print(username)
 
+        user = User.objects.get(username=username)
+        print(user.username)
+        selected_stocks = user.profile.selected_stocks
+        print(f"Username: {user.username}, Stock Date Start: {selected_stocks}")
+
+        # 根據 username 查詢追蹤清單
+        # traces = Trace.objects.filter(user__username=username)
+        traces = []  # 這裡應該替換成實際的查詢
+
+        users = User.objects.all()
+        for user in users:
+            print(f"Username: {user.username}, Email: {user.email}, Date Joined: {user.date_joined}")
+
+        return render(request, 'show_trace_hw4.html', {'traces': traces})
+
+    return render(request, 'show_trace_hw4.html')
 
 @api_view(['POST'])
 def stock_data_api_hw4_secrete(request):
-    print("!!!!!stock_data_api_hw4_secrete!!!!!")
     auth = JWTAuthentication()
 
     try:
