@@ -19,6 +19,8 @@
                 <th>start_date</th>
                 <th>end_date</th>
                 <th>window_size</th>
+                <th>Actions Delete</th>
+                <th>Actions Show Trace</th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +31,14 @@
                 <td>{{ row.start_date }}</a></td>
                 <td>{{ row.end_date }}</td>
                 <td>{{ row.window_size }}</td>
-                
+                <td>
+                    <!-- Delete 按鈕 -->
+                    <button class="btn-delete" data-id="{{ row.id }}" data-index="{{ forloop.counter0 }}">Delete</button>
+                </td>
+                <td>
+                    <!-- Show Trace 按鈕 -->
+                    <button class="btn-show-trace" data-id="{{ row.id }}">Show Trace</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -38,7 +47,60 @@
     <script>
         $(document).ready(function() {
             $('#result_table').DataTable();  // 初始化 DataTables
+            
+            // 刪除按鈕的點擊事件
+            $('#result_table').on('click', '.btn-delete', function() {
+                const rowId = $(this).data('id');  // 獲取行的 ID
+                const rowIndex = $(this).data('index');  // 獲取行的索引
+                const username = localStorage.getItem('username');  // 從 localStorage 獲取 username
+                deleteRow(rowId,rowIndex,username);
+            });
+
+            // Show Trace 按鈕的點擊事件
+            $('#result_table').on('click', '.btn-show-trace', function() {
+                const rowId = $(this).data('id');  // 獲取行的 ID
+                showTrace(rowId);
+            });
         });
+        // 刪除行的處理函數
+        function deleteRow(rowId,rowIndex,username) {
+            $.ajax({
+                url: "{% url 'delete_trace' %}",  // Django 的刪除視圖的 URL
+                method: "POST",
+                data: {
+                    'id': rowId,  // 傳送行 ID
+                    'index': rowIndex,  // 傳送行的索引
+                    'username': username,  // 傳送 username
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // CSRF token
+                },
+                success: function(response) {
+                    alert("Row deleted successfully!");
+                    location.reload();  // 刷新頁面，或者你可以手動刪除該行
+                },
+                error: function(xhr, status, error) {
+                    alert("Error deleting row: " + error);
+                }
+            });
+        }
+
+        // 顯示追蹤數據的處理函數
+        function showTrace(rowId) {
+            $.ajax({
+                url: "{% url 'show_single_trace' %}",  // Django 的 Show Trace 視圖的 URL
+                method: "POST",
+                data: {
+                    'id': rowId,  // 傳送行 ID
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // CSRF token
+                },
+                success: function(response) {
+                    // 顯示 Trace 數據，可以在這裡展示數據
+                    alert("Trace data: " + JSON.stringify(response));
+                },
+                error: function(xhr, status, error) {
+                    alert("Error showing trace: " + error);
+                }
+            });
+        }
     </script>
 </body>
 </html>

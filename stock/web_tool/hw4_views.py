@@ -70,6 +70,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.contrib.auth.models import User
+from .models import Profile
 
 @api_view(['POST'])
 def trace_stock_data(request):
@@ -108,6 +109,70 @@ def trace_stock_data(request):
         # 返回追踪結果給前端
         return JsonResponse({"message": "Trace successfully recorded!", "trace_id": username})
     
+@csrf_exempt
+def delete_trace(request):
+    if request.method == 'POST':
+        row_id = request.POST.get('id')  # 獲取行的 ID
+        username = request.POST.get('username')  # 獲取 username
+        remove_index = int(request.POST.get('index'))  # 獲取索引
+        print(remove_index)
+        print(row_id)
+        print(username)
+        try:
+            # 根據 username 獲取對應的 User
+            user = User.objects.get(username=username)
+            profile = user.profile  # 假設一對一關聯的 Profile
+
+            # 將 selected_stocks 字段轉換為列表
+            selected_stocks_list = profile.selected_stocks.split(',')
+            selected_stocks2_list = profile.selected_stocks2.split(',')
+            start_date_list = profile.start_date.split(',')
+            end_date_list = profile.end_date.split(',')
+            window_size_list = profile.window_size.split(',')
+
+            # 使用索引排除指定項目
+            updated_selected_stocks = [stock for i, stock in enumerate(selected_stocks_list) if i != remove_index]
+            updated_selected_stocks2 = [stock for i, stock in enumerate(selected_stocks2_list) if i != remove_index]
+            updated_start_date = [date for i, date in enumerate(start_date_list) if i != remove_index]
+            updated_end_date = [date for i, date in enumerate(end_date_list) if i != remove_index]
+            updated_window_size = [size for i, size in enumerate(window_size_list) if i != remove_index]
+
+            # 將列表重新轉換為字符串並保存
+            profile.selected_stocks = ",".join(updated_selected_stocks)
+            profile.selected_stocks2 = ",".join(updated_selected_stocks2)
+            profile.start_date = ",".join(updated_start_date)
+            profile.end_date = ",".join(updated_end_date)
+            profile.window_size = ",".join(updated_window_size)
+
+            # 保存 Profile
+            profile.save()
+
+            return JsonResponse({'success': True, 'message': 'Item removed successfully!'})
+
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User not found!'})
+        except Profile.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Profile not found!'})
+        
+@csrf_exempt
+def show_single_trace(request):
+    if request.method == 'POST':
+        row_id = request.POST.get('id')  # 獲取行的 ID
+
+        try:
+            # 獲取對應的數據
+            trace_record = Profile.objects.get(id=row_id)
+            # 返回該行數據
+            return JsonResponse({
+                'selected_stocks': trace_record.selected_stocks,
+                'selected_stocks2': trace_record.selected_stocks2,
+                'start_date': trace_record.start_date,
+                'end_date': trace_record.end_date,
+                'window_size': trace_record.window_size
+            })
+        except Profile.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Row not found!'})
+    
 def show_trace(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -122,13 +187,9 @@ def show_trace(request):
         start_date = user.profile.start_date.split(",") if user.profile.start_date else []
         window_size = user.profile.window_size.split(",") if user.profile.window_size else []
 
-        # 根據 username 查詢追蹤清單
-        # traces = Trace.objects.filter(user__username=username)
-        traces = []  # 這裡應該替換成實際的查詢
-
-        users = User.objects.all()
-        for user in users:
-            print(f"Username: {user.username}, Email: {user.email}, Date Joined: {user.date_joined}")
+        #users = User.objects.all()
+        #for user in users:
+        #    print(f"Username: {user.username}, Email: {user.email}, Date Joined: {user.date_joined}")
 
         trace_data = []
 

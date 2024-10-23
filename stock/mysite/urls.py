@@ -49,6 +49,8 @@ urlpatterns = [
 
     path('api/trace_stock_data/', hw4_views.trace_stock_data, name='trace_stock_data'),
     path('show_trace_hw4/', hw4_views.show_trace, name='show_trace_hw4'),
+    path('api/delete_trace/', hw4_views.delete_trace, name='delete_trace'),
+    path('api/show_single_trace/', hw4_views.show_single_trace, name='show_single_trace'),  # 修改路由名稱
     
 
 ]
