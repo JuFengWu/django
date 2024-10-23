@@ -72,6 +72,39 @@ import json
 from django.contrib.auth.models import User
 from .models import Profile
 
+@csrf_exempt
+def save_trace_data(request):
+    if request.method == 'POST':
+        # 接收資料並存儲到 session
+        request.session['selected_stocks'] = request.POST.get('selected_stocks')
+        request.session['selected_stocks2'] = request.POST.get('selected_stocks2')
+        request.session['start_date'] = request.POST.get('start_date')
+        request.session['end_date'] = request.POST.get('end_date')
+        request.session['window_size'] = request.POST.get('window_size')
+        
+        return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+    return JsonResponse({'status': 'fail', 'message': 'Invalid request method'})
+
+def trace_view(request):
+    # 從 session 中獲取資料
+    selected_stocks = request.session.get('selected_stocks', '')
+    selected_stocks2 = request.session.get('selected_stocks2', '')
+    start_date = request.session.get('start_date', '')
+    end_date = request.session.get('end_date', '')
+    window_size = request.session.get('window_size', '')
+
+    out_data = calulate(selected_stocks,selected_stocks2,start_date,end_date,window_size,"123")
+
+    print(out_data["tableData"])
+
+    converted_data = [
+    (int(item[0].timestamp() * 1000), item[1], item[2], item[3], item[4], item[5])
+    for item in out_data["tableData"]]
+    out_data["tableData"] = converted_data
+
+    return render(request, 'trace_view.html', out_data)
+
+
 @api_view(['POST'])
 def trace_stock_data(request):
     
@@ -258,7 +291,13 @@ def stock_data_api_hw4_secrete(request):
     start_date = request.data.get('start_date')
     end_date = request.data.get('end_date')
     window_size = request.data.get('window_size')
-    
+
+    out_data = calulate(selected_stocks,selected_stocks2,start_date,end_date,window_size,username)
+
+    # 返回 JSON 格式的數據
+    return Response(out_data, status=status.HTTP_200_OK)
+
+def calulate(selected_stocks,selected_stocks2,start_date,end_date,window_size,username):    
     data = spider_data(selected_stocks[0],start_date,end_date)
     data2= spider_data(selected_stocks2[0],start_date,end_date)
 
@@ -339,15 +378,6 @@ def stock_data_api_hw4_secrete(request):
         [(datetime.datetime.fromtimestamp(row[0] / 1000), *row[1:]) for row in tableData],
         key=lambda x: x[0]
     )
-    
-    # 從請求中獲取數據，例如股票代碼、日期範圍等
-    selected_stocks = request.data.get('selected_stocks')
-    selected_stocks2 = request.data.get('selected_stocks2')
-    start_date = request.data.get('start_date')
-    end_date = request.data.get('end_date')
-    window_size = request.data.get('window_size')
-
-    username = request.session.get('username')
 
     # 假設你進行了一些計算，並生成以下數據
     out_data = {
@@ -370,5 +400,6 @@ def stock_data_api_hw4_secrete(request):
         "username":username
     }
 
-    # 返回 JSON 格式的數據
-    return Response(out_data, status=status.HTTP_200_OK)
+    return out_data
+
+    

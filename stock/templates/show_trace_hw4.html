@@ -56,10 +56,35 @@
                 deleteRow(rowId,rowIndex,username);
             });
 
-            // Show Trace 按鈕的點擊事件
+                // Show Trace 按鈕的點擊事件
+                // Show Trace 按鈕的點擊事件
             $('#result_table').on('click', '.btn-show-trace', function() {
-                const rowId = $(this).data('id');  // 獲取行的 ID
-                showTrace(rowId);
+                const selectedStocks = $(this).closest('tr').find('td').eq(0).text();
+                const selectedStocks2 = $(this).closest('tr').find('td').eq(1).text();
+                const startDate = $(this).closest('tr').find('td').eq(2).text();
+                const endDate = $(this).closest('tr').find('td').eq(3).text();
+                const windowSize = $(this).closest('tr').find('td').eq(4).text();
+
+                // 使用 AJAX 將資料傳送到後端 API
+                $.ajax({
+                    url: '/api/save_trace_data/',  // Django API 路徑
+                    method: 'POST',
+                    data: {
+                        'selected_stocks': selectedStocks,
+                        'selected_stocks2': selectedStocks2,
+                        'start_date': startDate,
+                        'end_date': endDate,
+                        'window_size': windowSize,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // CSRF token
+                    },
+                    success: function(response) {
+                        // API 調用成功後，打開新視窗
+                        window.location.href = '/trace_view/';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error sending data: ' + error);
+                    }
+                });
             });
         });
         // 刪除行的處理函數
