@@ -116,6 +116,10 @@ def show_trace(request):
         user = User.objects.get(username=username)
         print(user.username)
         selected_stocks = user.profile.selected_stocks
+        selected_stocks2 = user.profile.selected_stocks2
+        end_date = user.profile.end_date
+        start_date = user.profile.start_date
+        window_size = user.profile.window_size
         print(f"Username: {user.username}, Stock Date Start: {selected_stocks}")
 
         # 根據 username 查詢追蹤清單
@@ -126,7 +130,22 @@ def show_trace(request):
         for user in users:
             print(f"Username: {user.username}, Email: {user.email}, Date Joined: {user.date_joined}")
 
-        return render(request, 'show_trace_hw4.html', {'traces': traces})
+        trace_data = []
+
+        x =  {
+            "selected_stocks": selected_stocks,
+            "selected_stocks2": selected_stocks2,
+            "end_date": end_date,
+            "start_date": start_date,
+            "window_size": window_size,
+        }
+        trace_data.append(x)
+
+        context = {
+            "trace_data" : trace_data
+        }
+
+        return render(request, 'show_trace_hw4.html', context)
 
     return render(request, 'show_trace_hw4.html')
 

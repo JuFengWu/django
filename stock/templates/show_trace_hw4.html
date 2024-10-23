@@ -9,5 +9,36 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
+    <!-- 表格顯示 -->
+    {% if trace_data %}
+    <table id="result_table" class="display">
+        <thead>
+            <tr>
+                <th>selected_stocks</th>
+                <th>selected_stocks2</th>
+                <th>start_date</th>
+                <th>end_date</th>
+                <th>window_size</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in trace_data %}
+            <tr>
+                <td>{{ row.selected_stocks }}</a></td>
+                <td>{{ row.selected_stocks2 }}</td>
+                <td>{{ row.start_date }}</a></td>
+                <td>{{ row.end_date }}</td>
+                <td>{{ row.window_size }}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <script>
+        $(document).ready(function() {
+            $('#result_table').DataTable();  // 初始化 DataTables
+        });
+    </script>
 </body>
 </html>
