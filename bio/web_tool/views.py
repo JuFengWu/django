@@ -213,42 +213,18 @@ def gene_sequence_detail(request, gene_sequence_name):
     # Append the entire colored sequence as a single entry
     unsplice_highlighted_sequences.append(uncolored_sequence)
 
-    spliced_buf = io.BytesIO()
-
-    draw_colored_ranges(spliced_buf,spliced_color_ranges, total_length=len(spliced_color_ranges))
-
     new_spliced_color_ranges = modify_verticle(spliced_color_ranges)
-    
-    spliced_string = base64.b64encode(spliced_buf.read())
-    spliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
-    #print(new_spliced_color_ranges)
-
-    #fake_test = [{'start': 1, 'end': 174, 'color': 'orange'}, {'start': 175, 'end': 434, 'color': 'yellow'}, {'start': 435, 'end': 700, 'color': 'orange'}, {'start': 701, 'end': 1132, 'color': 'yellow'}, {'start': 1133, 'end': 1806, 'color': 'orange'}]
-    #new_spliced_color_ranges = fake_test
-
-    unspliced_buf = io.BytesIO()
-    draw_colored_ranges(unspliced_buf,unspliced_color_ranges, total_length=len(unspliced_color_ranges))
     
     new_unspliced_color_ranges = modify_verticle(unspliced_color_ranges)
 
-
-    spliced_string = base64.b64encode(unspliced_buf.read())
-    unspliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
-
-    #positiveData = [{"Exon" : "b","Start":"d","End":'f',"Length":'h'},
-    #                {"Exon" : "a","Start":"d","End":'f',"Length":'g'}]
     splicedData = spliced_table
     unsplicedData = unspliced_table
 
     context = {
         'gene_sequence_name': gene_sequence_name,
         'spliced_sequences': highlighted_sequences,
-        'spliced_matplotlib_image_url': 
-        'data:image/png;base64,' + spliced_matplotlib_image_url,
         "splicedData" : splicedData,
         'unspliced_sequences': unsplice_highlighted_sequences,
-        'unspliced_matplotlib_image_url': 
-        'data:image/png;base64,' + unspliced_matplotlib_image_url,
         "unsplicedData" : unsplicedData,
         "new_spliced_color_ranges" : new_spliced_color_ranges,
         "new_unspliced_color_ranges" : new_unspliced_color_ranges}
