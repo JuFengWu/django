@@ -63,15 +63,20 @@ def get_positive_table_data(positive_features):
 def get_positive_sequence_range(positive_features):
     rangeSequence = []
     count = 0
+    print("bbbb")
+    print(positive_features)
+    print("aaaaa")
     for i in positive_features:
+        if i["type"]!="exon":
+            continue
         if count%4 == 0:
-            color = "yellow"
+            color = "orange"
         elif count%4 == 1:
-            color = "orange"
-        elif count%4 == 2:
             color = "yellow"
-        elif count%4 == 3:
+        elif count%4 == 2:
             color = "orange"
+        elif count%4 == 3:
+            color = "yellow"
         count += 1
         rangeSequence.append((i["start"],i["stop"],color))
     return rangeSequence

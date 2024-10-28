@@ -20,7 +20,6 @@ def search_show(request):
 def get_data(gene_name):
     # 這裡是假設的數據，可以根據實際情況從資料庫查詢
 
-    print(gene_name)
     """
     data = {
         'wormbase_id': 'WBGene00016885',
@@ -57,10 +56,6 @@ def browse_result(request):
         selected_target_type = request.POST.get("target_type")
         selected_non_coding_rna = request.POST.getlist("non_coding_rna[]")
 
-
-        print(selected_non_coding_rna)
-        print(selected_target_type)
-
         # 根據選擇篩選資料（你可以自行實現具體的篩選邏輯）
         #filtered_data = EXAMPLE_TABLE_DATA  # 這裡可根據實際邏輯進行資料過濾
         filtered_data = []
@@ -78,14 +73,14 @@ def browse_result(request):
 
 # HW2 start 
 
+def modify_verticle(color_ranges):
+    result = [{'start': item[0], 'end': item[1], 'color': item[2]} for item in color_ranges]
+    return result
+
 def draw_colored_ranges(buf,ranges, total_length=10000):
     fig, ax = plt.subplots(figsize=(10, 1))
 
     last_position = 0  # 用於跟踪繪製的區間起始位置
-
-    print("----")
-    print(ranges)
-    print("--end--")
     # 遍歷範圍列表，繪製不同顏色的區間
     for start, end, color in ranges:
         # 添加之前未填充部分（灰色）
@@ -136,6 +131,7 @@ def gene_sequence_detail(request, gene_sequence_name):
     #get_data_from_web(gene_sequence_name)
     spliced_squence,spliced_features,unspliced_squence,unspliced_features  = get_split_data()
     spliced_table = get_positive_table_data(spliced_features)
+    
     spliced_color_ranges = get_positive_sequence_range(spliced_features)
     sequences = split_string_into_tuples(spliced_squence)
     
@@ -220,14 +216,22 @@ def gene_sequence_detail(request, gene_sequence_name):
     spliced_buf = io.BytesIO()
 
     draw_colored_ranges(spliced_buf,spliced_color_ranges, total_length=len(spliced_color_ranges))
+
+    new_spliced_color_ranges = modify_verticle(spliced_color_ranges)
     
     spliced_string = base64.b64encode(spliced_buf.read())
     spliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
+    #print(new_spliced_color_ranges)
 
+    #fake_test = [{'start': 1, 'end': 174, 'color': 'orange'}, {'start': 175, 'end': 434, 'color': 'yellow'}, {'start': 435, 'end': 700, 'color': 'orange'}, {'start': 701, 'end': 1132, 'color': 'yellow'}, {'start': 1133, 'end': 1806, 'color': 'orange'}]
+    #new_spliced_color_ranges = fake_test
 
     unspliced_buf = io.BytesIO()
     draw_colored_ranges(unspliced_buf,unspliced_color_ranges, total_length=len(unspliced_color_ranges))
-        
+    
+    new_unspliced_color_ranges = modify_verticle(unspliced_color_ranges)
+
+
     spliced_string = base64.b64encode(unspliced_buf.read())
     unspliced_matplotlib_image_url = urllib.parse.quote(spliced_string)
 
@@ -245,6 +249,8 @@ def gene_sequence_detail(request, gene_sequence_name):
         'unspliced_sequences': unsplice_highlighted_sequences,
         'unspliced_matplotlib_image_url': 
         'data:image/png;base64,' + unspliced_matplotlib_image_url,
-        "unsplicedData" : unsplicedData}
+        "unsplicedData" : unsplicedData,
+        "new_spliced_color_ranges" : new_spliced_color_ranges,
+        "new_unspliced_color_ranges" : new_unspliced_color_ranges}
     
     return render(request, 'gene_sequence_detail.html', context)

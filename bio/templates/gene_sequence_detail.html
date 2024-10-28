@@ -10,6 +10,7 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <title>Gene Sequence Detail</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .orange { background-color: orange; }
         .green { background-color: green; }
@@ -66,7 +67,8 @@
 
         <div class="left">
             <h2>Graph</h2>
-            <img src="{{ spliced_matplotlib_image_url }}" alt="Matplotlib Plot" />
+            <!--img src="{{ spliced_matplotlib_image_url }}" alt="Matplotlib Plot" /-->
+            <div id="spliced_chart_graph"></div>
         </div>
 
         <!-- Right column: DNA Sequences -->
@@ -106,7 +108,8 @@
         <!-- Left column: Matplotlib generated image -->
         <div class="left">
             <h2>Graph</h2>
-            <img src="{{ unspliced_matplotlib_image_url }}" alt="Matplotlib Plot" />
+            <!--img src="{{ unspliced_matplotlib_image_url }}" alt="Matplotlib Plot" /-->
+            <div id="unspliced_chart_graph"></div>
         </div>
         <!-- Right column: DNA Sequences -->
         <div class="right">
@@ -125,6 +128,64 @@
         $(document).ready(function() {
             $('#unsplicedTable').DataTable();  // 初始化 DataTables
         });
+        const new_spliced_color_ranges = {{ new_spliced_color_ranges|safe }};
+        const new_unspliced_color_ranges = {{ new_unspliced_color_ranges|safe }};
+        drawBarChart(new_spliced_color_ranges,"#spliced_chart_graph")
+        drawBarChart(new_unspliced_color_ranges,"#unspliced_chart_graph")
+        
+        function drawBarChart(barHorizontal, chartElementId) {
+            const margin = { top: 10, right: 30, bottom: 30, left: 40 };
+            const width = 600 - margin.left - margin.right;
+
+            //const margin = {top: 20, right: 30, bottom: 40, left: 30},
+            //    width = 1200 - margin.left - margin.right,
+             //   height = 300 - margin.top - margin.bottom;
+
+            const maxEnd = d3.max(barHorizontal, d => d.end);
+
+            // 創建 SVG
+            const svg2 = d3.select(chartElementId)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", 100)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            // 創建 x 軸比例尺
+            const x2 = d3.scaleLinear()
+                .domain([0, maxEnd])
+                .range([0, width]);
+
+            // 繪製 x 軸
+            svg2.append("g")
+                .attr("transform", `translate(0,50)`)
+                .call(d3.axisBottom(x2).ticks(10));
+
+            // 繪製區塊
+            svg2.selectAll(".bar")
+                .data(barHorizontal)
+                .enter().append("rect")
+                .attr("x", d => x2(d.start))
+                .attr("width", d => x2(d.end) - x2(d.start))
+                .attr("y", 20)
+                .attr("height", 20)
+                .attr("fill", d => d.color)
+                .on("mouseover", function(event, d) {
+                    tooltip.style("opacity", 1)
+                        .html(`
+                            <table>
+                                <tr><td>Start:</td><td>${d.start}</td></tr>
+                                <tr><td>End:</td><td>${d.end}</td></tr>
+                                <tr><td>Length:</td><td>${d.end - d.start} bp</td></tr>
+                            </table>
+                        `)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 20) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.style("opacity", 0);
+                });
+        }
     </script>
 </body>
 </html>
