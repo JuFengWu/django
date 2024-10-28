@@ -58,7 +58,7 @@ def get_positive_table_data(positive_features):
     print(positive_features)
     table = []
     for i in positive_features:
-        table.append({"Exon" : i["type"],"Start": i["start"],"End": i["stop"],"Length":i["stop"] - i["start"]})
+        table.append({"Exon" : i["type"],"Start": i["start"],"End": i["stop"],"Length":i["stop"] - i["start"] + 1})
     return table
 def get_positive_sequence_range(positive_features):
     rangeSequence = []

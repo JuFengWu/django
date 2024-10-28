@@ -113,7 +113,11 @@
 
         function drawBarChart(barHorizontal, chartElementId) {
             const margin = { top: 10, right: 30, bottom: 30, left: 40 };
-            const width = 960 - margin.left - margin.right;
+            const width = 1200 - margin.left - margin.right;
+
+            //const margin = {top: 20, right: 30, bottom: 40, left: 30},
+            //    width = 1200 - margin.left - margin.right,
+             //   height = 300 - margin.top - margin.bottom;
 
             const maxEnd = d3.max(barHorizontal, d => d.end);
 
