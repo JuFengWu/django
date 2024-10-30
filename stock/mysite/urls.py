@@ -37,20 +37,20 @@ urlpatterns = [
     path('api/login_test/', hw4_views_test.LoginView.as_view(), name='login_hw4_test'),
     path('login-register-test/', hw4_views_test.login_register, name='login_register_test'),
 
-    path('hw4_login_registor/', hw4_views.login_register, name='login_hw4'),
-    path('hw4_logout/', hw4_views.hw4_logout, name='logout_hw4'),
-    path('api/login_hw4/', hw4_views.LoginView.as_view(), name='login_hw4_test'),
-    path('api/register_hw4/', hw4_views.RegisterView.as_view(), name='register'),
+    path('hw4_login_registor/', hw4_views.login_register, name='login_hw4'),  #C1
+    path('hw4_logout/', hw4_views.hw4_logout, name='logout_hw4'),             #C1
+    path('api/login_hw4/', hw4_views.LoginView.as_view(), name='login_hw4_test'), #C1
+    path('api/register_hw4/', hw4_views.RegisterView.as_view(), name='register'), #C1
     
     #path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
    
-    path('stock_chart_hw4/', hw4_views.stock_chart_hw4, name='stock_chart_hw4'),
-    path('api/stock_data_api_hw4_secrete/', hw4_views.stock_data_api_hw4_secrete, name='stock_data_api_hw4_secrete'),
+    path('stock_chart_hw4/', hw4_views.stock_chart_hw4, name='stock_chart_hw4'),  #C2
+    path('api/stock_data_api_hw4_secrete/', hw4_views.stock_data_api_hw4_secrete, name='stock_data_api_hw4_secrete'), #C2
 
-    path('api/trace_stock_data/', hw4_views.trace_stock_data, name='trace_stock_data'),
-    path('show_trace_hw4/', hw4_views.show_trace, name='show_trace_hw4'),
-    path('api/delete_trace/', hw4_views.delete_trace, name='delete_trace'),
-    path('api/show_single_trace/', hw4_views.show_single_trace, name='show_single_trace'),  # 修改路由名稱
+    path('api/trace_stock_data/', hw4_views.trace_stock_data, name='trace_stock_data'), #C3
+    path('show_trace_hw4/', hw4_views.show_trace, name='show_trace_hw4'),               #C3
+    path('api/delete_trace/', hw4_views.delete_trace, name='delete_trace'),             #C3
+    path('api/show_single_trace/', hw4_views.show_single_trace, name='show_single_trace'),  #C3
     
 
 ]
