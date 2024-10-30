@@ -1,6 +1,0 @@
-django
-djangorestframework
-rest_framework_simplejwt
-yfinance
-pandas
-backtrader

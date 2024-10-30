@@ -1,0 +1,7 @@
+django
+djangorestframework
+djangorestframework-simplejwt
+yfinance
+pandas
+backtrader
+psycopg2-binary

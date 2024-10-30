@@ -1,18 +1,37 @@
-# 使用官方 Python 映像
-FROM python:3.10-slim
+# 使用官方 Python 基礎映像
+FROM python:3.8
 
-# 設定工作目錄
-WORKDIR /app
+# 設置工作目錄
+WORKDIR /code
 
-# 複製當前目錄的檔案到容器中的工作目錄
-COPY . .
+# 複製需求文件並安裝依賴
+COPY requirements.txt /code/
+COPY new_requirements.txt /code/
 
-# 安裝所需套件
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN apt-get update
+RUN apt-get install gcc
 
-# 暴露 Django 預設的埠
-EXPOSE 8000
+RUN apt-get install unixodbc-dev -y
+RUN apt-get install libxml2-dev libxslt1-dev
+RUN apt-get install -y libatlas-base-dev
 
-# 執行 Django 伺服器
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN  cd /tmp \
+    && curl -L -O http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
+    && tar -zxf ta-lib-0.4.0-src.tar.gz \
+    && cd ta-lib/ \
+    && ./configure --prefix=/usr \
+    && make \
+    && make install \
+    && pip3 install setuptools numpy \
+    && pip3 install ta-lib 
+
+RUN pip install ta-lib
+
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r new_requirements.txt
+
+# 複製項目文件
+COPY . /code/
+
+# 設置環境變量
+ENV PYTHONUNBUFFERED=1
