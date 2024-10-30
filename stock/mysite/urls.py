@@ -52,5 +52,7 @@ urlpatterns = [
     path('api/delete_trace/', hw4_views.delete_trace, name='delete_trace'),             #C3
     path('api/show_single_trace/', hw4_views.show_single_trace, name='show_single_trace'),  #C3
     
+    path('trace_view/', hw4_views.trace_view, name='trace_view'),
+    path('api/save_trace_data/', hw4_views.save_trace_data, name='save_trace_data'),
 
 ]

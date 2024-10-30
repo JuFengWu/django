@@ -1,167 +1,49 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>選擇股票與設定</title>
-    <style>
-        #stock-list {
-            width: 200px;
-            height: 100px;
-        }
-
-        #chartA, #chartB {
-            width: 100%;
-            height: 400px;
-            margin-top: 20px;
-        }
-
-        #datatable {
-            margin-top: 20px;
-            width: 100%;
-        }
-    </style>
+    <title>Stock Trace</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
-
-    <a href="{% url 'logout_hw4' %}" class="btn btn-danger">登出</a>
-    <form id="showTraceForm" method="POST" action="{% url 'show_trace_hw4' %}">
-        {% csrf_token %}
-        <input type="hidden" id="usernameField" name="username">
-        <button type="submit" class="btn btn-danger">顯示追蹤清單</button>
-    </form>
-
-    <!-- 表單開始 -->
-    <form id="stock-form" method="post">
-        {% csrf_token %}
-
-        <!-- 股票代碼多選框 -->
-        <label for="stock-list">選擇股票代碼:</label>
-        <select id="stock-list" name="selected_stocks" multiple>
-            <option value="MSFT">MSFT</option>
-            <option value="AAPL">AAPL</option>
-            <option value="GOOG" selected>GOOG</option>
-            <option value="TSLA">TSLA</option>
-        </select>
-        <br><br>
-
-        <!-- 股票代碼多選框2 -->
-        <label for="stock-list2">選擇股票代碼:</label>
-        <select id="stock-list2" name="selected_stocks2" multiple>
-            <option value="MSFT">MSFT</option>
-            <option value="AAPL" selected>AAPL</option>
-            <option value="GOOG">GOOG</option>
-            <option value="TSLA">TSLA</option>
-        </select>
-        <br><br>
-
-        <!-- 日期選擇 -->
-        <label for="start_date">開始日期:</label>
-        <input type="date" id="start_date" name="start_date" value="2021-01-01">
-
-        <label for="end_date">結束日期:</label>
-        <input type="date" id="end_date" name="end_date" value="2024-01-01">
-        <br><br>
-
-        <!-- window size 的滑動條與數字顯示 -->
-        <label for="window_size">窗口大小:</label>
-        <input type="range" id="window_size" name="window_size" min="50" max="500" value="200" oninput="document.getElementById('size_display').value = this.value">
-        <input type="number" id="size_display" value="200" readonly>
-        <br><br>
-
-        <!-- 提交按鈕 -->
-        <button type="button" id="submitBtn1">提交按鈕 1</button>
-    </form>
-    <button type="button" id="traceBtn">Trace</button>
+    
 
     <div id="chartA"></div>
     <div id="chartB"></div>
-    <table id="datatable" >
+    <!--table id="datatable">
         <thead>
             <tr>
             </tr>
         </thead>
         <tbody></tbody>
-    </table>
+    </table-->
 
     <script>
+        
+        // 將 Django 傳遞過來的數據轉換為 JavaScript 變量
+        const data = {
+            stock_data: {{ stock_data|safe }},
+            stock_data2: {{ stock_data2|safe }},
+            spread: {{ spread|safe }},
+            upperline: {{ upperline|safe }},
+            downline: {{ downline|safe }},
+            averageLine: {{ averageLine|safe }},
+            buy1timeStock: {{ buy1timeStock|safe }},
+            buy2timeStock: {{ buy2timeStock|safe }},
+            sell1TimeStock: {{ sell1TimeStock|safe }},
+            sell2TimeStock: {{ sell2TimeStock|safe }},
+            buy1timeStockSpread: {{ buy1timeStockSpread|safe }},
+            buy2timeStockSpread: {{ buy2timeStockSpread|safe }},
+            sell1TimeStockSpread: {{ sell1TimeStockSpread|safe }},
+            sell2TimeStockSpread: {{ sell2TimeStockSpread|safe }},
+            datatable_headers: {{ datatable_headers|safe }},
+            tableData: {{ tableData|safe }},
+        };
 
-        document.getElementById('showTraceForm').addEventListener('submit', function(event) {
-                // 獲取 localStorage 中的 username 並設置到隱藏字段中
-                document.getElementById('usernameField').value = localStorage.getItem('username');
-            });
-
-
-        const formData = {
-                selected_stocks: $('#stock-list').val(),
-                selected_stocks2: $('#stock-list2').val(),
-                start_date: $('#start_date').val(),
-                end_date: $('#end_date').val(),
-                window_size: $('#window_size').val(),
-                username: localStorage.getItem('username')
-            };
-        // 提交表單並生成圖表和表格
-        document.getElementById('submitBtn1').addEventListener('click', function() {
-            // 收集表單數據
-
-            event.preventDefault();
-            
-            const accessToken = localStorage.getItem('access_token');
-            const refreshToken = localStorage.getItem('refresh_token');
-
-            sendRequestWithToken(accessToken);
-            
-        });
-
-        document.getElementById('traceBtn').addEventListener('click', function() {
-            event.preventDefault();
-            event.stopPropagation();
-            // 收集表單數據
-            const formData = {
-                selected_stocks: $('#stock-list').val(),
-                selected_stocks2: $('#stock-list2').val(),
-                start_date: $('#start_date').val(),
-                end_date: $('#end_date').val(),
-                window_size: $('#window_size').val(),
-                username: localStorage.getItem('username')
-            };
-
-            const accessToken = localStorage.getItem('access_token');
-            traceRequestWithToken(accessToken, formData, "/api/trace_stock_data/");
-        });
-
-        function sendRequestWithToken(accessToken){
-            $.ajax({
-                url: "/api/stock_data_api_hw4_secrete/",  // 改為你的 API URL
-                method: "POST",
-                contentType: "application/json",  // 設置為 JSON 格式
-                data: JSON.stringify(formData),  // 傳送 JSON 數據
-                headers: {
-                    
-                    'Authorization': 'Bearer '+ accessToken  // 添加 token 到 headers
-                },
-                success:  function(data) {  // 使用匿名函數接收成功回應
-                    run_data(data);  // 在成功回應後調用 run_data
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status === 401) {
-                        // 如果 token 過期，跳轉到登出頁面
-                        //window.location.href = "{% url 'logout' %}";  // Django 的登出 URL
-                        const refreshToken = localStorage.getItem('refresh_token');
-                        refreshAccessTokenAndRetry(refreshToken);
-                    }
-                    // 檢查狀態碼並彈出相應的訊息框
-                    else if (jqXHR.status !== 200) {
-                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
-                    }
-                    
-                }
-                
-            });
-        }
+        
 
         function run_data(data) {
                     
@@ -383,72 +265,19 @@
                     });
     
                     // 3. DataTables
+                    /*
                     $('#datatable').DataTable({
                         data: data.tableData,
                         
                         columns: data.datatable_headers.map(header => ({ title: header })), // 使用後端提供的標題
                         destroy: false // 如果表格已初始化，重新加載數據
                         });
-                    
+                    */
                 }
 
-        function refreshAccessTokenAndRetry(refreshToken) {
-            $.ajax({
-                url: '/api/token/refresh/',  // Django 的 Token 刷新 API
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    refresh: refreshToken  // 使用 refresh token 獲取新的 access token
-                }),
-                success: function(data) {
-                    if (data.access) {
-                        // 更新本地存儲中的 access token
-                        localStorage.setItem('access_token', data.access);
-
-                        // 使用新的 access token 重新發送原來的請求
-                        sendRequestWithToken(data.access);
-                    } else {
-                        alert('Failed to refresh access token. Please log in again.');
-                        window.location.href = "{% url 'logout_hw4' %}";
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert('Error refreshing access token. Please log in again.');
-                    window.location.href = "{% url 'logout_hw4' %}";  // Django 的登出 URL
-                }
-            });
-        }
-
-        function traceRequestWithToken(accessToken, formData, apiUrl) {
-            $.ajax({
-                url: apiUrl,  // Trace 的 API 路徑
-                method: "POST",
-                contentType: "application/json",  // 設置為 JSON 格式
-                data: JSON.stringify(formData),  // 傳送 JSON 數據
-                headers: {
-                    'Authorization': 'Bearer ' + accessToken  // 添加 token 到 headers
-                },
-                success: function(data) {
-                    renderTraceResult(data);  // 顯示追踪的結果，更新圖表或提示
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status === 401) {
-                        const refreshToken = localStorage.getItem('refresh_token');
-                        refreshAccessTokenAndRetry(refreshToken);
-                    } else if (jqXHR.status !== 200) {
-                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
-                    }
-                }
-            });
-        }
-
-        // 顯示 Trace 的結果
-        function renderTraceResult(data) {
-            alert("Trace successfully recorded! Trace ID: " + data.trace_id);
-            // 在這裡可以更新圖表或表格，根據追踪的結果進行視覺化展示
-        }
-
+        // 渲染數據
+        run_data(data);
     </script>
-
 </body>
 </html>
+
