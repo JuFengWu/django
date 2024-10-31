@@ -8,18 +8,45 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     volumes:
-       - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
-  web:
+  web_c1:
     build: .
+    environment:
+      API_BASE_C1: http://localhost:80
     command: python manage.py runserver 0.0.0.0:80
     volumes:
       - .:/code
-    ports:
-      - "80:80"
     depends_on:
       - db
+    ports:
+      - "80:80"  # 外部端口 80
+
+  web_c2:
+    build: .
+    environment:
+      API_BASE_C2: http://localhost:81
+    command: python manage.py runserver 0.0.0.0:80
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    ports:
+      - "81:80"  # 外部端口 81
+
+  web_c3:
+    build: .
+    environment:
+      API_BASE_C3: http://localhost:82
+    command: python manage.py runserver 0.0.0.0:80
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    ports:
+      - "82:80"  # 外部端口 8003
+
 volumes:
-  postgres_data:  # 定義命名卷
+  postgres_data:
