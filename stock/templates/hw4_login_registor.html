@@ -10,8 +10,13 @@
     <form id="registerForm">
         <label for="username">Username:</label>
         <input type="text" id="registerUsername" name="username" required><br><br>
+
         <label for="password">Password:</label>
         <input type="password" id="registerPassword" name="password" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="text" id="registerEmail" name="email" required><br><br>
+
         <button type="submit">Register</button>
     </form>
 
@@ -32,6 +37,7 @@
             event.preventDefault(); // Prevent form from submitting the traditional way
             const username = document.getElementById('registerUsername').value;
             const password = document.getElementById('registerPassword').value;
+            const email = document.getElementById('registerEmail').value;
 
             fetch('/api/register_hw4/', {
                 method: 'POST',
@@ -40,7 +46,8 @@
                 },
                 body: JSON.stringify({
                     username: username,
-                    password: password
+                    password: password,
+                    email: email
                 })
             })
             .then(response => response.json())
