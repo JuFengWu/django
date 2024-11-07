@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>條件輸入表單</title>
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            margin-right: 10px;
+        }
+        .and-or-buttons {
+            margin-right: 10px;
+        }
+        .and-or-buttons button {
+            margin-right: 5px;
+        }
+        .submit-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>條件輸入表單</h2>
+
+    <form id="condition-form">
+        <!-- 第一行：兩個月和相關數字 + AND/OR -->
+        <div class="form-group">
+            <div class="and-or-buttons">
+                <button type="button" onclick="setCondition('condition1', 'AND')">AND</button>
+                <button type="button" onclick="setCondition('condition1', 'OR')">OR</button>
+            </div>
+            <label for="month1">月1 (YYYY/MM):</label>
+            <input type="month" id="month1" name="month1">
+            <label for="month2">月2 (YYYY/MM):</label>
+            <input type="month" id="month2" name="month2">
+            <label for="related-number">相關數字:</label>
+            <input type="number" id="related-number" name="related-number">
+        </div>
+
+        <!-- 第二行：幾日和張數 + AND/OR -->
+        <div class="form-group">
+            <div class="and-or-buttons">
+                <button type="button" onclick="setCondition('condition2', 'AND')">AND</button>
+                <button type="button" onclick="setCondition('condition2', 'OR')">OR</button>
+            </div>
+            <label for="days">幾日:</label>
+            <input type="number" id="days" name="days">
+            <label for="volume">張數:</label>
+            <input type="number" id="volume" name="volume">
+        </div>
+
+        <!-- 第三行：月增率 + AND/OR -->
+        <div class="form-group">
+            <div class="and-or-buttons">
+                <button type="button" onclick="setCondition('condition3', 'AND')">AND</button>
+                <button type="button" onclick="setCondition('condition3', 'OR')">OR</button>
+            </div>
+            <label for="monthly-growth">月增率(%):</label>
+            <input type="number" step="0.01" id="monthly-growth" name="monthly-growth">
+        </div>
+
+        <!-- 第四行：幾日 + AND/OR -->
+        <div class="form-group">
+            <div class="and-or-buttons">
+                <button type="button" onclick="setCondition('condition4', 'AND')">AND</button>
+                <button type="button" onclick="setCondition('condition4', 'OR')">OR</button>
+            </div>
+            <label for="days-condition">幾日:</label>
+            <input type="number" id="days-condition" name="days-condition">
+        </div>
+
+        <!-- 計算按鈕 -->
+        <button type="button" class="submit-button" onclick="calculate()">計算</button>
+    </form>
+
+    <script>
+        // 記錄每個條件的 AND/OR 狀態
+        const conditions = {
+            condition1: null,
+            condition2: null,
+            condition3: null,
+            condition4: null
+        };
+
+        // 設定條件的 AND/OR 狀態
+        function setCondition(condition, value) {
+            conditions[condition] = value;
+            console.log(`設定 ${condition} 為 ${value}`);
+        }
+
+        // 假設計算函數
+        function calculate() {
+            const form = document.getElementById('condition-form');
+            const formData = new FormData(form);
+
+            // 獲取表單值
+            const month1 = formData.get("month1");
+            const month2 = formData.get("month2");
+            const relatedNumber = formData.get("related-number");
+            const days = formData.get("days");
+            const volume = formData.get("volume");
+            const monthlyGrowth = formData.get("monthly-growth");
+            const daysCondition = formData.get("days-condition");
+
+            // 輸出每個條件的值和選擇的邏輯（AND/OR）
+            console.log("月1:", month1, "月2:", month2, "相關數字:", relatedNumber, "條件:", conditions.condition1);
+            console.log("幾日:", days, "張數:", volume, "條件:", conditions.condition2);
+            console.log("月增率:", monthlyGrowth, "條件:", conditions.condition3);
+            console.log("幾日:", daysCondition, "條件:", conditions.condition4);
+        }
+    </script>
+
+</body>
+</html>
+
