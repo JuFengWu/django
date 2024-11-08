@@ -7,6 +7,8 @@ localhost/stock_chart_hw3 #need to login
 
 localhost/login-register-test
 localhost/hw4_login_registor
+localhost/fintech
+
 
 docker-compose up -d
 

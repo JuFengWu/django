@@ -22,6 +22,21 @@
         .submit-button {
             margin-top: 20px;
         }
+        .condition-block {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .condition-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .remove-button {
+            margin-left: 10px;
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -32,87 +47,150 @@
         <!-- 第一行：兩個月和相關數字 + AND/OR -->
         <div class="form-group">
             <div class="and-or-buttons">
-                <button type="button" onclick="setCondition('condition1', 'AND')">AND</button>
-                <button type="button" onclick="setCondition('condition1', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition1', 'AND')">AND</button>
+                <button type="button" onclick="addCondition('condition1', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition1', 'Not')">Not</button>
             </div>
             <label for="month1">月1 (YYYY/MM):</label>
-            <input type="month" id="month1" name="month1">
+            <input type="month" id="month1" name="month1" value="2024-11">
             <label for="month2">月2 (YYYY/MM):</label>
-            <input type="month" id="month2" name="month2">
+            <input type="month" id="month2" name="month2" value="2024-10">
             <label for="related-number">相關數字:</label>
-            <input type="number" id="related-number" name="related-number">
+            <input type="number" id="related-number" name="related-number" value="2">
         </div>
 
         <!-- 第二行：幾日和張數 + AND/OR -->
         <div class="form-group">
             <div class="and-or-buttons">
-                <button type="button" onclick="setCondition('condition2', 'AND')">AND</button>
-                <button type="button" onclick="setCondition('condition2', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition2', 'AND')">AND</button>
+                <button type="button" onclick="addCondition('condition2', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition2', 'Not')">Not</button>
             </div>
             <label for="days">幾日:</label>
-            <input type="number" id="days" name="days">
+            <input type="number" id="days" name="days" value="5">
             <label for="volume">張數:</label>
-            <input type="number" id="volume" name="volume">
+            <input type="number" id="volume" name="volume" value="500">
         </div>
 
         <!-- 第三行：月增率 + AND/OR -->
         <div class="form-group">
             <div class="and-or-buttons">
-                <button type="button" onclick="setCondition('condition3', 'AND')">AND</button>
-                <button type="button" onclick="setCondition('condition3', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition3', 'AND')">AND</button>
+                <button type="button" onclick="addCondition('condition3', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition3', 'Not')">Not</button>
             </div>
             <label for="monthly-growth">月增率(%):</label>
-            <input type="number" step="0.01" id="monthly-growth" name="monthly-growth">
+            <input type="number" step="0.01" id="monthly-growth" name="monthly-growth" value="20">
         </div>
 
         <!-- 第四行：幾日 + AND/OR -->
         <div class="form-group">
             <div class="and-or-buttons">
-                <button type="button" onclick="setCondition('condition4', 'AND')">AND</button>
-                <button type="button" onclick="setCondition('condition4', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition4', 'AND')">AND</button>
+                <button type="button" onclick="addCondition('condition4', 'OR')">OR</button>
+                <button type="button" onclick="addCondition('condition4', 'Not')">Not</button>
             </div>
             <label for="days-condition">幾日:</label>
-            <input type="number" id="days-condition" name="days-condition">
+            <input type="number" id="days-condition" name="days-condition" value="5">
+        </div>
+        <div>
+            <label for="max-condition">最大顯示多少:</label>
+            <input type="number" id="max-show" name="max-show" value="5">
         </div>
 
         <!-- 計算按鈕 -->
         <button type="button" class="submit-button" onclick="calculate()">計算</button>
     </form>
 
+    <!-- AND, OR, NOT 區塊 -->
+    <div class="condition-block" id="and-block">
+        <h3>AND 條件</h3>
+    </div>
+    <div class="condition-block" id="or-block">
+        <h3>OR 條件</h3>
+    </div>
+    <div class="condition-block" id="not-block">
+        <h3>Not 條件</h3>
+    </div>
+
     <script>
-        // 記錄每個條件的 AND/OR 狀態
+        // 儲存每個邏輯區塊的條件
         const conditions = {
-            condition1: null,
-            condition2: null,
-            condition3: null,
-            condition4: null
+            AND: [],
+            OR: [],
+            Not: [], 
+            Other : []
         };
 
-        // 設定條件的 AND/OR 狀態
-        function setCondition(condition, value) {
-            conditions[condition] = value;
-            console.log(`設定 ${condition} 為 ${value}`);
+        function addCondition(conditionId, logic) {
+            // 取得輸入值
+            const month1 = document.getElementById("month1").value;
+            const month2 = document.getElementById("month2").value;
+            const relatedNumber = document.getElementById("related-number").value;
+            const days = document.getElementById("days").value;
+            const volume = document.getElementById("volume").value;
+            const monthlyGrowth = document.getElementById("monthly-growth").value;
+            const daysCondition = document.getElementById("days-condition").value;
+
+            // 準備條件描述文字
+            let conditionText = "";
+            if (conditionId === "condition1") {
+                conditionText = `condition1, 月1: ${month1}, 月2: ${month2}, 相關數字: ${relatedNumber}`;
+            } else if (conditionId === "condition2") {
+                conditionText = `condition2, 幾日: ${days}, 張數: ${volume}`;
+            } else if (conditionId === "condition3") {
+                conditionText = `condition3, 月增率: ${monthlyGrowth}%`;
+            } else if (conditionId === "condition4") {
+                conditionText = `condition4 ,幾日: ${daysCondition}`;
+            }
+
+            // 建立新的條件項目
+            const conditionItem = document.createElement("div");
+            conditionItem.className = "condition-item";
+            conditionItem.innerHTML = `
+                ${conditionText}
+                <span class="remove-button" onclick="removeCondition(this, '${logic}')">刪除</span>
+            `;
+
+            // 將條件文字存入對應的邏輯區塊
+            conditions[logic].push(conditionText);
+
+            // 根據選擇的邏輯區塊添加條件到畫面
+            const block = document.getElementById(`${logic.toLowerCase()}-block`);
+            block.appendChild(conditionItem);
         }
 
-        // 假設計算函數
-        function calculate() {
-            const form = document.getElementById('condition-form');
-            const formData = new FormData(form);
+        // 刪除條件
+        function removeCondition(element, logic) {
+            const conditionText = element.parentNode.textContent.replace("刪除", "").trim();
+            conditions[logic] = conditions[logic].filter(item => item !== conditionText);
+            element.parentNode.remove();
+        }
 
-            // 獲取表單值
-            const month1 = formData.get("month1");
-            const month2 = formData.get("month2");
-            const relatedNumber = formData.get("related-number");
-            const days = formData.get("days");
-            const volume = formData.get("volume");
-            const monthlyGrowth = formData.get("monthly-growth");
-            const daysCondition = formData.get("days-condition");
+        async function calculate() {
+            const max_show = document.getElementById("max-show").value;
+            conditionText = `other, ${max_show}`;
+            conditions["Other"] = conditionText;
+            try {
+                const response = await fetch('/api/fintech_calculate/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(conditions)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-            // 輸出每個條件的值和選擇的邏輯（AND/OR）
-            console.log("月1:", month1, "月2:", month2, "相關數字:", relatedNumber, "條件:", conditions.condition1);
-            console.log("幾日:", days, "張數:", volume, "條件:", conditions.condition2);
-            console.log("月增率:", monthlyGrowth, "條件:", conditions.condition3);
-            console.log("幾日:", daysCondition, "條件:", conditions.condition4);
+                const result = await response.json();
+                console.log("API Response:", result);
+
+                // 進一步處理後端的回應結果
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
     </script>
 
