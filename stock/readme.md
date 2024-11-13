@@ -6,6 +6,7 @@ localhost/strategy_hw2-2
 localhost/stock_chart_hw3 #need to login
 
 localhost/login-register-test
+localhost/stock_chart_hw4/
 localhost/hw4_login_registor
 localhost/fintech
 

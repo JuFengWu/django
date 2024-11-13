@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <title>選擇股票與設定</title>
     <style>
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* 前往 Fintech 靠左，登出靠右 */
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        /* 左側兩個按鈕容器 */
+        .left-buttons {
+            display: flex;
+            gap: 10px; /* 左側兩個按鈕的間距 */
+        }
         #stock-list {
             width: 200px;
             height: 100px;
@@ -26,12 +37,19 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
-
-    <a href="{% url 'logout_hw4' %}" class="btn btn-danger">登出</a>
+    <div class="button-container">
+        <!-- 左側兩個按鈕：前往 Fintech 和 前往 Strategy HW2 -->
+        <div class="left-buttons">
+            <button onclick="window.location.href='/fintech'" class="btn btn-primary">前往 Fintech</button>
+            <button onclick="window.location.href='/strategy_hw2/'" class="btn btn-secondary">前往 Strategy (HW2)</button>
+        </div>
+        <a href="{% url 'logout_hw4' %}" class="btn btn-danger">登出</a>
+    </div>
+    
     <form id="showTraceForm" method="POST" action="{% url 'show_trace_hw4' %}">
         {% csrf_token %}
         <input type="hidden" id="usernameField" name="username">
-        <button type="submit" class="btn btn-danger">顯示追蹤清單</button>
+        <button type="submit" class="btn btn-show">顯示追蹤清單</button>
     </form>
 
     <!-- 表單開始 -->
@@ -73,7 +91,7 @@
         <br><br>
 
         <!-- 提交按鈕 -->
-        <button type="button" id="submitBtn1">提交按鈕 1</button>
+        <button type="button" id="submitBtn1">提交按鈕</button>
     </form>
     <button type="button" id="traceBtn">Trace</button>
 

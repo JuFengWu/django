@@ -6,5 +6,6 @@ web_tool/migrations/__pycache__/
 bio/mysite/__pycache__/
 bio/web_tool/__pycache__/
 bio/web_tool/migrations/__pycache__/
+stock/__pycache__/
 stock/data/
 bio/web_tool/data/
