@@ -38,6 +38,10 @@
             cursor: pointer;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
 
@@ -113,6 +117,13 @@
         <h3>Not 條件</h3>
     </div>
 
+    <table id="datatable">
+        <thead>
+            <tr id="table-headers"></tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+
     <script>
         // 儲存每個邏輯區塊的條件
         const conditions = {
@@ -186,6 +197,35 @@
 
                 const result = await response.json();
                 console.log("API Response:", result);
+
+                // 清除舊的 DataTable 資料
+                $('#table-headers').empty();
+                $('#table-body').empty();
+
+                // 插入表格標題
+                const headers = result.datatable_headers;
+                headers.forEach(header => {
+                    $('#table-headers').append(`<th>${header}</th>`);
+                });
+
+                // 插入表格資料
+                result.stock_table.forEach(row => {
+                    const rowElement = $('<tr></tr>');
+                    row.forEach(cell => {
+                        rowElement.append(`<td>${cell}</td>`);
+                    });
+                    $('#table-body').append(rowElement);
+                });
+
+                // 初始化或重新初始化 DataTable
+                $('#datatable').DataTable({
+                    destroy: true, // 銷毀舊的 DataTable 實例
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                });
 
                 // 進一步處理後端的回應結果
             } catch (error) {

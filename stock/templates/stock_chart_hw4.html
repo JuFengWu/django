@@ -384,7 +384,7 @@
     
                     // 3. DataTables
                     $('#datatable').DataTable({
-                        data: data.tableData,
+                        data: data.stock_table,
                         
                         columns: data.datatable_headers.map(header => ({ title: header })), // 使用後端提供的標題
                         destroy: false // 如果表格已初始化，重新加載數據
