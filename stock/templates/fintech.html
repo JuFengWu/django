@@ -179,6 +179,66 @@
             element.parentNode.remove();
         }
 
+        function refreshAccessTokenAndRetry(refreshToken) {
+            $.ajax({
+                url: '/api/token/refresh/',  // Django 的 Token 刷新 API
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    refresh: refreshToken  // 使用 refresh token 獲取新的 access token
+                }),
+                success: function(data) {
+                    if (data.access) {
+                        // 更新本地存儲中的 access token
+                        localStorage.setItem('access_token', data.access);
+
+                        // 使用新的 access token 重新發送原來的請求
+                        sendRequestWithToken(data.access);
+                    } else {
+                        alert('Failed to refresh access token. Please log in again.');
+                        window.location.href = "{% url 'logout_hw4' %}";
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert('Error refreshing access token. Please log in again.');
+                    window.location.href = "{% url 'logout_hw4' %}";  // Django 的登出 URL
+                }
+            });
+        }
+
+        function traceRequestWithToken(accessToken, conditions, apiUrl) {
+            $.ajax({
+                url: apiUrl,  // Trace 的 API 路徑
+                method: "POST",
+                contentType: "application/json",  // 設置為 JSON 格式
+                data: JSON.stringify(conditions),  // 傳送 JSON 數據
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken  // 添加 token 到 headers
+                },
+                success: function(data) {
+                    renderTraceResult(data);  // 顯示追踪的結果，更新圖表或提示
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401) {
+                        const refreshToken = localStorage.getItem('refresh_token');
+                        refreshAccessTokenAndRetry(refreshToken);
+                    } else if (jqXHR.status !== 200) {
+                        alert("Error: " + jqXHR.status + " - " + jqXHR.responseText);  // 彈出錯誤訊息框
+                    }
+                }
+            });
+        }
+
+        function trace() {
+            console.log("click trace");
+            const max_show = document.getElementById("max-show").value;
+            conditionText = `other, ${max_show}`;
+            conditions["Other"] = conditionText;
+            conditions["username"] = localStorage.getItem('username')
+            const accessToken = localStorage.getItem('access_token');
+            traceRequestWithToken(accessToken, conditions, "/api/trace_fintech_data/");
+        }
+
         async function calculate() {
             const max_show = document.getElementById("max-show").value;
             conditionText = `other, ${max_show}`;

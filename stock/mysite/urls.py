@@ -56,6 +56,7 @@ urlpatterns = [
     path('api/save_trace_data/', hw4_views.save_trace_data, name='save_trace_data'),
 
     path('fintech/', hw5_views.fintech_view, name='fintech'),
-    path("api/fintech_calculate/",hw5_views.fintech_calculate,name="hw5_fintech")
+    path("api/fintech_calculate/",hw5_views.fintech_calculate,name="hw5_fintech"),
+    path("api/trace_fintech_data/",hw5_views.trace_fintech_data,name="trace_fintech_data"),
 
 ]

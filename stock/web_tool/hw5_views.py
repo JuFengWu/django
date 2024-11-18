@@ -4,8 +4,38 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
 from fintech_api import fintech_api
+from rest_framework.decorators import api_view
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth.models import User
 
 def fintech_view(request):
+    return render(request, 'fintech.html')
+
+@api_view(['POST'])
+def trace_fintech_data(request):
+
+    print("in trace")
+    data = json.loads(request.body)
+
+    print(data)
+
+    and_conditions = data.get('AND', [])
+    or_conditions = data.get('OR', [])
+    not_conditions = data.get('Not', [])
+    other_conditions = data.get('Other', [])
+    username= data.get('username',[])
+
+    print(username)
+    print(and_conditions)
+    print(or_conditions)
+    print(not_conditions)
+    print(other_conditions)
+    print("--------")
+    print(username)
+    print("--------")
+
+    user = User.objects.get(username = username)
+
     return render(request, 'fintech.html')
 
 
