@@ -23,6 +23,7 @@ docker-compose up -> run and show
 docker-compose down -> not run
 docker-compose logs -f <container> -> check container log
 docker-compose exec <container> <termianl_cmds>
+docker-compose exec web_c1-1 <termianl_cmds>
 
 通過 Django 的 shell 來創建缺失的 Profile。
 bash

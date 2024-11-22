@@ -7,34 +7,54 @@ from fintech_api import fintech_api
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.models import User
+from .models import Profile
 
 def fintech_view(request):
     return render(request, 'fintech.html')
+
+def finrech_trace_view(request):
+    print("finrech_trace_view")
+    if request.method == 'POST':
+        print("in post")
+        profile = Profile.objects.get(user__username='123')
+        all_data = profile.fintech_data
+        trace_data = []
+        
+        for i, record in enumerate(all_data):
+            print(record)
+            trace_data.append({
+            "id": i,  # 唯一標識，用於刪除操作
+            "and_condition": "; ".join(record.get("AND", [])),
+            "or_condition": "; ".join(record.get("OR", [])),
+            "not_condition": "; ".join(record.get("Not", [])),
+            "max_show": record.get("Other", ""),
+        })
+
+        context = {
+                "trace_data" : trace_data
+        }
+        return render(request, 'fintech_trace_view.html',context)
+    return render(request, 'fintech_trace_view.html')
+
 
 @api_view(['POST'])
 def trace_fintech_data(request):
 
     print("in trace")
     data = json.loads(request.body)
-
+    
     print(data)
 
-    and_conditions = data.get('AND', [])
-    or_conditions = data.get('OR', [])
-    not_conditions = data.get('Not', [])
-    other_conditions = data.get('Other', [])
     username= data.get('username',[])
 
     print(username)
-    print(and_conditions)
-    print(or_conditions)
-    print(not_conditions)
-    print(other_conditions)
-    print("--------")
-    print(username)
-    print("--------")
 
     user = User.objects.get(username = username)
+    profile, created = Profile.objects.get_or_create(user=user)
+    profile.fintech_data.append(data)
+    profile.save()
+
+    print("success trace")
 
     return render(request, 'fintech.html')
 
@@ -67,7 +87,6 @@ def fintech_calculate(request):
         stock_table.append(["3234","7678"])
         stock_table.append(["4234","8678"])
         stock_table.append(["5234","9678"])
-
 
         # 回傳處理結果
         result = {

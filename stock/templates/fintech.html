@@ -105,6 +105,12 @@
         <!-- 計算按鈕 -->
         <button type="button" class="submit-button" onclick="calculate()">計算</button>
         <button type="button" id="trace-button" onclick="trace()">Trace</button>
+        
+    </form>
+    <form id="showTraceForm" method="POST" action="{% url 'finrech_trace_view' %}">
+        {% csrf_token %}
+        <input type="hidden" id="usernameField" name="username">
+        <button type="submit" class="btn btn-show">顯示finrech追蹤清單</button>
     </form>
 
     <!-- AND, OR, NOT 區塊 -->
@@ -237,6 +243,7 @@
             conditions["username"] = localStorage.getItem('username')
             const accessToken = localStorage.getItem('access_token');
             traceRequestWithToken(accessToken, conditions, "/api/trace_fintech_data/");
+            alert("成功紀錄！")
         }
 
         async function calculate() {

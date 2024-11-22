@@ -10,5 +10,8 @@ class Profile(models.Model):
     end_date = models.CharField(max_length=1000, null=True, blank=True)  # 新增字段
     window_size = models.CharField(max_length=1000, null=True, blank=True)  # 新增字段
 
+    fintech_data = models.JSONField(default=list, blank=True)
+
+
     def __str__(self):
         return f"{self.user.username}'s profile"

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace Data</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+    {% if trace_data %}
+    <table id="result_table" class="display">
+        <thead>
+            <tr>
+                <th>AND Condition</th>
+                <th>OR Condition</th>
+                <th>NOT Condition</th>
+                <th>Max Show</th>
+                <th>Actions Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in trace_data %}
+            <tr id="row-{{ row.id }}">
+                <td>{{ row.and_condition }}</td>
+                <td>{{ row.or_condition }}</td>
+                <td>{{ row.not_condition }}</td>
+                <td>{{ row.max_show }}</td>
+                <td>
+                    <button class="btn-delete" data-id="{{ row.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            // 初始化 DataTable
+            const table = $("#result_table").DataTable();
+
+            // 刪除按鈕點擊事件
+            $(document).on("click", ".btn-delete", function () {
+                const recordId = $(this).data("id");
+
+                if (confirm("Are you sure you want to delete this record?")) {
+                    // 發送刪除請求
+                    $.ajax({
+                        url: "/delete_trace/", // Django 的刪除 API URL
+                        method: "POST",
+                        data: {
+                            id: recordId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // 刪除成功，從表格中移除
+                                table.row("#row-" + recordId).remove().draw();
+                                alert("Record deleted successfully.");
+                            } else {
+                                alert("Failed to delete record.");
+                            }
+                        },
+                        error: function () {
+                            alert("Error occurred while deleting the record.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
