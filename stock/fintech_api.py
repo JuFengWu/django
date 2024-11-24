@@ -121,8 +121,9 @@ def fintech_api(and_conditions,or_conditions,not_conditions,other_conditions):
     # 找出收盤價最大的 5 檔股票
     top_5_stocks = close_on_date.nlargest(number)
 
-    print("max 5 stock")
-    print(top_5_stocks)
+    result = top_5_stocks.reset_index().values.tolist()
+
+    return result
 
 if __name__ == "__main__":
     and_conditions = ['condition1, 月1: 2024-11, 月2: 2024-10, 相關數字: 2', 'condition2, 幾日: 5, 張數: 500']
@@ -130,4 +131,11 @@ if __name__ == "__main__":
     not_conditions = ['condition4 ,幾日: 5']
     other_conditions = "other, 5"
 
-    fintech_api(and_conditions,or_conditions,not_conditions,other_conditions)
+    finalShow = fintech_api(and_conditions,or_conditions,not_conditions,other_conditions)
+
+    print("max 5 stock")
+    print(type(finalShow))
+    print(finalShow)
+    print("-----")
+
+    

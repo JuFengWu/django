@@ -140,6 +140,11 @@
             Other : []
         };
 
+        document.getElementById('showTraceForm').addEventListener('submit', function(event) {
+                // 獲取 localStorage 中的 username 並設置到隱藏字段中
+                document.getElementById('usernameField').value = localStorage.getItem('username');
+            });
+
         function addCondition(conditionId, logic) {
             // 取得輸入值
             const month1 = document.getElementById("month1").value;

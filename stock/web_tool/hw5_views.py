@@ -14,14 +14,24 @@ def fintech_view(request):
 
 def finrech_trace_view(request):
     print("finrech_trace_view")
+    
+
     if request.method == 'POST':
         print("in post")
-        profile = Profile.objects.get(user__username='123')
+
+        username = request.POST.get('username', '')  # 獲取 POST 中的 username
+
+        print("username is "+username)
+
+        profile = Profile.objects.get(user__username=username)
         all_data = profile.fintech_data
         trace_data = []
+
+        print(all_data)
         
         for i, record in enumerate(all_data):
             print(record)
+            
             trace_data.append({
             "id": i,  # 唯一標識，用於刪除操作
             "and_condition": "; ".join(record.get("AND", [])),
@@ -31,10 +41,37 @@ def finrech_trace_view(request):
         })
 
         context = {
-                "trace_data" : trace_data
+                "trace_data" : trace_data,
+                "username":username
         }
         return render(request, 'fintech_trace_view.html',context)
     return render(request, 'fintech_trace_view.html')
+
+@csrf_exempt
+def delete_trace_fintech(request):
+    if request.method == "POST":
+        # 獲取請求中的記錄 ID
+        record_id = int(request.POST.get("id"))
+        username = request.POST.get('username', '')
+        print("delete username is " + username)
+
+        # 假設 `Profile` 模型有 `fintech_data` 欄位
+        profile = Profile.objects.get(user__username=username)
+        all_data = profile.fintech_data
+
+        # 嘗試刪除指定的數據
+        try:
+            # 根據 ID 刪除對應的數據
+            del all_data[record_id]
+            # 更新數據庫
+            profile.fintech_data = all_data
+            profile.save()
+
+            return JsonResponse({"success": True, "id": record_id})
+        except IndexError:
+            return JsonResponse({"success": False, "error": "Invalid record ID"}, status=400)
+
+    return JsonResponse({"success": False, "error": "Invalid request method"}, status=400)
 
 
 @api_view(['POST'])
@@ -74,6 +111,8 @@ def fintech_calculate(request):
         print(not_conditions)
         print(other_conditions) 
 
+        finalShow = fintech_api(and_conditions,or_conditions,not_conditions,other_conditions)
+
 
         # 在這裡處理接收到的條件
         # 例如，可以使用這些條件進行數據篩選、計算等
@@ -82,12 +121,18 @@ def fintech_calculate(request):
 
         stock_table = []
 
+        for i in finalShow:
+            newData = []
+            newData.append(i[0])
+            newData.append(str(i[1]))
+            stock_table.append(newData)
+        """
         stock_table.append(["1234","5678"])
         stock_table.append(["2234","6678"])
         stock_table.append(["3234","7678"])
         stock_table.append(["4234","8678"])
         stock_table.append(["5234","9678"])
-
+"""
         # 回傳處理結果
         result = {
             'datatable_headers': datatable_headers,

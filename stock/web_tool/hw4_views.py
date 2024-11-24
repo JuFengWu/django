@@ -151,7 +151,7 @@ def delete_trace(request):
         remove_index = int(request.POST.get('index'))  # 獲取索引
         print(remove_index)
         print(row_id)
-        print(username)
+        print("delete username is " + username)
         try:
             # 根據 username 獲取對應的 User
             user = User.objects.get(username=username)

@@ -59,5 +59,6 @@ urlpatterns = [
     path("api/fintech_calculate/",hw5_views.fintech_calculate,name="hw5_fintech"),
     path("api/trace_fintech_data/",hw5_views.trace_fintech_data,name="trace_fintech_data"),
     path("finrech_trace_view/",hw5_views.finrech_trace_view,name="finrech_trace_view"),
+    path('delete_trace_fintech/', hw5_views.delete_trace_fintech, name='delete_trace'),
 
 ]
