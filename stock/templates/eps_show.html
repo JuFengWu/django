@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本益比河流圖</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .bar {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 1;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+            background: lightgray;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        .circle {
+            fill: black;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">本益比河流圖結果</h2>
+    <div id="chart"></div>
+    <div class="tooltip" style="display: none;"></div>
+    <table id="datatable">
+        <thead>
+            <tr id="table-headers"></tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+    
+    <script>
+        // Fetch data from the Django backend
+        fetch('/api/pe-flow/')
+            .then(response => response.json())
+            .then(data => {
+                const ranges = data.ranges;
+                const latestPrice = data.latest_price;
+
+                // Set dimensions for the chart
+                const width = 800;
+                const height = 100;
+                const margin = { top: 20, right: 20, bottom: 70, left: 50 };
+
+                // Create an SVG element
+                const svg = d3.select("#chart")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+                // Create a scale for the x-axis (price range)
+                const xScale = d3.scaleLinear()
+                    .domain([0, 140]) // Assuming max price range is 140
+                    .range([0, width]);
+
+                // Add bars for each range
+                svg.selectAll(".bar")
+                    .data(ranges)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .attr("x", d => xScale(d.start))
+                    .attr("y", height / 4)
+                    .attr("width", d => xScale(d.end) - xScale(d.start))
+                    .attr("height", height / 2)
+                    .attr("fill", d => d.color)
+                    .on("mouseover", function (event, d) {
+                        // Show tooltip
+                        d3.select(".tooltip")
+                            .style("display", "block")
+                            .style("left", `${event.pageX + 5}px`)
+                            .style("top", `${event.pageY - 28}px`)
+                            .html(`${d.label}: ${d.start} - ${d.end}`);
+                    })
+                    .on("mouseout", function () {
+                        // Hide tooltip
+                        d3.select(".tooltip").style("display", "none");
+                    });
+
+                // Add the latest price marker
+                svg.append("circle")
+                    .attr("cx", xScale(latestPrice))
+                    .attr("cy", height / 2)
+                    .attr("r", 5)
+                    .attr("class", "circle");
+
+                // Add x-axis
+                svg.append("g")
+                    .attr("transform", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale).ticks(10));
+
+                // Add legend
+                const legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(0, ${height + margin.top + 20})`);
+
+                ranges.forEach((range, i) => {
+                    legend.append("rect")
+                        .attr("x", i * 150)
+                        .attr("y", 0)
+                        .attr("width", 15)
+                        .attr("height", 15)
+                        .attr("fill", range.color);
+
+                    legend.append("text")
+                        .attr("x", i * 150 + 20)
+                        .attr("y", 12)
+                        .text(range.label);
+                });
+
+                // Add legend for latest price
+                legend.append("circle")
+                    .attr("cx", ranges.length * 150)
+                    .attr("cy", 7.5)
+                    .attr("r", 7)
+                    .attr("fill", "black");
+
+                legend.append("text")
+                    .attr("x", ranges.length * 150 + 20)
+                    .attr("y", 12)
+                    .text("最新價格");
+            });
+    </script>
+</body>
+</html>

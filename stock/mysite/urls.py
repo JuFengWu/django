@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from web_tool import views,hw2_views,hw3_views,hw4_views_test, hw4_views,hw5_views
+from web_tool import views,hw2_views,hw3_views,hw4_views_test, hw4_views,hw5_views, hw_eps
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
@@ -60,5 +60,8 @@ urlpatterns = [
     path("api/trace_fintech_data/",hw5_views.trace_fintech_data,name="trace_fintech_data"),
     path("finrech_trace_view/",hw5_views.finrech_trace_view,name="finrech_trace_view"),
     path('delete_trace_fintech/', hw5_views.delete_trace_fintech, name='delete_trace'),
+
+    path('eps_show/', hw_eps.eps_show, name='eps_show'),
+    path('api/pe-flow/', hw_eps.pe_flow_data, name='pe_flow_data'),
 
 ]
