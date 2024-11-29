@@ -7,13 +7,12 @@ res = requests.get('https://goodinfo.tw/tw/StockDividendPolicy.asp?STOCK_ID=1303
 res.encoding = 'utf-8'
 from bs4 import BeautifulSoup
 import pandas as pd
-import sys
 
 
 soup = BeautifulSoup(res.text, 'lxml')
 data = soup.select_one("#divDetail")
 #print(data)
-import pandas as pd
+
 dfs = pd.read_html(data.prettify())
 df = dfs[0]
 #print(df)

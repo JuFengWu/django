@@ -9,5 +9,5 @@ data = response.json()
 print(data)
 
 # 獲取成交價格
-current_price = data['msgArray'][0]['z']  # 'z' 是成交價
+current_price = data['msgArray'][0]['l']  # 'z' 是成交價
 print(f"當前成交價格: {current_price}")
