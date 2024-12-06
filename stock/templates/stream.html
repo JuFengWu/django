@@ -3,132 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candlestick Chart</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        .candle-up {
-            fill: green;
-        }
-        .candle-down {
-            fill: red;
-        }
-        .line {
-            stroke: black;
-            stroke-width: 1px;
-        }
-    </style>
+    <title>Dynamic Highcharts Example</title>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+    <div>
+        <form id="stockForm">
+            <label for="stockCode">股票代號:</label>
+            <input type="text" id="stockCode" name="stock_code" value="2330" required>
+            
+            <label for="startDate">開始日期:</label>
+            <input type="date" id="startDate" name="start_date" value="2020-01-01" required>
+            
+            <label for="method">方法:</label>
+            <select id="method" name="method">
+                <option value="方法1">方法1</option>
+                <option value="方法2">方法2</option>
+                <option value="方法3">方法3</option>
+            </select>
+            
+            <label for="maType">MA 類型:</label>
+            <select id="maType" name="ma_type">
+                <option value="SMA">SMA</option>
+                <option value="WMA">WMA</option>
+            </select>
+            
+            <button type="button" id="submitButton">顯示圖表</button>
+        </form>
+    </div>
+    <div id="chart-container" style="height: 500px; min-width: 310px"></div>
+
     <script>
-        // 發送資料到後端
-        function importStockData() {
-            const stockId = document.getElementById("stock-id").value || "2330";
-            const startDate = document.getElementById("start-date").value || "2020-01-01";
-            const method = document.getElementById("method").value || "方法1";
-            const maType = document.getElementById("ma-type").value || "SMA";
+        // 提交表單並繪製圖表
+        document.getElementById("submitButton").addEventListener("click", () => {
+            const stockCode = document.getElementById("stockCode").value;
+            const startDate = document.getElementById("startDate").value;
+            const method = document.getElementById("method").value;
+            const maType = document.getElementById("maType").value;
 
-            const payload = {
-                stock_id: stockId,
-                start_date: startDate,
-                method: method,
-                ma_type: maType
-            };
-
-            fetch('/api/import-stock-data/', {
+            fetch('/api/handle-stock-data/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // 確保有 CSRF Token
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    stock_code: stockCode,
+                    start_date: startDate,
+                    method: method,
+                    ma_type: maType
+                })
             })
             .then(response => response.json())
             .then(data => {
-                if (data.candle_data) {
-                    drawCandlestickChart(data.candle_data);
+                if (data.error) {
+                    alert("Error: " + data.error);
                 } else {
-                    alert(`Error: ${data.error}`);
+                    drawChart(data); // 繪製圖表
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error("Error:", error);
+                alert("提交失敗");
+            });
+        });
+
+        // 繪製 Highcharts 圖表
+        function drawChart(data) {
+            const candlestickData = data.candlestick.map(d => [
+                new Date(d.date).getTime(),
+                d.open,
+                d.high,
+                d.low,
+                d.close,
+            ]);
+
+            const highLine = data.lines.high.map((value, index) => [
+                new Date(data.candlestick[index].date).getTime(), value,
+            ]);
+
+            const lowLine = data.lines.low.map((value, index) => [
+                new Date(data.candlestick[index].date).getTime(), value,
+            ]);
+
+            const avgLine = data.lines.avg.map((value, index) => [
+                new Date(data.candlestick[index].date).getTime(), value,
+            ]);
+
+            const high_1_2Line = data.lines.high_1_2.map((value, index) => [
+                new Date(data.candlestick[index].date).getTime(), value,
+            ]);
+
+            const low_0_8Line = data.lines.low_0_8.map((value, index) => [
+                new Date(data.candlestick[index].date).getTime(), value,
+            ]);
+
+            Highcharts.stockChart('chart-container', {
+                rangeSelector: {
+                    selected: 1,
+                },
+                title: {
+                    text: '蠟燭圖與附加線',
+                },
+                series: [
+                    {
+                        type: 'candlestick',
+                        name: '股價',
+                        data: candlestickData,
+                    },
+                    {
+                        type: 'line',
+                        name: '最高值連線',
+                        data: highLine,
+                        color: 'blue',
+                    },
+                    {
+                        type: 'line',
+                        name: '最低值連線',
+                        data: lowLine,
+                        color: 'purple',
+                    },
+                    {
+                        type: 'line',
+                        name: '平均值連線',
+                        data: avgLine,
+                        color: 'green',
+                    },
+                    {
+                        type: 'line',
+                        name: '最大值1.2倍連線',
+                        data: high_1_2Line,
+                        color: 'orange',
+                    },
+                    {
+                        type: 'line',
+                        name: '最小值0.8倍連線',
+                        data: low_0_8Line,
+                        color: 'red',
+                    },
+                ],
+            });
         }
 
-        // 使用 D3.js 繪製蠟燭圖
-        function drawCandlestickChart(candleData) {
-            const margin = {top: 20, right: 30, bottom: 30, left: 40};
-            const width = 800 - margin.left - margin.right;
-            const height = 400 - margin.top - margin.bottom;
-
-            // 清除舊圖
-            d3.select("svg").remove();
-
-            const svg = d3.select("body").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-
-            const x = d3.scaleBand()
-                .domain(candleData.map(d => d.date))
-                .range([0, width])
-                .padding(0.1);
-
-            const y = d3.scaleLinear()
-                .domain([d3.min(candleData, d => d.low) - 10, d3.max(candleData, d => d.high) + 10])
-                .range([height, 0]);
-
-            svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x).tickFormat((d, i) => (i % 5 === 0 ? d : "")));
-
-            svg.append("g")
-                .call(d3.axisLeft(y));
-
-            // 畫蠟燭圖
-            svg.selectAll(".candle")
-                .data(candleData)
-                .enter()
-                .append("rect")
-                .attr("class", d => d.close > d.open ? "candle-up" : "candle-down")
-                .attr("x", d => x(d.date))
-                .attr("y", d => y(Math.max(d.open, d.close)))
-                .attr("width", x.bandwidth())
-                .attr("height", d => Math.abs(y(d.open) - y(d.close)));
-
-            // 畫上下影線
-            svg.selectAll(".line")
-                .data(candleData)
-                .enter()
-                .append("line")
-                .attr("class", "line")
-                .attr("x1", d => x(d.date) + x.bandwidth() / 2)
-                .attr("x2", d => x(d.date) + x.bandwidth() / 2)
-                .attr("y1", d => y(d.high))
-                .attr("y2", d => y(d.low));
+        // 獲取 CSRF Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
     </script>
-</head>
-<body>
-    <h1>匯入股票資料並繪製蠟燭圖</h1>
-    <form onsubmit="event.preventDefault(); importStockData();">
-        <label for="stock-id">股票代號:</label>
-        <input type="text" id="stock-id" name="stock-id" placeholder="預設為 2330" value="2330"><br><br>
-
-        <label for="start-date">日期:</label>
-        <input type="date" id="start-date" name="start-date" value="2020-01-01"><br><br>
-
-        <label for="method">方法:</label>
-        <select id="method" name="method">
-            <option value="方法1">方法1</option>
-            <option value="方法2">方法2</option>
-            <option value="方法3">方法3</option>
-        </select><br><br>
-
-        <label for="ma-type">MA 類型:</label>
-        <select id="ma-type" name="ma-type">
-            <option value="SMA">SMA</option>
-            <option value="WMA">WMA</option>
-        </select><br><br>
-
-        <button type="submit">提交</button>
-    </form>
 </body>
 </html>
+
 

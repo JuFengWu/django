@@ -30,41 +30,45 @@ def stream_show(request):
     return render(request, 'stream.html')
 
 @csrf_exempt
-def import_stock_data(request):
-    if request.method == 'POST':
+def handle_stock_data(request):
+    if request.method == "POST":
         try:
-            # 獲取前端的 JSON 資料
-            data = json.loads(request.body)
-            stock_id = data.get("stock_id", "2330")  # 預設股票代號
-            start_date = data.get("start_date", "2020-01-01")  # 預設日期
-            method = data.get("method", "方法1")
-            ma_type = data.get("ma_type", "SMA")
+            # 獲取用戶提交的數據
+            body = json.loads(request.body)
+            stock_code = body.get("stock_code", "2330")
+            start_date = body.get("start_date", "2020-01-01")
+            method = body.get("method", "方法1")
+            ma_type = body.get("ma_type", "SMA")
 
-            # 模擬生成蠟燭圖數據
-            num_days = 30  # 模擬 30 天數據
-            start_date = datetime.strptime(start_date, "%Y-%m-%d")
-            candle_data = []
+            # 模擬返回蠟燭圖數據和附加線數據
+            # 這裡應根據提交的參數進行數據處理，例如從 API 或數據庫獲取相關數據
+            candlestick_data = [
+                {"date": "2023-12-01", "open": 50, "high": 70, "low": 40, "close": 65},
+                {"date": "2023-12-02", "open": 60, "high": 80, "low": 55, "close": 75},
+                {"date": "2023-12-03", "open": 70, "high": 85, "low": 65, "close": 80},
+            ]
 
-            for i in range(num_days):
-                date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
-                open_price = random.uniform(100, 200)
-                close_price = open_price + random.uniform(-10, 10)
-                high_price = max(open_price, close_price) + random.uniform(0, 5)
-                low_price = min(open_price, close_price) - random.uniform(0, 5)
-                candle_data.append({
-                    "date": date,
-                    "open": round(open_price, 2),
-                    "close": round(close_price, 2),
-                    "high": round(high_price, 2),
-                    "low": round(low_price, 2)
-                })
+            # 計算附加線數據
+            high_line = [d["high"] for d in candlestick_data]
+            low_line = [d["low"] for d in candlestick_data]
+            avg_line = [(d["high"] + d["low"]) / 2 for d in candlestick_data]
+            high_1_2_line = [d["high"] * 1.2 for d in candlestick_data]
+            low_0_8_line = [d["low"] * 0.8 for d in candlestick_data]
 
-            # 返回 JSON 資料到前端
+            # 返回處理結果
             return JsonResponse({
-                "message": "Stock data imported successfully!",
-                "candle_data": candle_data
+                "message": "數據處理成功",
+                "candlestick": candlestick_data,
+                "lines": {
+                    "high": high_line,
+                    "low": low_line,
+                    "avg": avg_line,
+                    "high_1_2": high_1_2_line,
+                    "low_0_8": low_0_8_line,
+                },
             })
+
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
-    return JsonResponse({"error": "Invalid request method"}, status=405)
+    return JsonResponse({"error": "Only POST method is allowed"}, status=405)
