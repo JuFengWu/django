@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candlestick Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .candle-up {
+            fill: green;
+        }
+        .candle-down {
+            fill: red;
+        }
+        .line {
+            stroke: black;
+            stroke-width: 1px;
+        }
+    </style>
+    <script>
+        // 發送資料到後端
+        function importStockData() {
+            const stockId = document.getElementById("stock-id").value || "2330";
+            const startDate = document.getElementById("start-date").value || "2020-01-01";
+            const method = document.getElementById("method").value || "方法1";
+            const maType = document.getElementById("ma-type").value || "SMA";
+
+            const payload = {
+                stock_id: stockId,
+                start_date: startDate,
+                method: method,
+                ma_type: maType
+            };
+
+            fetch('/api/import-stock-data/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.candle_data) {
+                    drawCandlestickChart(data.candle_data);
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 使用 D3.js 繪製蠟燭圖
+        function drawCandlestickChart(candleData) {
+            const margin = {top: 20, right: 30, bottom: 30, left: 40};
+            const width = 800 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            // 清除舊圖
+            d3.select("svg").remove();
+
+            const svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const x = d3.scaleBand()
+                .domain(candleData.map(d => d.date))
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([d3.min(candleData, d => d.low) - 10, d3.max(candleData, d => d.high) + 10])
+                .range([height, 0]);
+
+            svg.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).tickFormat((d, i) => (i % 5 === 0 ? d : "")));
+
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // 畫蠟燭圖
+            svg.selectAll(".candle")
+                .data(candleData)
+                .enter()
+                .append("rect")
+                .attr("class", d => d.close > d.open ? "candle-up" : "candle-down")
+                .attr("x", d => x(d.date))
+                .attr("y", d => y(Math.max(d.open, d.close)))
+                .attr("width", x.bandwidth())
+                .attr("height", d => Math.abs(y(d.open) - y(d.close)));
+
+            // 畫上下影線
+            svg.selectAll(".line")
+                .data(candleData)
+                .enter()
+                .append("line")
+                .attr("class", "line")
+                .attr("x1", d => x(d.date) + x.bandwidth() / 2)
+                .attr("x2", d => x(d.date) + x.bandwidth() / 2)
+                .attr("y1", d => y(d.high))
+                .attr("y2", d => y(d.low));
+        }
+    </script>
+</head>
+<body>
+    <h1>匯入股票資料並繪製蠟燭圖</h1>
+    <form onsubmit="event.preventDefault(); importStockData();">
+        <label for="stock-id">股票代號:</label>
+        <input type="text" id="stock-id" name="stock-id" placeholder="預設為 2330" value="2330"><br><br>
+
+        <label for="start-date">日期:</label>
+        <input type="date" id="start-date" name="start-date" value="2020-01-01"><br><br>
+
+        <label for="method">方法:</label>
+        <select id="method" name="method">
+            <option value="方法1">方法1</option>
+            <option value="方法2">方法2</option>
+            <option value="方法3">方法3</option>
+        </select><br><br>
+
+        <label for="ma-type">MA 類型:</label>
+        <select id="ma-type" name="ma-type">
+            <option value="SMA">SMA</option>
+            <option value="WMA">WMA</option>
+        </select><br><br>
+
+        <button type="submit">提交</button>
+    </form>
+</body>
+</html>
+
