@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from web_tool import views
-from web_tool import views_hw34
+from web_tool import views_hw34, hw9_virus
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('browse_result/', views.browse_result, name='browse_result'),
     path('gene_sequence_detail/<str:gene_sequence_name>/', views.gene_sequence_detail, name='gene_sequence_detail'),
     path('transcript/<str:gene_sequence_name>/', views_hw34.transcript, name='transcript'),
+    path('virus/', hw9_virus.proteome_screener, name = "proteome_screener"),
 ]

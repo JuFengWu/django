@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <title>Proteomes Screener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+        }
+
+        .index-buttons button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .index-buttons button:first-child {
+            background-color: #00bfff;
+            color: #fff;
+        }
+
+        .index-buttons button:last-child {
+            background-color: #d9b38c;
+            color: #fff;
+        }
+
+        .search-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .rank-options label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        select, input[type="text"], button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .add-example button {
+            background-color: #ccc;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        button[type="submit"] {
+            background-color: #00bfff;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Proteomes Screener (class)</h1>
+            <div class="index-buttons">
+                <button>Virus Index</button>
+                <button>Bacteria Index</button>
+            </div>
+        </header>
+        <section class="search-section">
+            <h2>Search</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <!-- Rank Filter -->
+                <label>Select The Rank You Want to Filter:</label>
+                <div class="rank-options">
+                    <label><input type="radio" name="rank" value="strong"> Strong (Top 2%)</label>
+                    <label><input type="radio" name="rank" value="weak"> Weak (Top 10%)</label>
+                    <label><input type="radio" name="rank" value="very_weak" checked> Very Weak (Top 20%)</label>
+                    <label><input type="radio" name="rank" value="all"> All</label>
+                </div>
+                
+                <!-- HLA Type Filter -->
+                <label>Select The HLA Type You Want to Filter:</label>
+                <select name="hla_type">
+                    <option value="any">Any_HLA_Type</option>
+                    <option value="DRB1_0101">DRB1_0101</option>
+                    <option value="DRB1_0301">DRB1_0301</option>
+                    <option value="DRB1_0401">DRB1_0401</option>
+                    <option value="DRB1_0405">DRB1_0405</option>
+                    <option value="DRB1_0701">DRB1_0701</option>
+                    <option value="DRB1_0802">DRB1_0802</option>
+                    <option value="DRB1_0901">DRB1_0901</option>
+                    <option value="DRB1_1101">DRB1_1101</option>
+                    <option value="DRB1_1201">DRB1_1201</option>
+                    <option value="DRB1_1302">DRB1_1302</option>
+                    <option value="DRB1_1501">DRB1_1501</option>
+                    <option value="DRB3_0101">DRB3_0101</option>
+                    <option value="DRB3_0202">DRB3_0202</option>
+                    <option value="DRB4_0101">DRB4_0101</option>
+                    <option value="DRB5_0101">DRB5_0101</option>
+                    <option value="HLA_DQA10501_DQB10201">HLA_DQA10501_DQB10201</option>
+                    <option value="HLA_DQA10501_DQB10301">HLA_DQA10501_DQB10301</option>
+                    <option value="HLA_DQA10301_DQB10302">HLA_DQA10301_DQB10302</option>
+                    <option value="HLA_DQA10401_DQB10402">HLA_DQA10401_DQB10402</option>
+                    <option value="HLA_DQA10101_DQB10501">HLA_DQA10101_DQB10501</option>
+                    <option value="HLA_DQA10102_DQB10602">HLA_DQA10102_DQB10602</option>
+                    <option value="HLA_DPA10201_DPB10101">HLA_DPA10201_DPB10101</option>
+                    <option value="HLA_DPA10103_DPB10201">HLA_DPA10103_DPB10201</option>
+                    <option value="HLA_DPA10103_DPB10401">HLA_DPA10103_DPB10401</option>
+                    <option value="HLA_DPA10301_DPB10402">HLA_DPA10301_DPB10402</option>
+                    <option value="HLA_DPA10201_DPB10501">HLA_DPA10201_DPB10501</option>
+                    <option value="HLA_DPA10201_DPB11401">HLA_DPA10201_DPB11401</option>
+                </select>
+                
+                
+                <!-- Virus Proteome Input -->
+                <label>Input Virus Proteome (UniProt):</label>
+                <input type="text" name="virus_proteome" placeholder="Virus Proteome (Uniprot)" value="UP000146794">
+
+                <button type="submit">Search</button>
+            </form>
+        </section>
+        <section class="result-section">
+            <h2>Result</h2>
+            <table id="result-table" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Virus Proteome (UniProt)</th>
+                        <th>Virus Protein (UniProt)</th>
+                        <th>Human Protein Count</th>
+                        <th>Human Protein Epitope Count</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <script>
+        // 初始化 DataTable
+        const table = $('#result-table').DataTable();
+
+        // 處理表單提交
+        $('#search-form').on('submit', function(e) {
+            e.preventDefault(); // 防止表單默認提交
+
+            const formData = $(this).serialize(); // 序列化表單數據
+
+            // 發送 AJAX 請求
+            $.ajax({
+                url: "{% url 'proteome_screener' %}",
+                method: "POST",
+                data: formData,
+                success: function(response) {
+                    // 清空表格
+                    table.clear();
+
+                    // 添加數據到 DataTable
+                    response.results.forEach(item => {
+                        table.row.add([
+                            item.virus_proteome,
+                            item.virus_protein,
+                            item.human_protein_count,
+                            item.human_protein_epitope_count,
+                            `<button>${item.detail}</button>`
+                        ]);
+                    });
+
+                    // 更新 DataTable
+                    table.draw();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
