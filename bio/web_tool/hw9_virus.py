@@ -2,14 +2,15 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
+
 def proteome_screener(request):
     if request.method == "POST":
         rank = request.POST.get("rank")
         hla_type = request.POST.get("hla_type")
         virus_proteome = request.POST.get("virus_proteome")
-        print("rank is " + rank)
-        print("hla_type is " + hla_type)
-        print("virus_proteome is "+ virus_proteome)
+
+        print("aaa")
+        
         # 模擬搜索結果
         results = [
             {
@@ -26,8 +27,6 @@ def proteome_screener(request):
                 "human_protein_epitope_count": 2001,
                 "detail": "Show Detail"
             },
-            # 添加更多結果數據...
         ]
-
-        return render(request, "virus.html", {"results": results})
+        return JsonResponse({"results": results})
     return render(request, "virus.html")

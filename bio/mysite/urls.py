@@ -28,5 +28,6 @@ urlpatterns = [
     path('browse_result/', views.browse_result, name='browse_result'),
     path('gene_sequence_detail/<str:gene_sequence_name>/', views.gene_sequence_detail, name='gene_sequence_detail'),
     path('transcript/<str:gene_sequence_name>/', views_hw34.transcript, name='transcript'),
-    path('virus/', hw9_virus.proteome_screener, name = "proteome_screener"),
+    #path('virus/', hw9_virus.virus, name = "proteome_screener"),
+    path('virus/', hw9_virus.proteome_screener, name='proteome_screener'),
 ]

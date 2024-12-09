@@ -170,41 +170,37 @@
         </section>
     </div>
     <script>
-        // 初始化 DataTable
-        const table = $('#result-table').DataTable();
+        $(document).ready(function () {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        // 處理表單提交
-        $('#search-form').on('submit', function(e) {
-            e.preventDefault(); // 防止表單默認提交
+            const table = $('#result-table').DataTable({
+                columns: [
+                    { data: 'virus_proteome' },
+                    { data: 'virus_protein' },
+                    { data: 'human_protein_count' },
+                    { data: 'human_protein_epitope_count' },
+                    { data: 'detail' }
+                ]
+            });
 
-            const formData = $(this).serialize(); // 序列化表單數據
+            $('form').on('submit', function (e) {
+                e.preventDefault(); // 防止表單默認提交
 
-            // 發送 AJAX 請求
-            $.ajax({
-                url: "{% url 'proteome_screener' %}",
-                method: "POST",
-                data: formData,
-                success: function(response) {
-                    // 清空表格
-                    table.clear();
+                const formData = $(this).serialize(); // 獲取表單數據
 
-                    // 添加數據到 DataTable
-                    response.results.forEach(item => {
-                        table.row.add([
-                            item.virus_proteome,
-                            item.virus_protein,
-                            item.human_protein_count,
-                            item.human_protein_epitope_count,
-                            `<button>${item.detail}</button>`
-                        ]);
-                    });
-
-                    // 更新 DataTable
-                    table.draw();
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                }
+                $.ajax({
+                    url: '',
+                    type: 'POST',
+                    data: formData,
+                    headers: { 'X-CSRFToken': csrftoken },
+                    success: function (response) {
+                        table.clear();
+                        table.rows.add(response.results).draw();
+                    },
+                    error: function () {
+                        alert('Error fetching data.');
+                    }
+                });
             });
         });
     </script>
