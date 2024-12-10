@@ -179,7 +179,13 @@
                     { data: 'virus_protein' },
                     { data: 'human_protein_count' },
                     { data: 'human_protein_epitope_count' },
-                    { data: 'detail' }
+                    {
+                        data: 'detail_link',
+                        render: function (data) {
+                            // 動態生成鏈接
+                            return `<a href="${data}" target="virus_detail">Show Detail</a>`;
+                        }
+                    }
                 ]
             });
 
