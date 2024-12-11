@@ -22,12 +22,12 @@ def dividend_yield_method(stockId):#股利法
     df = dfs[0]
     #print(df)
 
-    print("DataFrame 的欄位名稱:")
-    print(df.columns.tolist())  # 將欄位名稱列印為清單格式
+    #print("DataFrame 的欄位名稱:")
+    #print(df.columns.tolist())  # 將欄位名稱列印為清單格式
     int_data = df[('股利政策', '股東股利\xa0(元/股)', '股利  合計', '股利  合計')]  # 提取 MultiIndex 的特定欄位
     year_data = df[('股利  發放  年度', '股利  發放  年度', '股利  發放  年度', '股利  發放  年度')]  # 提取年度資料
     int_dict = dict(zip(year_data, int_data))
-    print(int_dict)
+    #print(int_dict)
     start_year = 2023
     years_to_include = 10
 
@@ -40,9 +40,9 @@ def dividend_yield_method(stockId):#股利法
     average = total / len(sorted_years)
 
     # 輸出結果
-    print(f"選取的年份: {sorted_years}")
-    print(f"累加總和: {total}")
-    print(f"平均值: {average}")
+    #print(f"選取的年份: {sorted_years}")
+    #print(f"累加總和: {total}")
+    #print(f"平均值: {average}")
 
     cheap = average * 15
     reason = average * 20
@@ -109,6 +109,10 @@ def get_yearly_high_low_average(stock, years=10, current_year=2023):
     yearly_high_dict = {year: high for year, high in yearly_high.items()}
     yearly_low_dict = {year: low for year, low in yearly_low.items()}
     yearly_average_dic = {year: low for year, low in yearly_average.items()}
+    
+    print(yearly_high_dict)
+    print(yearly_average_dic)
+    print(yearly_low_dict)
 
     return yearly_high_dict, yearly_low_dict, yearly_average_dic
 
@@ -126,8 +130,8 @@ def get_bps_eps_data(stockId):
     df = dfs[0]
     #print(df)
 
-    print("DataFrame 的欄位名稱:")
-    print(df.columns.tolist())  # 將欄位名稱列印為清單格式
+    #print("DataFrame 的欄位名稱:")
+    #print(df.columns.tolist())  # 將欄位名稱列印為清單格式
 
     bps_data = df[('BPS  (元)', 'BPS  (元)')]  # 提取 MultiIndex 的特定欄位
     eps_data = df[('EPS(元)', '稅後  EPS')]  # 提取 MultiIndex 的特定欄位
@@ -137,10 +141,10 @@ def get_bps_eps_data(stockId):
     bps_dict = dict(zip(year_data, bps_data))
 
     # 輸出結果
-    print("年度與 BPS 資料:")
-    print(bps_dict)
-    print("年度與 EPS 資料:")
-    print(eps_dict)
+    #print("年度與 BPS 資料:")
+    #print(bps_dict)
+    #print("年度與 EPS 資料:")
+    #print(eps_dict)
 
     return bps_dict, eps_dict
 
@@ -192,4 +196,12 @@ if __name__ == "__main__":
     stock = yf.Ticker(stockId+".TW")
     
     bpsEpsData = get_bps_eps_data(stockId)
-    p_b_ratio(bpsEpsData,stock)
+    pb = p_b_ratio(bpsEpsData,stock)
+    pe = p_e_ratio(bpsEpsData,stock)
+    hl = high_low_price_method(stock)
+    divd = dividend_yield_method(stockId)
+
+    print(pb)
+    print(pe)
+    print(hl)
+    print(divd)

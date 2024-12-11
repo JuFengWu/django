@@ -30,6 +30,8 @@ RUN pip install ta-lib
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install -r new_requirements.txt
 
+RUN pip install serpapi
+
 # 複製項目文件
 COPY . /code/
 

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from eps import get_current_price2, select_stock
 
 def eps_show(request):
     return render(request, 'eps_show.html')
@@ -18,11 +18,13 @@ def pe_flow_data(request):
             print(years)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        
+        curentPrice = get_current_price2.get_current_price(stock)
 
         # 在此處處理您需要的邏輯
         # 根據收到的 `stock` 和 `years` 返回不同的數據（模擬數據示例）
         data = {
-            "latest_price": 85,
+            "latest_price": curentPrice,
             "charts": [
                 {
                     "ranges": [

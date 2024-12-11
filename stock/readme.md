@@ -10,6 +10,7 @@ localhost/stock_chart_hw4/
 localhost/hw4_login_registor
 localhost/fintech
 localhost/eps_show
+localhost/stream_show
 
 
 docker-compose up -d
