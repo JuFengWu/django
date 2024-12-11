@@ -3,50 +3,66 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
 def eps_show(request):
     return render(request, 'eps_show.html')
-
+@csrf_exempt
 def pe_flow_data(request):
-    # 模擬的數據範例
-    data = {
-        "latest_price": 85,
-        "charts": [
-            {
-                "ranges": [
-                    {"label": "昂貴價區間", "start": 90, "end": 130, "color": "red"},
-                    {"label": "合理到昂貴價區間", "start": 70, "end": 90, "color": "lightcoral"},
-                    {"label": "便宜到合理價區間", "start": 40, "end": 70, "color": "lightgreen"},
-                    {"label": "便宜價區間", "start": 0, "end": 40, "color": "yellow"}
-                ]
-            },
-            {
-                "ranges": [
-                    {"label": "昂貴價區間", "start": 100, "end": 150, "color": "red"},
-                    {"label": "合理到昂貴價區間", "start": 80, "end": 100, "color": "lightcoral"},
-                    {"label": "便宜到合理價區間", "start": 50, "end": 80, "color": "lightgreen"},
-                    {"label": "便宜價區間", "start": 0, "end": 50, "color": "yellow"}
-                ]
-            },
-            {
-                "ranges": [
-                    {"label": "昂貴價區間", "start": 110, "end": 140, "color": "red"},
-                    {"label": "合理到昂貴價區間", "start": 70, "end": 110, "color": "lightcoral"},
-                    {"label": "便宜到合理價區間", "start": 30, "end": 70, "color": "lightgreen"},
-                    {"label": "便宜價區間", "start": 0, "end": 30, "color": "yellow"}
-                ]
-            },
-            {
-                "ranges": [
-                    {"label": "昂貴價區間", "start": 120, "end": 160, "color": "red"},
-                    {"label": "合理到昂貴價區間", "start": 100, "end": 120, "color": "lightcoral"},
-                    {"label": "便宜到合理價區間", "start": 60, "end": 100, "color": "lightgreen"},
-                    {"label": "便宜價區間", "start": 0, "end": 60, "color": "yellow"}
-                ]
-            }
-        ]
-    }
+    if request.method == "POST":
+        # 從請求中解析 JSON 數據
+        try:
+            body = json.loads(request.body)
+            stock = body.get("stock", "未知股票")  # 提取股票名稱或代號
+            years = body.get("years", "10")       # 提取歷史幾年資料
+            print(stock)
+            print(years)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
-    return JsonResponse(data)
+        # 在此處處理您需要的邏輯
+        # 根據收到的 `stock` 和 `years` 返回不同的數據（模擬數據示例）
+        data = {
+            "latest_price": 85,
+            "charts": [
+                {
+                    "ranges": [
+                        {"label": "昂貴價區間", "start": 90, "end": 130, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": 70, "end": 90, "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": 40, "end": 70, "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": 40, "color": "yellow"}
+                    ]
+                },
+                {
+                    "ranges": [
+                        {"label": "昂貴價區間", "start": 100, "end": 150, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": 80, "end": 100, "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": 50, "end": 80, "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": 50, "color": "yellow"}
+                    ]
+                },
+                {
+                    "ranges": [
+                        {"label": "昂貴價區間", "start": 110, "end": 140, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": 70, "end": 110, "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": 30, "end": 70, "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": 30, "color": "yellow"}
+                    ]
+                },
+                {
+                    "ranges": [
+                        {"label": "昂貴價區間", "start": 120, "end": 160, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": 100, "end": 120, "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": 60, "end": 100, "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": 60, "color": "yellow"}
+                    ]
+                }
+            ]
+        }
+
+        # 返回處理結果
+        return JsonResponse(data)
+
+    return JsonResponse({"error": "Only POST method is allowed"}, status=405)
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt

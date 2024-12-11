@@ -32,102 +32,138 @@
     </style>
 </head>
 <body>
-    <h2 style="text-align: center;">本益比河流圖結果</h2>
+    <h2 style="text-align: center;">股票定價</h2>
+
+    <form id="search-form" style="text-align: center; margin-bottom: 20px;">
+        <label for="stock-input">股票代號&名稱:</label>
+        <input type="text" id="stock-input" placeholder="1303 南亞" />
+        <label for="history-years">歷史幾年資料:</label>
+        <select id="history-years">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+        </select>
+        <button type="submit" id="search-button">搜尋</button>
+    </form>
+
     <div id="latest-price-container" style="text-align: center; margin-bottom: 20px;"></div>
     <div id="chart-container">
-        <div id="chart1" class="chart"></div>
-        <div id="chart2" class="chart"></div>
-        <div id="chart3" class="chart"></div>
-        <div id="chart4" class="chart"></div>
+        <div id="chart1-container">
+            <h3 id="chart1-title" class="chart-title"></h3>
+            <div id="chart1" class="chart"></div>
+        </div>
+        <div id="chart2-container">
+            <h3 id="chart2-title" class="chart-title"></h3>
+            <div id="chart2" class="chart"></div>
+        </div>
+        <div id="chart3-container">
+            <h3 id="chart3-title" class="chart-title"></h3>
+            <div id="chart3" class="chart"></div>
+        </div>
+        <div id="chart4-container">
+            <h3 id="chart4-title" class="chart-title"></h3>
+            <div id="chart4" class="chart"></div>
+        </div>
     </div>
     <div class="tooltip" style="display: none;"></div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
-        // Fetch data from the Django backend
-        fetch('/api/pe-flow/')
-            .then(response => response.json())
-            .then(data => {
-                const latestPrice = data.latest_price; // 獲取最新價格
-                const charts = data.charts; // 獲取多組圖表數據
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("search-form");
 
-                // 渲染最新價格
-                renderLatestPrice(latestPrice);
+            form.addEventListener("submit", function (event) {
+                event.preventDefault(); // 防止表單默認提交
 
-                // 渲染四組圖表
-                renderChart('#chart1', charts[0].ranges, latestPrice);
-                renderChart('#chart2', charts[1].ranges, latestPrice);
-                renderChart('#chart3', charts[2].ranges, latestPrice);
-                renderChart('#chart4', charts[3].ranges, latestPrice);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
+                const stockInput = document.getElementById("stock-input").value;
+                const historyYears = document.getElementById("history-years").value;
+
+                // 清空現有內容
+                document.getElementById("chart1").innerHTML = "";
+                document.getElementById("chart2").innerHTML = "";
+                document.getElementById("chart3").innerHTML = "";
+                document.getElementById("chart4").innerHTML = "";
+                document.getElementById("latest-price-container").innerHTML = "";
+
+                // 請求後端數據
+                fetch('/api/pe-flow/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ stock: stockInput, years: historyYears })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const latestPrice = data.latest_price; // 獲取最新價格
+                        const charts = data.charts; // 獲取多組圖表數據
+
+                        // 渲染最新價格
+                        renderLatestPrice(latestPrice);
+
+                        // 定義每個圖表的標題
+                        const titles = ["股利法", "高低法", "本淨法", "本益比法"];
+
+                        // 渲染四組圖表
+                        renderChartWithTitle('#chart1', '#chart1-title', titles[0], charts[0].ranges, latestPrice);
+                        renderChartWithTitle('#chart2', '#chart2-title', titles[1], charts[1].ranges, latestPrice);
+                        renderChartWithTitle('#chart3', '#chart3-title', titles[2], charts[2].ranges, latestPrice);
+                        renderChartWithTitle('#chart4', '#chart4-title', titles[3], charts[3].ranges, latestPrice);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
             });
 
-        /**
-         * 渲染最新價格
-         * @param {number} latestPrice 最新價格
-         */
-        function renderLatestPrice(latestPrice) {
-            const container = document.getElementById('latest-price-container');
-            container.innerHTML = `<h3>最新價格: ${latestPrice}</h3>`;
-        }
+            function renderLatestPrice(latestPrice) {
+                const container = document.getElementById('latest-price-container');
+                container.innerHTML = `<h3>最新價格: ${latestPrice}</h3>`;
+            }
 
-        /**
-         * 渲染圖表
-         * @param {string} container 圖表容器選擇器
-         * @param {Array} ranges 圖表數據範圍
-         * @param {number} latestPrice 最新價格
-         */
-        function renderChart(container, ranges, latestPrice) {
-            const width = 800;
-            const height = 100;
-            const margin = { top: 20, right: 20, bottom: 70, left: 50 };
+            function renderChartWithTitle(chartContainer, titleContainer, title, ranges, latestPrice) {
+                const titleElement = document.querySelector(titleContainer);
+                titleElement.textContent = title;
 
-            const svg = d3.select(container)
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left}, ${margin.top})`);
+                renderChart(chartContainer, ranges, latestPrice);
+            }
 
-            const xScale = d3.scaleLinear()
-                .domain([0, 160]) // 假設價格範圍的最大值是 160
-                .range([0, width]);
+            function renderChart(container, ranges, latestPrice) {
+                const width = 800;
+                const height = 100;
+                const margin = { top: 20, right: 20, bottom: 70, left: 50 };
 
-            // 繪製矩形條
-            svg.selectAll(".bar")
-                .data(ranges)
-                .enter()
-                .append("rect")
-                .attr("class", "bar")
-                .attr("x", d => xScale(d.start))
-                .attr("y", height / 4)
-                .attr("width", d => xScale(d.end) - xScale(d.start))
-                .attr("height", height / 2)
-                .attr("fill", d => d.color)
-                .on("mouseover", function (event, d) {
-                    d3.select(".tooltip")
-                        .style("display", "block")
-                        .style("left", `${event.pageX + 5}px`)
-                        .style("top", `${event.pageY - 28}px`)
-                        .html(`${d.label}: ${d.start} - ${d.end}`);
-                })
-                .on("mouseout", function () {
-                    d3.select(".tooltip").style("display", "none");
-                });
+                const svg = d3.select(container)
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-            // 最新價格標記
-            svg.append("circle")
-                .attr("cx", xScale(latestPrice))
-                .attr("cy", height / 2)
-                .attr("r", 5)
-                .attr("fill", "black");
+                const xScale = d3.scaleLinear()
+                    .domain([0, 160]) // 假設價格範圍的最大值是 160
+                    .range([0, width]);
 
-            // 添加 x 軸
-            svg.append("g")
-                .attr("transform", `translate(0, ${height})`)
-                .call(d3.axisBottom(xScale).ticks(10));
-        }
+                svg.selectAll(".bar")
+                    .data(ranges)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .attr("x", d => xScale(d.start))
+                    .attr("y", height / 4)
+                    .attr("width", d => xScale(d.end) - xScale(d.start))
+                    .attr("height", height / 2)
+                    .attr("fill", d => d.color);
+
+                svg.append("circle")
+                    .attr("cx", xScale(latestPrice))
+                    .attr("cy", height / 2)
+                    .attr("r", 5)
+                    .attr("fill", "black");
+
+                svg.append("g")
+                    .attr("transform", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale).ticks(10));
+            }
+        });
     </script>
 </body>
+
 
 </html>
