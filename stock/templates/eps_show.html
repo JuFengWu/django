@@ -33,108 +33,101 @@
 </head>
 <body>
     <h2 style="text-align: center;">本益比河流圖結果</h2>
-    <div id="chart"></div>
+    <div id="latest-price-container" style="text-align: center; margin-bottom: 20px;"></div>
+    <div id="chart-container">
+        <div id="chart1" class="chart"></div>
+        <div id="chart2" class="chart"></div>
+        <div id="chart3" class="chart"></div>
+        <div id="chart4" class="chart"></div>
+    </div>
     <div class="tooltip" style="display: none;"></div>
-    <table id="datatable">
-        <thead>
-            <tr id="table-headers"></tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-    </table>
-    
     <script>
         // Fetch data from the Django backend
         fetch('/api/pe-flow/')
             .then(response => response.json())
             .then(data => {
-                const ranges = data.ranges;
-                const latestPrice = data.latest_price;
+                const latestPrice = data.latest_price; // 獲取最新價格
+                const charts = data.charts; // 獲取多組圖表數據
 
-                // Set dimensions for the chart
-                const width = 800;
-                const height = 100;
-                const margin = { top: 20, right: 20, bottom: 70, left: 50 };
+                // 渲染最新價格
+                renderLatestPrice(latestPrice);
 
-                // Create an SVG element
-                const svg = d3.select("#chart")
-                    .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+                // 渲染四組圖表
+                renderChart('#chart1', charts[0].ranges, latestPrice);
+                renderChart('#chart2', charts[1].ranges, latestPrice);
+                renderChart('#chart3', charts[2].ranges, latestPrice);
+                renderChart('#chart4', charts[3].ranges, latestPrice);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
 
-                // Create a scale for the x-axis (price range)
-                const xScale = d3.scaleLinear()
-                    .domain([0, 140]) // Assuming max price range is 140
-                    .range([0, width]);
+        /**
+         * 渲染最新價格
+         * @param {number} latestPrice 最新價格
+         */
+        function renderLatestPrice(latestPrice) {
+            const container = document.getElementById('latest-price-container');
+            container.innerHTML = `<h3>最新價格: ${latestPrice}</h3>`;
+        }
 
-                // Add bars for each range
-                svg.selectAll(".bar")
-                    .data(ranges)
-                    .enter()
-                    .append("rect")
-                    .attr("class", "bar")
-                    .attr("x", d => xScale(d.start))
-                    .attr("y", height / 4)
-                    .attr("width", d => xScale(d.end) - xScale(d.start))
-                    .attr("height", height / 2)
-                    .attr("fill", d => d.color)
-                    .on("mouseover", function (event, d) {
-                        // Show tooltip
-                        d3.select(".tooltip")
-                            .style("display", "block")
-                            .style("left", `${event.pageX + 5}px`)
-                            .style("top", `${event.pageY - 28}px`)
-                            .html(`${d.label}: ${d.start} - ${d.end}`);
-                    })
-                    .on("mouseout", function () {
-                        // Hide tooltip
-                        d3.select(".tooltip").style("display", "none");
-                    });
+        /**
+         * 渲染圖表
+         * @param {string} container 圖表容器選擇器
+         * @param {Array} ranges 圖表數據範圍
+         * @param {number} latestPrice 最新價格
+         */
+        function renderChart(container, ranges, latestPrice) {
+            const width = 800;
+            const height = 100;
+            const margin = { top: 20, right: 20, bottom: 70, left: 50 };
 
-                // Add the latest price marker
-                svg.append("circle")
-                    .attr("cx", xScale(latestPrice))
-                    .attr("cy", height / 2)
-                    .attr("r", 5)
-                    .attr("class", "circle");
+            const svg = d3.select(container)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-                // Add x-axis
-                svg.append("g")
-                    .attr("transform", `translate(0, ${height})`)
-                    .call(d3.axisBottom(xScale).ticks(10));
+            const xScale = d3.scaleLinear()
+                .domain([0, 160]) // 假設價格範圍的最大值是 160
+                .range([0, width]);
 
-                // Add legend
-                const legend = svg.append("g")
-                    .attr("class", "legend")
-                    .attr("transform", `translate(0, ${height + margin.top + 20})`);
-
-                ranges.forEach((range, i) => {
-                    legend.append("rect")
-                        .attr("x", i * 150)
-                        .attr("y", 0)
-                        .attr("width", 15)
-                        .attr("height", 15)
-                        .attr("fill", range.color);
-
-                    legend.append("text")
-                        .attr("x", i * 150 + 20)
-                        .attr("y", 12)
-                        .text(range.label);
+            // 繪製矩形條
+            svg.selectAll(".bar")
+                .data(ranges)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", d => xScale(d.start))
+                .attr("y", height / 4)
+                .attr("width", d => xScale(d.end) - xScale(d.start))
+                .attr("height", height / 2)
+                .attr("fill", d => d.color)
+                .on("mouseover", function (event, d) {
+                    d3.select(".tooltip")
+                        .style("display", "block")
+                        .style("left", `${event.pageX + 5}px`)
+                        .style("top", `${event.pageY - 28}px`)
+                        .html(`${d.label}: ${d.start} - ${d.end}`);
+                })
+                .on("mouseout", function () {
+                    d3.select(".tooltip").style("display", "none");
                 });
 
-                // Add legend for latest price
-                legend.append("circle")
-                    .attr("cx", ranges.length * 150)
-                    .attr("cy", 7.5)
-                    .attr("r", 7)
-                    .attr("fill", "black");
+            // 最新價格標記
+            svg.append("circle")
+                .attr("cx", xScale(latestPrice))
+                .attr("cy", height / 2)
+                .attr("r", 5)
+                .attr("fill", "black");
 
-                legend.append("text")
-                    .attr("x", ranges.length * 150 + 20)
-                    .attr("y", 12)
-                    .text("最新價格");
-            });
+            // 添加 x 軸
+            svg.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(xScale).ticks(10));
+        }
     </script>
 </body>
+
 </html>
