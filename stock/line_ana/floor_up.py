@@ -2,13 +2,12 @@ import yfinance as yf
 import talib
 import pandas as pd
 
-def get_data(stock_num,start_date):
+def get_data(stock_num,start_date, way):
 
     data = yf.download(stock_num + ".TWO", start=start_date)
     data = yf.download(stock_num + ".TW", start=start_date)
 
-    ma = talib.SMA(data["Close"], timeperiod=20)
-    ma = talib.WMA(data["Close"], timeperiod=20)
+    ma = way(data["Close"], timeperiod=20)
     bias = ((data["Close"] - ma) / ma) * 100
 
     # 構造結果字典的列表
@@ -53,5 +52,7 @@ def get_data(stock_num,start_date):
             })
         print(results)
 
-get_data("2330","2023-01-01")
+if __name__ == "__main__":
 
+    get_data("2330","2023-01-01",talib.WMA)
+    #get_data("2330","2023-01-01",talib.SMA)

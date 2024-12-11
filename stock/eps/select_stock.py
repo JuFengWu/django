@@ -110,9 +110,9 @@ def get_yearly_high_low_average(stock, years=10, current_year=2023):
     yearly_low_dict = {year: low for year, low in yearly_low.items()}
     yearly_average_dic = {year: low for year, low in yearly_average.items()}
     
-    print(yearly_high_dict)
-    print(yearly_average_dic)
-    print(yearly_low_dict)
+    #print(yearly_high_dict)
+    #print(yearly_average_dic)
+    #print(yearly_low_dict)
 
     return yearly_high_dict, yearly_low_dict, yearly_average_dic
 
@@ -154,19 +154,29 @@ def p_b_ratio(bps_dict,stock): #本淨比法
     result_high = {}
     result_average = {}
     result_low = {}
+    high = 0
+    average = 0
+    low = 0 
     for year in range(2014, 2023):
-        if str(year) in yearly_high_dict and year in bps_dict:
-            result_high[year] = yearly_high_dict[year] / float(bps_dict[str(year)])
+        #print(bps_dict)
+        #print(bps_dict[0][str(year)])
+        #print(year)
+        result_high[year] = yearly_high_dict[year] / float(bps_dict[0][str(year)])
+        high  += yearly_high_dict[year] / float(bps_dict[0][str(year)])
 
     for year in range(2014, 2023):
-        if str(year) in yearly_average_dict and year in bps_dict:
-            result_average[year] = yearly_average_dict[year] / float(bps_dict[str(year)])
+        result_average[year] = yearly_average_dict[year] / float(bps_dict[0][str(year)])
+        average += yearly_average_dict[year] / float(bps_dict[0][str(year)])
 
     for year in range(2014, 2023):
-        if str(year) in yearly_low_dict and year in bps_dict:
-            result_low[year] = yearly_low_dict[year] / float(bps_dict[str(year)])
+        result_low[year] = yearly_low_dict[year] / float(bps_dict[0][str(year)])
+        low += yearly_low_dict[year] / float(bps_dict[0][str(year)])
 
-    return result_high ,result_average ,result_low
+    high = high/(2023-2014)*float(bps_dict[0][str(2023)])
+    average = average/(2023-2014)*float(bps_dict[0][str(2023)])
+    low = low/(2023-2014)*float(bps_dict[0][str(2023)])
+
+    return high ,average ,low
 
 def p_e_ratio(eps_dict,stock):#本益比法
     
@@ -175,19 +185,23 @@ def p_e_ratio(eps_dict,stock):#本益比法
     result_high = {}
     result_average = {}
     result_low = {}
+    high = 0
+    average = 0
+    low = 0 
     for year in range(2014, 2023):
-        if str(year) in yearly_high_dict and year in eps_dict:
-            result_high[year] = yearly_high_dict[year] / float(eps_dict[str(year)])
+        result_high[year] = yearly_high_dict[year] / float(eps_dict[0][str(year)])
 
     for year in range(2014, 2023):
-        if str(year) in yearly_average_dict and year in eps_dict:
-            result_average[year] = yearly_average_dict[year] / float(eps_dict[str(year)])
+        result_average[year] = yearly_average_dict[year] / float(eps_dict[0][str(year)])
 
     for year in range(2014, 2023):
-        if str(year) in yearly_low_dict and year in eps_dict:
-            result_low[year] = yearly_low_dict[year] / float(eps_dict[str(year)])
+        result_low[year] = yearly_low_dict[year] / float(eps_dict[0][str(year)])
 
-    return result_high ,result_average ,result_low
+    high = high/(2023-2014)*float(eps_dict[0][str(2023)])
+    average = average/(2023-2014)*float(eps_dict[0][str(2023)])
+    low = low/(2023-2014)*float(eps_dict[0][str(2023)])
+
+    return high ,average ,low
 
 
 
