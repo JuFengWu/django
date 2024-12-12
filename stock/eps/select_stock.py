@@ -172,14 +172,19 @@ def p_b_ratio(bps_dict,stock): #本淨比法
         result_low[year] = yearly_low_dict[year] / float(bps_dict[0][str(year)])
         low += yearly_low_dict[year] / float(bps_dict[0][str(year)])
 
+    print(high)
+    print(float(bps_dict[0][str(2023)]))
+
     high = high/(2023-2014)*float(bps_dict[0][str(2023)])
     average = average/(2023-2014)*float(bps_dict[0][str(2023)])
     low = low/(2023-2014)*float(bps_dict[0][str(2023)])
 
+    print(high)
+    print("----")
+
     return high ,average ,low
 
 def p_e_ratio(eps_dict,stock):#本益比法
-    
     yearly_high_dict, yearly_low_dict, yearly_average_dict = get_yearly_high_low_average(stock)
     # 下載股票資料
     result_high = {}
@@ -189,21 +194,28 @@ def p_e_ratio(eps_dict,stock):#本益比法
     average = 0
     low = 0 
     for year in range(2014, 2023):
-        result_high[year] = yearly_high_dict[year] / float(eps_dict[0][str(year)])
+        result_high[year] = yearly_high_dict[year] / float(eps_dict[1][str(year)])
+        high += yearly_high_dict[year] / float(eps_dict[1][str(year)])
 
     for year in range(2014, 2023):
-        result_average[year] = yearly_average_dict[year] / float(eps_dict[0][str(year)])
+        result_average[year] = yearly_average_dict[year] / float(eps_dict[1][str(year)])
+        average +=yearly_average_dict[year] / float(eps_dict[1][str(year)])
 
     for year in range(2014, 2023):
-        result_low[year] = yearly_low_dict[year] / float(eps_dict[0][str(year)])
+        result_low[year] = yearly_low_dict[year] / float(eps_dict[1][str(year)])
+        low += yearly_low_dict[year] / float(eps_dict[1][str(year)])
+    
+    print(high)
+    print(float(eps_dict[1][str(2023)]))
 
-    high = high/(2023-2014)*float(eps_dict[0][str(2023)])
-    average = average/(2023-2014)*float(eps_dict[0][str(2023)])
-    low = low/(2023-2014)*float(eps_dict[0][str(2023)])
+    high = high/(2023-2014)*float(eps_dict[1][str(2023)])
+    average = average/(2023-2014)*float(eps_dict[1][str(2023)])
+    low = low/(2023-2014)*float(eps_dict[1][str(2023)])
+
+    print(high)
+    print("----")
 
     return high ,average ,low
-
-
 
 if __name__ == "__main__":
     stockId = "1303"

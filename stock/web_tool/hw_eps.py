@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from eps import get_current_price2, select_stock
+import yfinance as yf
 
 def eps_show(request):
     return render(request, 'eps_show.html')
@@ -12,50 +13,71 @@ def pe_flow_data(request):
         # 從請求中解析 JSON 數據
         try:
             body = json.loads(request.body)
-            stock = body.get("stock", "未知股票")  # 提取股票名稱或代號
+            stockId = body.get("stock", "未知股票")  # 提取股票名稱或代號
             years = body.get("years", "10")       # 提取歷史幾年資料
-            print(stock)
+            print(stockId)
             print(years)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data"}, status=400)
         
-        curentPrice = get_current_price2.get_current_price(stock)
+        curentPrice = get_current_price2.get_current_price(stockId)
+       
+        stock = yf.Ticker(stockId+".TW")
 
         # 在此處處理您需要的邏輯
         # 根據收到的 `stock` 和 `years` 返回不同的數據（模擬數據示例）
+        bpsEpsData = select_stock.get_bps_eps_data(stockId)
+        pb = select_stock.p_b_ratio(bpsEpsData,stock)  #本淨比法
+        pe = select_stock.p_e_ratio(bpsEpsData,stock)
+        hl = select_stock.high_low_price_method(stock) # 高低法
+        divd = select_stock.dividend_yield_method(stockId)# 股利法
+        print(pb)
+        print(pe)
+        print(hl)
+        print(divd)
+        bigEnd = curentPrice*1.5
+        if bigEnd<divd[2]:
+            bigEnd = divd[2]*1.5
+        elif bigEnd<hl[2]:
+            bigEnd = hl[2]*1.5
+        elif bigEnd<pb[2]:
+            bigEnd = pb[2]*1.5
+        elif bigEnd<pe[2]:
+            bigEnd = pe[2]*1.5
+
         data = {
             "latest_price": curentPrice,
             "charts": [
                 {
                     "ranges": [
-                        {"label": "昂貴價區間", "start": 90, "end": 130, "color": "red"},
-                        {"label": "合理到昂貴價區間", "start": 70, "end": 90, "color": "lightcoral"},
-                        {"label": "便宜到合理價區間", "start": 40, "end": 70, "color": "lightgreen"},
-                        {"label": "便宜價區間", "start": 0, "end": 40, "color": "yellow"}
+                        {"label": "昂貴價區間", "start": divd[2], "end": bigEnd, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": divd[1], "end": divd[2], "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": divd[0], "end": divd[1], "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": divd[0], "color": "yellow"}
                     ]
                 },
                 {
                     "ranges": [
-                        {"label": "昂貴價區間", "start": 100, "end": 150, "color": "red"},
-                        {"label": "合理到昂貴價區間", "start": 80, "end": 100, "color": "lightcoral"},
-                        {"label": "便宜到合理價區間", "start": 50, "end": 80, "color": "lightgreen"},
-                        {"label": "便宜價區間", "start": 0, "end": 50, "color": "yellow"}
+                        {"label": "昂貴價區間", "start": hl[2], "end": bigEnd, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": hl[1], "end": hl[2], "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": hl[0], "end": hl[1], "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": hl[0], "color": "yellow"}
                     ]
                 },
                 {
                     "ranges": [
-                        {"label": "昂貴價區間", "start": 110, "end": 140, "color": "red"},
-                        {"label": "合理到昂貴價區間", "start": 70, "end": 110, "color": "lightcoral"},
-                        {"label": "便宜到合理價區間", "start": 30, "end": 70, "color": "lightgreen"},
-                        {"label": "便宜價區間", "start": 0, "end": 30, "color": "yellow"}
+                        {"label": "昂貴價區間", "start": pb[2], "end": bigEnd, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": pb[1], "end": pb[2], "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": pb[0], "end": pb[1], "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": pb[0], "color": "yellow"}
                     ]
                 },
                 {
                     "ranges": [
-                        {"label": "昂貴價區間", "start": 120, "end": 160, "color": "red"},
-                        {"label": "合理到昂貴價區間", "start": 100, "end": 120, "color": "lightcoral"},
-                        {"label": "便宜到合理價區間", "start": 60, "end": 100, "color": "lightgreen"},
-                        {"label": "便宜價區間", "start": 0, "end": 60, "color": "yellow"}
+                        {"label": "昂貴價區間", "start": pe[2], "end": bigEnd, "color": "red"},
+                        {"label": "合理到昂貴價區間", "start": pe[1], "end": pe[2], "color": "lightcoral"},
+                        {"label": "便宜到合理價區間", "start": pe[0], "end": pe[1], "color": "lightgreen"},
+                        {"label": "便宜價區間", "start": 0, "end": pe[0], "color": "yellow"}
                     ]
                 }
             ]
