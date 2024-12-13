@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from eps import get_current_price2, select_stock
+from eps import get_current_price2, select_stock, get_stream
 import yfinance as yf
 
 def eps_show(request):
@@ -105,6 +105,34 @@ def handle_stock_data(request):
             # 獲取用戶提交的數據
             body = json.loads(request.body)
             stock_code = body.get("stock_code", "2330")
+            start_date = body.get("start_date", "2330")
+
+            stock_symbol = stock_code+".TW"  # 替換成您的股票代碼，例如：台灣股票："2330.TW"
+            start_date = "2023-01-01"
+            end_date = "2024-12-03"
+
+            data = yf.download(stock_symbol, start=start_date, end=end_date)
+
+            """
+            for index, row in data.iterrows():
+                print(row["Close"].values[0])
+                print("--s-")
+                print(index.strftime("%Y-%m-%d"))
+            print("----")
+            """
+
+            # 提取需要的字段並轉換為目標格式
+            candlestick_data = [
+                {
+                    "date": index.strftime("%Y-%m-%d"),  # 日期格式
+                    "open": row["Open"].values[0],  # 開盤價
+                    "high": row["High"].values[0],  # 最高價
+                    "low": row["Low"].values[0],    # 最低價
+                    "close": row["Close"].values[0] # 收盤價
+                }
+                for index, row in data.iterrows()
+            ]
+            """
 
             # 模擬返回蠟燭圖數據和附加線數據
             # 這裡應根據提交的參數進行數據處理，例如從 API 或數據庫獲取相關數據
@@ -113,14 +141,47 @@ def handle_stock_data(request):
                 {"date": "2023-12-02", "open": 60, "high": 80, "low": 55, "close": 75},
                 {"date": "2023-12-03", "open": 70, "high": 85, "low": 65, "close": 80},
             ]
+            """
+            #print(candlestick_data)
 
+            
+
+            data =get_stream.get_stream(stock_code)
+            high_line=[]
+            low_line=[]
+            avg_line=[]
+            high_1_2_line=[]
+            low_0_8_line=[]
+            low_most=[]
+            for cd in candlestick_data:
+                #print("---aa---")
+                date = get_stream.format_date(cd["date"])
+                #print("---bb---")
+                #print(data)
+                #print(date)
+                #print("---ccc----")
+                #print(data[date])
+                high_line.append(float(data[date]["27X"]))
+                #print("---dd---")
+                high_1_2_line.append(float(data[date]["24.6X"]))
+                avg_line.append(float(data[date]["22.2X"]))
+                low_0_8_line.append(float(data[date]["19.8X"]))
+                low_line.append(float(data[date]["17.4X"]))
+                low_most.append(float(data[date]["15X"]))
+            print("---a---")
+            print(high_line)
             # 計算附加線數據
+            """
+            
             high_line = [d["high"] for d in candlestick_data]
             low_line = [d["low"] for d in candlestick_data]
             avg_line = [(d["high"] + d["low"]) / 2 for d in candlestick_data]
             high_1_2_line = [d["high"] * 1.2 for d in candlestick_data]
             low_0_8_line = [d["low"] * 0.8 for d in candlestick_data]
-
+            low_most = [d["low"] * 0.8 for d in candlestick_data]
+            print(high_line)
+            
+            """
             # 返回處理結果
             return JsonResponse({
                 "message": "數據處理成功",
@@ -131,6 +192,7 @@ def handle_stock_data(request):
                     "avg": avg_line,
                     "high_1_2": high_1_2_line,
                     "low_0_8": low_0_8_line,
+                    "low_most" : low_most
                 },
             })
 

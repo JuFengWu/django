@@ -14,7 +14,20 @@
             <input type="text" id="stockCode" name="stock_code" value="2330" required>
             
             <label for="startDate">開始日期:</label>
-            <input type="date" id="startDate" name="start_date" value="2022-01-01" required>
+            <input type="date" id="startDate" name="start_date" value="2020-01-01" required>
+            
+            <label for="method">方法:</label>
+            <select id="method" name="method">
+                <option value="方法1">方法1</option>
+                <option value="方法2">方法2</option>
+                <option value="方法3">方法3</option>
+            </select>
+            
+            <label for="maType">MA 類型:</label>
+            <select id="maType" name="ma_type">
+                <option value="SMA">SMA</option>
+                <option value="WMA">WMA</option>
+            </select>
             
             <button type="button" id="submitButton">顯示圖表</button>
         </form>
@@ -26,6 +39,8 @@
         document.getElementById("submitButton").addEventListener("click", () => {
             const stockCode = document.getElementById("stockCode").value;
             const startDate = document.getElementById("startDate").value;
+            const method = document.getElementById("method").value;
+            const maType = document.getElementById("maType").value;
 
             fetch('/api/handle-stock-data/', {
                 method: 'POST',
@@ -36,6 +51,8 @@
                 body: JSON.stringify({
                     stock_code: stockCode,
                     start_date: startDate,
+                    method: method,
+                    ma_type: maType
                 })
             })
             .then(response => response.json())
@@ -81,9 +98,6 @@
             const low_0_8Line = data.lines.low_0_8.map((value, index) => [
                 new Date(data.candlestick[index].date).getTime(), value,
             ]);
-            const low_most_Line = data.lines.low_most.map((value, index) => [
-                new Date(data.candlestick[index].date).getTime(), value,
-            ]);
 
             Highcharts.stockChart('chart-container', {
                 rangeSelector: {
@@ -100,39 +114,33 @@
                     },
                     {
                         type: 'line',
-                        name: '27X',
+                        name: '最高值連線',
                         data: highLine,
                         color: 'blue',
                     },
                     {
                         type: 'line',
-                        name: '17.4X',
+                        name: '最低值連線',
                         data: lowLine,
                         color: 'purple',
                     },
                     {
                         type: 'line',
-                        name: '22.2X',
+                        name: '平均值連線',
                         data: avgLine,
                         color: 'green',
                     },
                     {
                         type: 'line',
-                        name: '24.6X',
+                        name: '最大值1.2倍連線',
                         data: high_1_2Line,
                         color: 'orange',
                     },
                     {
                         type: 'line',
-                        name: '19.8X',
+                        name: '最小值0.8倍連線',
                         data: low_0_8Line,
                         color: 'red',
-                    },
-                    {
-                        type: 'line',
-                        name: '15X',
-                        data: low_most_Line,
-                        color: 'orange',
                     },
                 ],
             });
