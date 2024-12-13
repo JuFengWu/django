@@ -105,9 +105,6 @@ def handle_stock_data(request):
             # 獲取用戶提交的數據
             body = json.loads(request.body)
             stock_code = body.get("stock_code", "2330")
-            start_date = body.get("start_date", "2020-01-01")
-            method = body.get("method", "方法1")
-            ma_type = body.get("ma_type", "SMA")
 
             # 模擬返回蠟燭圖數據和附加線數據
             # 這裡應根據提交的參數進行數據處理，例如從 API 或數據庫獲取相關數據

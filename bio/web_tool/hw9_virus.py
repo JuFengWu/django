@@ -3,10 +3,31 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
 
-def virus_detail(request,virus_proteome,hla_type):
+def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
     print(virus_proteome)
     print(hla_type)
-    return render(request, "virus_detail.html")
+    print(rank)
+    print(virus_protein)
+    showType = hla_type
+    if hla_type == "any":
+        showType = "Any_HLA_Type"
+        
+    filter_conditions = {
+        "virus_proteome": virus_proteome,
+        "selected_hla_type": showType,
+        "selected_rank_value": rank
+    }
+
+    proteome_details = [
+        {"virus_proteome": virus_proteome, "virus_protein": "P0DTC4"}
+    ]
+
+    # 傳遞數據到模板
+    context = {
+        "filter_conditions": filter_conditions,
+        "proteome_details": proteome_details
+    }
+    return render(request, "virus_detail.html",context)
 
 def get_pathogen_protein_and_counts(df, proteome, hla_type, rank):
     
@@ -66,7 +87,7 @@ def proteome_screener(request):
                 re["virus_protein"] = i["pathogen_protein"]
                 re["human_protein_count"] = i["human_protein_count"]
                 re["human_protein_epitope_count"] = i["human_protein_epitope_count"]
-                re["detail_link"] = "/virus/" + virus_proteome + "/"+str(i["human_protein_count"])+".html"
+                re["detail_link"] = "/virus/" + hla_type+ "/" + virus_proteome + "/"+str(i["pathogen_protein"])+"/"+rank+".html"
                 results.append(re)
         else:
             result = get_pathogen_protein_and_counts(df,virus_proteome, hla_type, rank)
@@ -74,7 +95,7 @@ def proteome_screener(request):
             results=[]
             for i in result:
                 i["virus_proteome"] = virus_proteome
-                i["detail_link"] = "/virus/" + virus_proteome + "/"+str(i["virus_protein"])+".html"
+                i["detail_link"] = "/virus/" +hla_type+ "/" + virus_proteome + "/"+str(i["virus_protein"])+"/"+rank+".html"
                 results.append(i)
             
         

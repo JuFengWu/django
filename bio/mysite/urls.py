@@ -30,5 +30,5 @@ urlpatterns = [
     path('transcript/<str:gene_sequence_name>/', views_hw34.transcript, name='transcript'),
     #path('virus/', hw9_virus.virus, name = "proteome_screener"),
     path('virus/', hw9_virus.proteome_screener, name='proteome_screener'),
-    path('virus/<str:virus_proteome>/<str:hla_type>.html', hw9_virus.virus_detail, name='virus_detail'),
+    path('virus/<str:hla_type>/<str:virus_proteome>/<str:virus_protein>/<str:rank>.html', hw9_virus.virus_detail, name='virus_detail'),
 ]

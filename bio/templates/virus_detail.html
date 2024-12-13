@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .highlight:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Result</div>
+
+        <!-- Filter condition table -->
+        <div class="sub-header">Filter condition</div>
+        <table>
+            <tr>
+                <th>Virus Proteome</th>
+                <th>Selected HLA Type</th>
+                <th>Selected Rank Value</th>
+            </tr>
+            <tr>
+                <td>{{ filter_conditions.virus_proteome }}</td>
+                <td>{{ filter_conditions.selected_hla_type }}</td>
+                <td>{{ filter_conditions.selected_rank_value }}</td>
+            </tr>
+        </table>
+
+        <!-- Proteome detail table -->
+        <div class="sub-header">Proteome Detail</div>
+        <table>
+            <tr>
+                <th>Virus Proteome (UniProt)</th>
+                <th>Virus Protein (UniProt)</th>
+            </tr>
+            {% for detail in proteome_details %}
+            <tr>
+                <td><a href="#" class="highlight">{{ detail.virus_proteome }}</a></td>
+                <td><a href="#" class="highlight">{{ detail.virus_protein }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
