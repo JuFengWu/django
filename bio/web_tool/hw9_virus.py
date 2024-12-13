@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
 
-def filter_and_count_non_nan(file_path, protein_id, column_pattern):
+def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
     """
     從 CSV 中篩選 pathogen_protein 值為指定值的行，匹配的列名稱符合條件，
     計算每行有幾個非 NaN 值，並返回清單形式。
@@ -32,10 +32,34 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern):
         
         # 構建結果清單 [protein, 非 NaN 數量]
         result_list = [
-            {"protein":df.loc[idx, 'protein'], "non_nan_count":str(non_nan_counts[idx])}
+            {"protein":df.loc[idx, 'protein'], 
+             "non_nan_count":str(non_nan_counts[idx]),
+             "human_star":df.loc[idx, 'human_start'],
+             "human_end":df.loc[idx, 'human_end'],
+             "pathogen_start":df.loc[idx, 'pathogen_start'],
+             "pathogen_end":df.loc[idx, 'pathogen_end'],  
+             "pathogen_species":df.loc[idx, 'pathogen_species'],
+             "gene":df.loc[idx, 'gene'], 
+             "pathogen_length":df.loc[idx, 'pathogen_length'], 
+             "human_seq":df.loc[idx, 'human_seq'], 
+             "Binding Strength":rank,
+             "binding_rank_very_weak":df.loc[idx, 'binding_rank_very_weak'], 
+             "binding_rank_strong":df.loc[idx, 'binding_rank_strong'], 
+             "binding_rank_weak":df.loc[idx, 'binding_rank_weak'], 
+            }
             for idx in filtered_columns.index
             if non_nan_counts[idx] > 0
         ]
+        
+        for i in range(len(result_list)):
+            if not pd.isna(result_list[i]["binding_rank_strong"]):
+                result_list[i]["strong_weak_very"] = "Strong"
+            elif not pd.isna(result_list[i]["binding_rank_weak"]):
+                result_list[i]["strong_weak_very"] = "Weak"
+            elif not pd.isna(result_list[i]["binding_rank_very_weak"] ):
+                result_list[i]["strong_weak_very"] = "Very_Weak"
+            else:
+                result_list[i]["strong_weak_very"] = "Extreme_Weak"
         """
         result_list = [
         {"protein": protein_id, "non_nan_count": count}
@@ -64,7 +88,7 @@ def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
         select = hla_type
     column_pattern = "binding_rank_"+rank+"_"+select
     print(column_pattern)
-    results = filter_and_count_non_nan(file_path,virus_protein,column_pattern)
+    results = filter_and_count_non_nan(file_path,virus_protein,column_pattern,rank)
     
         
     filter_conditions = {
