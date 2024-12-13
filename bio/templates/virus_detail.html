@@ -51,7 +51,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!--div class="container"-->
         <div class="header">Result</div>
 
         <!-- Filter condition table -->
@@ -101,24 +101,31 @@
                 {% endfor %}
             </tbody>
         </table>
-        <div id="chart"></div>
+        
         <table id="resultTable2" class="display" style="width:100%">
             <thead>
                 <tr>
-                    <th>Protein</th>
-                    <th>Non-NaN Count</th>
+                    <th>Epitope </th>
+                    <th>Human Protein (UniProt) </th>
+                    <th>Human Sequence Start - End Pathogen  </th>
+                    <th>Sequence Start - End </th>
+                    <th>Binding Detail</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in result_table2 %}
                     <tr>
+                        <td>{{ row.Epitope }}</td>
                         <td>{{ row.protein }}</td>
-                        <td>{{ row.non_nan_count }}</td>
+                        <td>{{ row.Human_Sequence_Start_End }}</td>
+                        <td>{{ row.Sequence_Start_End }}</td>
+                        <td>{{ row.strong_weak_very }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
+        <div id="chart"></div>
+    <!--/div-->
     <script>
         $(document).ready(function () {
             $('#resultTable').DataTable();

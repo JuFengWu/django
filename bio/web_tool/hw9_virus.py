@@ -35,7 +35,7 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
         result_list = [
             {"protein":"aaa", 
              "non_nan_count":345,
-             "human_star":34,
+             "human_start":34,
              "human_end":45,
              "pathogen_start":11,
              "pathogen_end":22,  
@@ -50,7 +50,7 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
             },
             {"protein":"bbb", 
              "non_nan_count":345,
-             "human_star":45,
+             "human_start":45,
              "human_end":87,
              "pathogen_start":90,
              "pathogen_end":100,  
@@ -69,7 +69,7 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
         result_list = [
             {"protein":df.loc[idx, 'protein'], 
              "non_nan_count":str(non_nan_counts[idx]),
-             "human_star":df.loc[idx, 'human_start'],
+             "human_start":df.loc[idx, 'human_start'],
              "human_end":df.loc[idx, 'human_end'],
              "pathogen_start":df.loc[idx, 'pathogen_start'],
              "pathogen_end":df.loc[idx, 'pathogen_end'],  
@@ -85,6 +85,8 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
             for idx in filtered_columns.index
             if non_nan_counts[idx] > 0
         ]
+
+        table2=[]
         
         for i in range(len(result_list)):
             if not pd.isna(result_list[i]["binding_rank_strong"]):
@@ -99,8 +101,15 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
             del result_list[i]['binding_rank_strong']
             del result_list[i]['binding_rank_weak']
             del result_list[i]['binding_rank_very_weak']
+            table2Item = {}
+            table2Item["Epitope"] = result_list[i]['human_seq']
+            table2Item["protein"] = result_list[i]['protein']
+            table2Item["Human_Sequence_Start_End"] = str(result_list[i]['human_start']) + "-" + str(result_list[i]['human_end'])
+            table2Item["Sequence_Start_End"] = str(result_list[i]['pathogen_start']) + "-" + str(result_list[i]['pathogen_end'])
+            table2Item["strong_weak_very"] = result_list[i]['strong_weak_very']
+            table2.append(table2Item)
         
-        return result_list
+        return result_list,table2
     
     except Exception as e:
         print(f"發生錯誤：{e}")
@@ -122,7 +131,8 @@ def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
         select = hla_type
     column_pattern = "binding_rank_"+rank+"_"+select
     print(column_pattern)
-    results = filter_and_count_non_nan(file_path,virus_protein,column_pattern,rank)
+    results,table2 = filter_and_count_non_nan(file_path,virus_protein,column_pattern,rank)
+    print(results)
     
         
     filter_conditions = {
@@ -140,6 +150,7 @@ def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
         "filter_conditions": filter_conditions,
         "proteome_details": proteome_details,
         "result_table": results,  # 新增結果表
+        "result_table2": table2,
     }
     return render(request, "virus_detail.html",context)
 
