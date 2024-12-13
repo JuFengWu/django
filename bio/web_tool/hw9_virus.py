@@ -3,14 +3,69 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
 
+def filter_and_count_non_nan(file_path, protein_id, column_pattern):
+    """
+    從 CSV 中篩選 pathogen_protein 值為指定值的行，匹配的列名稱符合條件，
+    計算每行有幾個非 NaN 值，並返回清單形式。
+
+    :param file_path: str, CSV 檔案的路徑
+    :param protein_id: str, 要篩選的 pathogen_protein 值
+    :param column_pattern: str, 用於篩選列名的模式 (正則表達式)
+    :return: List[List[str, int]], 清單形式的結果，每個元素是 [protein, 非 NaN 數量]
+    """
+    try:
+        # 讀取 CSV 檔案
+        df = pd.read_csv(file_path)
+        
+        # 檢查是否有必要的欄位
+        if 'pathogen_protein' not in df.columns or 'protein' not in df.columns:
+            raise ValueError("CSV 中未找到必要的 'pathogen_protein' 或 'protein' 欄位")
+        
+        # 篩選出 pathogen_protein 欄位等於 protein_id 的行
+        filtered_rows = df[df['pathogen_protein'] == protein_id]
+        
+        # 篩選列名符合 column_pattern 的列
+        filtered_columns = filtered_rows.filter(regex=column_pattern, axis=1)
+        
+        # 找到非 NaN 的行索引，並計算每行的非 NaN 數量
+        non_nan_counts = filtered_columns.notna().sum(axis=1)
+        
+        # 構建結果清單 [protein, 非 NaN 數量]
+        result_list = [
+            {"protein":df.loc[idx, 'protein'], "non_nan_count":str(non_nan_counts[idx])}
+            for idx in filtered_columns.index
+            if non_nan_counts[idx] > 0
+        ]
+        """
+        result_list = [
+        {"protein": protein_id, "non_nan_count": count}
+        for count in non_nan_counts
+        ]
+        """
+        return result_list
+    
+    except Exception as e:
+        print(f"發生錯誤：{e}")
+        return None
+
 def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
     print(virus_proteome)
     print(hla_type)
     print(rank)
     print(virus_protein)
+    file_path = "0464024_rank_percent_output_merged.csv"
     showType = hla_type
+    #print(results)
+
     if hla_type == "any":
-        showType = "Any_HLA_Type"
+        showType = "Any_HLA_Type" 
+        select = ".*"
+    else:
+        select = hla_type
+    column_pattern = "binding_rank_"+rank+"_"+select
+    print(column_pattern)
+    results = filter_and_count_non_nan(file_path,virus_protein,column_pattern)
+    
         
     filter_conditions = {
         "virus_proteome": virus_proteome,
@@ -19,13 +74,14 @@ def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
     }
 
     proteome_details = [
-        {"virus_proteome": virus_proteome, "virus_protein": "P0DTC4"}
+        {"virus_proteome": virus_proteome, "virus_protein": virus_protein}
     ]
 
     # 傳遞數據到模板
     context = {
         "filter_conditions": filter_conditions,
-        "proteome_details": proteome_details
+        "proteome_details": proteome_details,
+        "result_table": results,  # 新增結果表
     }
     return render(request, "virus_detail.html",context)
 
