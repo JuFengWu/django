@@ -31,6 +31,41 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
         non_nan_counts = filtered_columns.notna().sum(axis=1)
         
         # 構建結果清單 [protein, 非 NaN 數量]
+        """
+        result_list = [
+            {"protein":"aaa", 
+             "non_nan_count":345,
+             "human_star":34,
+             "human_end":45,
+             "pathogen_start":11,
+             "pathogen_end":22,  
+             "pathogen_species":"bb",
+             "gene":"cc", 
+             "pathogen_length":56, 
+             "human_seq":34, 
+             "Binding Strength":rank,
+             "binding_rank_very_weak":"strong", 
+             "binding_rank_strong":"strong", 
+             "binding_rank_weak":"strong", 
+            },
+            {"protein":"bbb", 
+             "non_nan_count":345,
+             "human_star":45,
+             "human_end":87,
+             "pathogen_start":90,
+             "pathogen_end":100,  
+             "pathogen_species":"bb",
+             "gene":"cc", 
+             "pathogen_length":56, 
+             "human_seq":34, 
+             "Binding Strength":rank,
+             "binding_rank_very_weak":"strong", 
+             "binding_rank_strong":"strong", 
+             "binding_rank_weak":"strong", 
+            }
+        ]
+        """
+        
         result_list = [
             {"protein":df.loc[idx, 'protein'], 
              "non_nan_count":str(non_nan_counts[idx]),
@@ -42,7 +77,7 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
              "gene":df.loc[idx, 'gene'], 
              "pathogen_length":df.loc[idx, 'pathogen_length'], 
              "human_seq":df.loc[idx, 'human_seq'], 
-             "Binding Strength":rank,
+             "Binding_Strength":rank,
              "binding_rank_very_weak":df.loc[idx, 'binding_rank_very_weak'], 
              "binding_rank_strong":df.loc[idx, 'binding_rank_strong'], 
              "binding_rank_weak":df.loc[idx, 'binding_rank_weak'], 
@@ -60,12 +95,11 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
                 result_list[i]["strong_weak_very"] = "Very_Weak"
             else:
                 result_list[i]["strong_weak_very"] = "Extreme_Weak"
-        """
-        result_list = [
-        {"protein": protein_id, "non_nan_count": count}
-        for count in non_nan_counts
-        ]
-        """
+            
+            del result_list[i]['binding_rank_strong']
+            del result_list[i]['binding_rank_weak']
+            del result_list[i]['binding_rank_very_weak']
+        
         return result_list
     
     except Exception as e:
