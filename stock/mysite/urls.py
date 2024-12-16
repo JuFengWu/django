@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from web_tool import views,hw2_views,hw3_views,hw4_views_test, hw4_views,hw5_views, hw_eps
+from web_tool import views,hw2_views,hw3_views,hw4_views_test, hw4_views,hw5_views, hw_eps, hw_lines_show
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
@@ -65,4 +65,7 @@ urlpatterns = [
     path('api/pe-flow/', hw_eps.pe_flow_data, name='pe_flow_data'),
     path('stream_show/', hw_eps.stream_show, name='stream_show'),
     path('api/handle-stock-data/', hw_eps.handle_stock_data, name='handle-stock-data'),
+    path('resis_support/', hw_lines_show.show_floor_up_data, name='resis_support'),
+    path('api/handle-stock-data/', hw_lines_show.handle_floor_up_data, name='handle-stock-data'),
+    
 ]

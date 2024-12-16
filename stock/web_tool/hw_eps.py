@@ -113,14 +113,6 @@ def handle_stock_data(request):
 
             data = yf.download(stock_symbol, start=start_date, end=end_date)
 
-            """
-            for index, row in data.iterrows():
-                print(row["Close"].values[0])
-                print("--s-")
-                print(index.strftime("%Y-%m-%d"))
-            print("----")
-            """
-
             # 提取需要的字段並轉換為目標格式
             candlestick_data = [
                 {
