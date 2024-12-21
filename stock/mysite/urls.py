@@ -66,6 +66,7 @@ urlpatterns = [
     path('stream_show/', hw_eps.stream_show, name='stream_show'),
     path('api/handle-stock-data/', hw_eps.handle_stock_data, name='handle-stock-data'),
     path('resis_support/', hw_lines_show.show_floor_up_data, name='resis_support'),
-    path('api/handle-stock-data/', hw_lines_show.handle_floor_up_data, name='handle-stock-data'),
-    
+    path('api/handle-floor-up-data/', hw_lines_show.handle_floor_up_data, name='handle-floor-up-data'),
+    path('macd/', hw_lines_show.show_macd_data, name='macd'),
+    path('api/handle-macd-data/', hw_lines_show.handle_macd_data, name='handle-macd-data'),
 ]
