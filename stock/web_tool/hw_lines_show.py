@@ -7,12 +7,14 @@ import yfinance as yf
 from django.shortcuts import render
 from line_ana import floor_up
 import talib
+from line_ana.supportResistanceUtils import SupportResistance, convert_support_to_low_values, convert_support_to_high_values  # 引入學長的計算模組
 
 def show_macd_data(request):
     return render(request, 'macd.html')
 
 @csrf_exempt
 def handle_macd_data(request):
+    """
     if request.method == "POST":
         try:
             # 獲取用戶提交的數據
@@ -49,10 +51,15 @@ def handle_macd_data(request):
                 ma = talib.WMA
             else:
                 ma = talib.SMA
+                
+            
             results = floor_up.get_floor_up_data(stock_code,start_date,ma,int(method))
             for cd in candlestick_data:
                 results[cd["date"]]
             
+
+            sup = SupportResistance(stock_code, start_date, 'sma', 20)  # 傳入參數
+            result = sup.run('method3')  # 指定方法
 
             # 返回處理結果
             return JsonResponse({
@@ -66,6 +73,7 @@ def handle_macd_data(request):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
+    """
 
     return JsonResponse({"error": "Only POST method is allowed"}, status=405)
 
@@ -75,7 +83,7 @@ def show_floor_up_data(request):
 @csrf_exempt
 def handle_floor_up_data(request):
     if request.method == "POST":
-        try:
+        
             # 獲取用戶提交的數據
             body = json.loads(request.body)
             stock_code = body.get("stock_code", "2330")
@@ -97,23 +105,38 @@ def handle_floor_up_data(request):
             candlestick_data = [
                 {
                     "date": index.strftime("%Y-%m-%d"),  # 日期格式
-                    "open": row["Open"].values[0],  # 開盤價
-                    "high": row["High"].values[0],  # 最高價
-                    "low": row["Low"].values[0],    # 最低價
-                    "close": row["Close"].values[0] # 收盤價
+                    "open": row["Open"],  # 開盤價
+                    "high": row["High"],  # 最高價
+                    "low": row["Low"],    # 最低價
+                    "close": row["Close"] # 收盤價
                 }
                 for index, row in data.iterrows()
             ]
-            if ma_type == "SMA":
+            """
+            if ma_type == "sma":
                 ma = talib.SMA
-            elif ma_type == "SMA":
+            elif ma_type == "wma":
                 ma = talib.WMA
             else:
                 ma = talib.SMA
-            results = floor_up.get_floor_up_data(stock_code,start_date,ma,int(method))
+            
             for cd in candlestick_data:
                 results[cd["date"]]
-            
+            """    
+
+            print(stock_code)
+            print(start_date)
+            print(ma_type)
+            print(method)
+
+            #floor_up.get_floor_up_data(stock_code,start_date,talib.SMA,0)
+
+            sup = SupportResistance(stock_code, start_date, ma_type, 20)  # 傳入參數
+            result = sup.run(method)  # 指定方法
+            low_line = convert_support_to_low_values(result)
+            high_line = convert_support_to_high_values(result)
+
+            print(high_line)
 
             # 返回處理結果
             return JsonResponse({
@@ -125,7 +148,7 @@ def handle_floor_up_data(request):
                 },
             })
 
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+        #except Exception as e:
+        #    return JsonResponse({"error": str(e)}, status=400)
 
     return JsonResponse({"error": "Only POST method is allowed"}, status=405)

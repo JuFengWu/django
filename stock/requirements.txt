@@ -1,7 +1,7 @@
 django
 djangorestframework
 djangorestframework-simplejwt
-yfinance
+yfinance == 0.2.44
 pandas
 backtrader
 psycopg2-binary

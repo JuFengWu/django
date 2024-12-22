@@ -117,10 +117,10 @@ def handle_stock_data(request):
             candlestick_data = [
                 {
                     "date": index.strftime("%Y-%m-%d"),  # 日期格式
-                    "open": row["Open"].values[0],  # 開盤價
-                    "high": row["High"].values[0],  # 最高價
-                    "low": row["Low"].values[0],    # 最低價
-                    "close": row["Close"].values[0] # 收盤價
+                    "open": row["Open"],  # 開盤價
+                    "high": row["High"],  # 最高價
+                    "low": row["Low"],    # 最低價
+                    "close": row["Close"] # 收盤價
                 }
                 for index, row in data.iterrows()
             ]
@@ -146,21 +146,14 @@ def handle_stock_data(request):
             low_0_8_line=[]
             low_most=[]
             for cd in candlestick_data:
-                #print("---aa---")
                 date = get_stream.format_date(cd["date"])
-                #print("---bb---")
-                #print(data)
-                #print(date)
-                #print("---ccc----")
-                #print(data[date])
+
                 high_line.append(float(data[date]["27X"]))
-                #print("---dd---")
                 high_1_2_line.append(float(data[date]["24.6X"]))
                 avg_line.append(float(data[date]["22.2X"]))
                 low_0_8_line.append(float(data[date]["19.8X"]))
                 low_line.append(float(data[date]["17.4X"]))
                 low_most.append(float(data[date]["15X"]))
-            print("---a---")
             print(high_line)
             # 計算附加線數據
             """

@@ -7,8 +7,15 @@ def get_floor_up_data(stock_num,start_date, maWay, way):
     data = yf.download(stock_num + ".TWO", start=start_date)
     data = yf.download(stock_num + ".TW", start=start_date)
 
-    ma = maWay(data["Close"], timeperiod=20)
-    print(ma)
+    print(data["Close"])
+    print("--close--")
+
+    close_prices = data["Close"]
+
+    ma = maWay(close_prices, timeperiod=20)
+
+    print("--save--")
+    
     bias = ((data["Close"] - ma) / ma) * 100
 
     # 構造結果字典的列表
