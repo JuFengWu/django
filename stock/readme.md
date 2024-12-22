@@ -12,8 +12,10 @@ localhost/fintech
 localhost/eps_show <要跳轉近來>
 localhost/stream_show <要跳轉近來>
 localhost/resis_support <要跳轉近來>
-localhost/macd <要跳轉近來> # not finish
+localhost/macd <要跳轉近來> 
 localhost/kd <要跳轉近來>
+
+#TODO: need to check yf before resis_support!
 
 docker-compose up -d
 

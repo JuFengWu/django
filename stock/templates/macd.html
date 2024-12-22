@@ -14,62 +14,103 @@
             <input type="text" id="stockCode" name="stock_code" value="2330" required>
             
             <label for="startDate">開始日期:</label>
-            <input type="date" id="startDate" name="start_date" value="2020-01-01" required>
-            
-            <label for="method">方法:</label>
-            <select id="method" name="method">
-                <option value="0">方法1</option>
-                <option value="1">方法2</option>
-                <option value="2">方法3</option>
-            </select>
-            
-            <label for="maType">MA 類型:</label>
-            <select id="maType" name="ma_type">
-                <option value="sma">SMA</option>
-                <option value="wma">WMA</option>
-            </select>
+            <input type="date" id="startDate" name="start_date" value="2024-01-01" required>
             
             <button type="button" id="submitButton">顯示圖表</button>
         </form>
     </div>
     <div id="chart-container" style="height: 500px; min-width: 310px"></div>
+    <div id="macd-container" style="height: 300px; min-width: 310px; margin-top: 20px;"></div>
 
-    <script>
-        // 提交表單並繪製圖表
-        document.getElementById("submitButton").addEventListener("click", () => {
-            const stockCode = document.getElementById("stockCode").value;
-            const startDate = document.getElementById("startDate").value;
-            const method = document.getElementById("method").value;
-            const maType = document.getElementById("maType").value;
+<script>
+    // 提交表單並繪製圖表和 KD 指標
+    document.getElementById("submitButton").addEventListener("click", () => {
+        const stockCode = document.getElementById("stockCode").value;
+        const startDate = document.getElementById("startDate").value;
 
-            fetch('/api/handle-stock-data/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // 確保有 CSRF Token
-                },
-                body: JSON.stringify({
-                    stock_code: stockCode,
-                    start_date: startDate,
-                    method: method,
-                    ma_type: maType
-                })
+        fetch('/api/handle-macd-data/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // 確保有 CSRF Token
+            },
+            body: JSON.stringify({
+                stock_code: stockCode,
+                start_date: startDate,
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert("Error: " + data.error);
-                } else {
-                    drawChart(data); // 繪製圖表
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("提交失敗");
-            });
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Error: " + data.error);
+            } else {
+                drawChart(data); // 繪製蠟燭圖
+                drawMACDChart(data); // 繪製 KD 指標圖
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("提交失敗");
         });
+    });
 
-        // 繪製 Highcharts 圖表
+    // 繪製 MACD 指標圖表
+    function drawMACDChart(data) {
+        const macdLine = data.macd.map(d => [
+            new Date(d.date).getTime(),
+            d.macd
+        ]);
+        const signalLine = data.macd.map(d => [
+            new Date(d.date).getTime(),
+            d.signal
+        ]);
+        const histLine = data.macd.map(d => [
+            new Date(d.date).getTime(),
+            d.hist
+        ]);
+        Highcharts.stockChart('macd-container', {
+            rangeSelector: {
+                selected: 1,
+            },
+            title: {
+                text: 'MACD 指標',
+            },
+            series: [
+                {
+                    type: 'line',
+                    name: 'MACD',
+                    data: macdLine,
+                    color: 'blue',
+                },
+                {
+                    type: 'line',
+                    name: 'Signal Line',
+                    data: signalLine,
+                    color: 'red',
+                },
+                {
+                    type: 'column',
+                    name: 'Histogram',
+                    data: histLine,
+                    color: 'green',
+                },
+            ],
+        });
+    }
+    function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
         function drawChart(data) {
             const candlestickData = data.candlestick.map(d => [
                 new Date(d.date).getTime(),
@@ -77,12 +118,6 @@
                 d.high,
                 d.low,
                 d.close,
-            ]);
-            const highLine = data.lines.high.map((value, index) => [
-                new Date(data.candlestick[index].date).getTime(), value,
-            ]);
-            const lowLine = data.lines.low.map((value, index) => [
-                new Date(data.candlestick[index].date).getTime(), value,
             ]);
             Highcharts.stockChart('chart-container', {
                 rangeSelector: {
@@ -97,38 +132,11 @@
                         name: '股價',
                         data: candlestickData,
                     },
-                    {
-                        type: 'line',
-                        name: '最高值連線',
-                        data: highLine,
-                        color: 'blue',
-                    },
-                    {
-                        type: 'line',
-                        name: '最低值連線',
-                        data: lowLine,
-                        color: 'purple',
-                    },
                 ],
             });
         }
-
-        // 獲取 CSRF Token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
+    // 其餘代碼保持不變，包括 getCookie 和 drawChart 函數
+</script>
 </body>
 </html>
 
