@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Highcharts Example</title>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+    <div>
+        <form id="stockForm">
+            <label for="stockCode">股票代號:</label>
+            <input type="text" id="stockCode" name="stock_code" value="2330" required>
+            
+            <label for="startDate">開始日期:</label>
+            <input type="date" id="startDate" name="start_date" value="2024-01-01" required>
+            
+            <button type="button" id="submitButton">顯示圖表</button>
+        </form>
+    </div>
+    <div id="chart-container" style="height: 500px; min-width: 310px"></div>
+<div id="kd-container" style="height: 300px; min-width: 310px; margin-top: 20px;"></div>
+
+<script>
+    // 提交表單並繪製圖表和 KD 指標
+    document.getElementById("submitButton").addEventListener("click", () => {
+        const stockCode = document.getElementById("stockCode").value;
+        const startDate = document.getElementById("startDate").value;
+
+        fetch('/api/handle-kd-data/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // 確保有 CSRF Token
+            },
+            body: JSON.stringify({
+                stock_code: stockCode,
+                start_date: startDate,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Error: " + data.error);
+            } else {
+                drawChart(data); // 繪製蠟燭圖
+                drawKDChart(data); // 繪製 KD 指標圖
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("提交失敗");
+        });
+    });
+
+    // 繪製 KD 指標圖表
+    function drawKDChart(data) {
+        const kdDataK = data.kd.map(d => [
+            new Date(d.date).getTime(),
+            d.k
+        ]);
+        const kdDataD = data.kd.map(d => [
+            new Date(d.date).getTime(),
+            d.d
+        ]);
+        Highcharts.stockChart('kd-container', {
+            rangeSelector: {
+                selected: 1,
+            },
+            title: {
+                text: 'KD 指標',
+            },
+            series: [
+                {
+                    type: 'line',
+                    name: '%K',
+                    data: kdDataK,
+                    color: 'green',
+                },
+                {
+                    type: 'line',
+                    name: '%D',
+                    data: kdDataD,
+                    color: 'orange',
+                },
+            ],
+        });
+    }
+    function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function drawChart(data) {
+            const candlestickData = data.candlestick.map(d => [
+                new Date(d.date).getTime(),
+                d.open,
+                d.high,
+                d.low,
+                d.close,
+            ]);
+            Highcharts.stockChart('chart-container', {
+                rangeSelector: {
+                    selected: 1,
+                },
+                title: {
+                    text: '蠟燭圖與附加線',
+                },
+                series: [
+                    {
+                        type: 'candlestick',
+                        name: '股價',
+                        data: candlestickData,
+                    },
+                ],
+            });
+        }
+    // 其餘代碼保持不變，包括 getCookie 和 drawChart 函數
+</script>
+</body>
+</html>
+
+

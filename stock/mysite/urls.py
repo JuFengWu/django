@@ -69,4 +69,6 @@ urlpatterns = [
     path('api/handle-floor-up-data/', hw_lines_show.handle_floor_up_data, name='handle-floor-up-data'),
     path('macd/', hw_lines_show.show_macd_data, name='macd'),
     path('api/handle-macd-data/', hw_lines_show.handle_macd_data, name='handle-macd-data'),
+    path('kd/', hw_lines_show.show_kd_data, name='kd'),
+    path('api/handle-kd-data/', hw_lines_show.handle_kd_data, name='handle-kd-data'),
 ]

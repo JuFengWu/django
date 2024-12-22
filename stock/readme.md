@@ -12,7 +12,8 @@ localhost/fintech
 localhost/eps_show <要跳轉近來>
 localhost/stream_show <要跳轉近來>
 localhost/resis_support <要跳轉近來>
-localhost/macd <要跳轉近來>
+localhost/macd <要跳轉近來> # not finish
+localhost/kd <要跳轉近來>
 
 docker-compose up -d
 
