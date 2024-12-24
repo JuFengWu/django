@@ -3,6 +3,19 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
 
+def get_proteome_seq_length(file_path, protein_id):
+    # Read the CSV file
+    df = pd.read_csv(file_path)
+    
+    # Filter the DataFrame to find the matching protein ID
+    result = df[df['species_protein'] == protein_id]
+    
+    # Check if the result exists and return the `proteome_seq_length`
+    if not result.empty:
+        return result.iloc[0]['proteome_seq_length']
+    else:
+        return f"No match found for protein ID: {protein_id}"
+
 def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
     """
     從 CSV 中篩選 pathogen_protein 值為指定值的行，匹配的列名稱符合條件，
@@ -31,40 +44,6 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
         non_nan_counts = filtered_columns.notna().sum(axis=1)
         
         # 構建結果清單 [protein, 非 NaN 數量]
-        """
-        result_list = [
-            {"protein":"aaa", 
-             "non_nan_count":345,
-             "human_start":34,
-             "human_end":45,
-             "pathogen_start":11,
-             "pathogen_end":22,  
-             "pathogen_species":"bb",
-             "gene":"cc", 
-             "pathogen_length":56, 
-             "human_seq":34, 
-             "Binding Strength":rank,
-             "binding_rank_very_weak":"strong", 
-             "binding_rank_strong":"strong", 
-             "binding_rank_weak":"strong", 
-            },
-            {"protein":"bbb", 
-             "non_nan_count":345,
-             "human_start":45,
-             "human_end":87,
-             "pathogen_start":90,
-             "pathogen_end":100,  
-             "pathogen_species":"bb",
-             "gene":"cc", 
-             "pathogen_length":56, 
-             "human_seq":34, 
-             "Binding Strength":rank,
-             "binding_rank_very_weak":"strong", 
-             "binding_rank_strong":"strong", 
-             "binding_rank_weak":"strong", 
-            }
-        ]
-        """
         
         result_list = [
             {"protein":df.loc[idx, 'protein'], 
@@ -107,6 +86,7 @@ def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
             table2Item["Human_Sequence_Start_End"] = str(result_list[i]['human_start']) + "-" + str(result_list[i]['human_end'])
             table2Item["Sequence_Start_End"] = str(result_list[i]['pathogen_start']) + "-" + str(result_list[i]['pathogen_end'])
             table2Item["strong_weak_very"] = result_list[i]['strong_weak_very']
+            table2Item["detail2"] = "/virus2_detail/" + ".html"
             table2.append(table2Item)
         
         return result_list,table2
@@ -144,13 +124,15 @@ def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
     proteome_details = [
         {"virus_proteome": virus_proteome, "virus_protein": virus_protein}
     ]
-
+    maxLen = get_proteome_seq_length("UP000464024_fasta.csv",virus_protein)
+    range_data = {"start": 0, "end": int(maxLen)}
     # 傳遞數據到模板
     context = {
         "filter_conditions": filter_conditions,
         "proteome_details": proteome_details,
         "result_table": results,  # 新增結果表
         "result_table2": table2,
+        "range": range_data,
     }
     return render(request, "virus_detail.html",context)
 
@@ -212,7 +194,7 @@ def proteome_screener(request):
                 re["virus_protein"] = i["pathogen_protein"]
                 re["human_protein_count"] = i["human_protein_count"]
                 re["human_protein_epitope_count"] = i["human_protein_epitope_count"]
-                re["detail_link"] = "/virus/" + hla_type+ "/" + virus_proteome + "/"+str(i["pathogen_protein"])+"/"+rank+".html"
+                re["detail_link"] = "/virus/" + hla_type+ "/" + virus_proteome + "/" +str(i["pathogen_protein"])+"/" + rank + ".html"
                 results.append(re)
         else:
             result = get_pathogen_protein_and_counts(df,virus_proteome, hla_type, rank)
@@ -220,7 +202,7 @@ def proteome_screener(request):
             results=[]
             for i in result:
                 i["virus_proteome"] = virus_proteome
-                i["detail_link"] = "/virus/" +hla_type+ "/" + virus_proteome + "/"+str(i["virus_protein"])+"/"+rank+".html"
+                i["detail_link"] = "/virus/" + hla_type + "/" + virus_proteome + "/" +str(i["virus_protein"])+"/" + rank + ".html"
                 results.append(i)
             
         

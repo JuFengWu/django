@@ -109,6 +109,7 @@
                     <th>Human Protein (UniProt) </th>
                     <th>Human Sequence Start - End Pathogen  </th>
                     <th>Sequence Start - End </th>
+                    <th>Binding Strange</th>
                     <th>Binding Detail</th>
                 </tr>
             </thead>
@@ -120,6 +121,7 @@
                         <td>{{ row.Human_Sequence_Start_End }}</td>
                         <td>{{ row.Sequence_Start_End }}</td>
                         <td>{{ row.strong_weak_very }}</td>
+                        <td>{{ row.detail2 }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -132,10 +134,34 @@
         });
         const data = {{ result_table|safe }};
 
+        const range = {{ range|safe }};;
+
         // 設定畫布大小
         const margin = { top: 20, right: 30, bottom: 30, left: 50 };
         const width = 800 - margin.left - margin.right;
         const height = 400 - margin.top - margin.bottom;
+
+        function calculateLevels(data) {
+            const levels = []; // 保存每層的最右端點
+            const result = data.map(d => {
+                let level = 0;
+                // 找到可用的層
+                while (level < levels.length && levels[level] > d.pathogen_start) {
+                    level++;
+                }
+                // 更新當前層的最右端點
+                if (level === levels.length) {
+                    levels.push(d.pathogen_end);
+                } else {
+                    levels[level] = d.pathogen_end;
+                }
+                return { ...d, level }; // 添加層信息
+            });
+            return result;
+        }
+
+        // 計算數據的層次
+        const dataWithLevels = calculateLevels(data);
         
         // 建立 SVG
         const svg = d3.select("#chart")
@@ -155,13 +181,9 @@
             .call(d3.axisBottom(x));
 
         // 設定 y 軸
-        const y = d3.scaleBand()
-            .domain(data.map(d => d.protein))
-            .range([0, height])
-            .padding(0.1);
+        const y = d3.scaleBand().domain(data.map(d => d.protein)).range([0, height]).padding(0.1);
 
-        svg.append("g")
-            .call(d3.axisLeft(y));
+        svg.append("g").call(d3.axisLeft(y).tickFormat(() => "")); // 將 Y 軸標籤設為空
 
         // 定義顏色
         const color = d => {
@@ -179,12 +201,12 @@
 
         // 畫橫條
         svg.selectAll(".bar")
-            .data(data)
+            .data(dataWithLevels)
             .enter()
             .append("rect")
             .attr("class", "bar")
             .attr("x", d => x(d.pathogen_start))
-            .attr("y", d => y(d.protein))
+            .attr("y", d => d.level * y.bandwidth()) // 根據層次調整 Y 軸位置
             .attr("width", d => x(d.pathogen_end) - x(d.pathogen_start))
             .attr("height", y.bandwidth())
             .attr("fill", color)
@@ -214,6 +236,14 @@
             .on("mouseout", () => {
                 tooltip.transition().duration(500).style("opacity", 0);
             });
+
+            svg.append("line")
+            .attr("x1", x(range.start)) // 設定起始點 x
+            .attr("x2", x(range.end))   // 設定結束點 x
+            .attr("y1", height-15)         // 設定 y 起點為圖的底部
+            .attr("y2", height-15)         // 設定 y 結束點為圖的底部
+            .attr("stroke", "gray")     // 設定線條顏色為灰色
+            .attr("stroke-width", 30);   // 設定線條粗細為 3px，可根據需要調整
 
     </script>
 </body>
