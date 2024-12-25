@@ -3,6 +3,7 @@ python manage.py runserver 0.0.0.0:80
 localhost/search
 localhost/browse_result
 localhost/virus
+localhost/human_protein
 
 HW1 : 要確定data是否正確
 

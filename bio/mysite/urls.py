@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from web_tool import views
-from web_tool import views_hw34, hw9_virus
+from web_tool import views_hw34, hw9_virus, hw10_human_protein  
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -31,5 +31,7 @@ urlpatterns = [
     #path('virus/', hw9_virus.virus, name = "proteome_screener"),
     path('virus/', hw9_virus.proteome_screener, name='proteome_screener'),
     path('virus/<str:hla_type>/<str:virus_proteome>/<str:virus_protein>/<str:rank>.html', hw9_virus.virus_detail, name='virus_detail'),
-    path('virus2_detail/<str:human_protein>.html', hw9_virus.virus_detail2, name='virus_detail2')
+    path('virus2_detail/<str:human_protein>.html', hw9_virus.virus_detail2, name='virus_detail2'),
+
+    path('human_protein/', hw10_human_protein.proteome_screener, name='proteome_screener'),
 ]
