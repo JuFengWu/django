@@ -104,13 +104,15 @@
             </tbody>
         </table>
         
-        <!--table id="resultTable2" class="display" style="width:100%">
+        <table id="resultTable2" class="display" style="width:100%">
             <thead>
                 <tr>
                     <th>Epitope </th>
-                    <th>Human Protein (UniProt) </th>
-                    <th>Human Sequence Start - End Pathogen  </th>
-                    <th>Sequence Start - End </th>
+                    <th>Human Sequence Start - End</th>
+                    <th>Type </th>
+                    <th>Proteome's ID</th>
+                    <th>Proteome's Protein</th>
+                    <th>Protein Sequence Start - End </th>
                     <th>Binding Strange</th>
                     <th>Binding Detail</th>
                 </tr>
@@ -118,29 +120,31 @@
             <tbody>
                 {% for row in result_table2 %}
                     <tr>
-                        <td>{{ row.Epitope }}</td>
-                        <td>{{ row.protein }}</td>
-                        <td>{{ row.Human_Sequence_Start_End }}</td>
-                        <td>{{ row.Sequence_Start_End }}</td>
-                        <td>{{ row.strong_weak_very }}</td>
+                        <td>{{ row.human_seq }}</td>
+                        <td>{{ row.human_start_end }}</td>
+                        <td>{{ row.type }}</td>
+                        <td>{{ row.pathogen_species }}</td>
+                        <td>{{ row.pathogen_protein }}</td>
+                        <td>{{ row.pathogen_start_end }}</td>
+                        <td>{{ row.rank }}</td>
                         <td>
-                            <a href="{{ row.detail2 }}" target="_blank">details</a>
+                            <a href="{{ row.detail_link }}" target="_blank">details</a>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <div id="chart"></div-->
+        <!--div id="chart"></div-->
 
     <script>
         $(document).ready(function () {
             $('#resultTable').DataTable();
         });
-        /*
+        
         $(document).ready(function () {
             $('#resultTable2').DataTable();
         });
-        
+        /*
         const data = {{ result_table|safe }};
 
         const range = {{ range|safe }};;

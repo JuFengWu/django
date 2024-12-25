@@ -57,6 +57,8 @@ def get_binding_rank_value(csv_file_path, target_protein):
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+    
+
 
 def virus_detail2(request,human_protein):
 
@@ -92,6 +94,58 @@ def get_detail_table(df, rank):
     result = species_counts.to_dict('records')  # 转换为列表字典格式
     return result
 
+def filter_and_rank(df, condition):
+
+    # 构造查询列名
+    column_name = "binding_rank_" + condition
+
+    # 筛选出该列等于 "very_weak" 的行
+    filtered_df = df[df[column_name] == "very_weak"]
+
+    # 检查目标行的 ranking 并标注
+    def determine_rank(row):
+        if row.get("binding_rank_strong") == "strong":
+            return "Strong"
+        elif row.get("binding_rank_weak") == "weak":
+            return "Weak"
+        elif row.get("binding_rank_very_weak") == "very_weak":
+            return "Very Weak"
+        else:
+            return "Extremely Weak"
+
+    # 初始化结果字典
+    results = []
+
+    # 遍历 human_seq 列中的所有值
+    for human_seq in filtered_df["human_seq"].dropna().unique():
+        target_row = filtered_df[filtered_df["human_seq"].str.contains(human_seq, na=False)]
+
+        if not target_row.empty:
+            # 获取标注结果
+            get_rank = determine_rank(target_row.iloc[0])
+            human_start = target_row.iloc[0].get("human_start")
+            human_end = target_row.iloc[0].get("human_end")
+            type = target_row.iloc[0].get("type")
+            pathogen_species = target_row.iloc[0].get("pathogen_species")
+            pathogen_protein = target_row.iloc[0].get("pathogen_protein")
+            pathogen_start = target_row.iloc[0].get("pathogen_start")
+            pathogen_end = target_row.iloc[0].get("pathogen_end")
+            
+            # 存储到字典
+            result = {
+                "human_seq": human_seq,
+                "rank": get_rank,
+                "human_start_end":human_end - human_start,
+                "type":type,
+                "pathogen_species":pathogen_species,
+                "pathogen_protein":pathogen_protein,
+                "pathogen_start_end":pathogen_end - pathogen_start,
+                "detail_link": "/human_protein_detail2/"+"/"+get_rank+".html"
+            }
+            results.append(result)
+
+    return results
+
 def human_protein_detail(request,human_proteome,hla_type,rank):
 
     csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
@@ -100,9 +154,11 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     print(filtered_df[0])
 
     showType = hla_type
+    search_type = "_"+hla_type
 
     if hla_type == "any":
-        showType = "Any_HLA_Type" 
+        showType = "Any_HLA_Type"
+        search_type =""
         
     filter_conditions = {
         "human_proteome": human_proteome,
@@ -115,6 +171,7 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     ]
     
     result = get_detail_table(df,rank)
+    table2 = filter_and_rank(df,rank+search_type)
     #maxLen = get_proteome_seq_length("UP000464024_fasta.csv",virus_protein)
     #range_data = {"start": 0, "end": int(maxLen)}
     # 傳遞數據到模板
@@ -122,7 +179,7 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
         "filter_conditions": filter_conditions,
         "proteome_details": proteome_details,
         "result_table": result,  # 新增結果表
-        #"result_table2": table2,
+        "result_table2": table2,
         #"range": range_data,
     }
     return render(request, "human_protein_detail.html",context)
