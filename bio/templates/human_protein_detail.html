@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .highlight:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!--div class="container"-->
+        <div class="header">Result</div>
+
+        <!-- Filter condition table -->
+        <div class="sub-header">Filter condition</div>
+        <table>
+            <tr>
+                <th>Virus Proteome</th>
+                <th>Selected HLA Type</th>
+                <th>Selected Rank Value</th>
+            </tr>
+            <tr>
+                <td>{{ filter_conditions.human_proteome }}</td>
+                <td>{{ filter_conditions.selected_hla_type }}</td>
+                <td>{{ filter_conditions.selected_rank_value }}</td>
+            </tr>
+        </table>
+
+        <!-- Proteome detail table -->
+        <div class="sub-header">Human Protein Detail</div>
+        <table>
+            <tr>
+                <th>Human Protein</th>
+                <th>Human Gene</th>
+            </tr>
+            {% for detail in proteome_details %}
+            <tr>
+                <td><a href="#" class="highlight">{{ detail.human_proteome }}</a></td>
+                <td><a href="#" class="highlight">{{ detail.human_gene }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h1>Result Table</h1>
+        <table id="resultTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Pathogen Species</th>
+                    <th>Epitope Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in result_table %}
+                    <tr>
+                        <td>{{ row.type }}</td>
+                        <td>{{ row.pathogen_species }}</td>
+                        <td>{{ row.count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!--table id="resultTable2" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Epitope </th>
+                    <th>Human Protein (UniProt) </th>
+                    <th>Human Sequence Start - End Pathogen  </th>
+                    <th>Sequence Start - End </th>
+                    <th>Binding Strange</th>
+                    <th>Binding Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in result_table2 %}
+                    <tr>
+                        <td>{{ row.Epitope }}</td>
+                        <td>{{ row.protein }}</td>
+                        <td>{{ row.Human_Sequence_Start_End }}</td>
+                        <td>{{ row.Sequence_Start_End }}</td>
+                        <td>{{ row.strong_weak_very }}</td>
+                        <td>
+                            <a href="{{ row.detail2 }}" target="_blank">details</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="chart"></div-->
+
+    <script>
+        $(document).ready(function () {
+            $('#resultTable').DataTable();
+        });
+        /*
+        $(document).ready(function () {
+            $('#resultTable2').DataTable();
+        });
+        
+        const data = {{ result_table|safe }};
+
+        const range = {{ range|safe }};;
+
+        // 設定畫布大小
+        const margin = { top: 20, right: 30, bottom: 30, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+
+        function calculateLevels(data) {
+            const levels = []; // 保存每層的最右端點
+            const result = data.map(d => {
+                let level = 0;
+                // 找到可用的層
+                while (level < levels.length && levels[level] > d.pathogen_start) {
+                    level++;
+                }
+                // 更新當前層的最右端點
+                if (level === levels.length) {
+                    levels.push(d.pathogen_end);
+                } else {
+                    levels[level] = d.pathogen_end;
+                }
+                return { ...d, level }; // 添加層信息
+            });
+            return result;
+        }
+
+        // 計算數據的層次
+        const dataWithLevels = calculateLevels(data);
+        
+        // 建立 SVG
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // 設定 x 軸
+        const x = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.pathogen_end)])
+            .range([0, width]);
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x));
+
+        // 設定 y 軸
+        const y = d3.scaleBand().domain(data.map(d => d.protein)).range([0, height]).padding(0.1);
+
+        svg.append("g").call(d3.axisLeft(y).tickFormat(() => "")); // 將 Y 軸標籤設為空
+
+        // 定義顏色
+        const color = d => {
+            if (d.strong_weak_very === "Strong") return "red";
+            if (d.strong_weak_very === "Weak") return "blue";
+            if (d.strong_weak_very === "Very_Weak") return "green";
+            return "gray";
+        };
+
+        // 加入 tooltip
+        const tooltip = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        // 畫橫條
+        svg.selectAll(".bar")
+            .data(dataWithLevels)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d.pathogen_start))
+            .attr("y", d => d.level * y.bandwidth()) // 根據層次調整 Y 軸位置
+            .attr("width", d => x(d.pathogen_end) - x(d.pathogen_start))
+            .attr("height", y.bandwidth())
+            .attr("fill", color)
+            .on("mouseover", (event, d) => {
+                tooltip.transition().duration(200).style("opacity", 0.9);
+                tooltip.html(`
+                    <strong>Protein:</strong> ${d.protein} <br>
+                    <strong>Non-NaN Count:</strong> ${d.non_nan_count} <br>
+                    <strong>Human Start:</strong> ${d.human_star} <br>
+                    <strong>Human End:</strong> ${d.human_end} <br>
+                    <strong>Pathogen Start:</strong> ${d.pathogen_start} <br>
+                    <strong>Pathogen End:</strong> ${d.pathogen_end} <br>
+                    <strong>Pathogen Species:</strong> ${d.pathogen_species} <br>
+                    <strong>Gene:</strong> ${d.gene} <br>
+                    <strong>Pathogen Length:</strong> ${d.pathogen_length} <br>
+                    <strong>Human Seq:</strong> ${d.human_seq} <br>
+                    <strong>Binding Strength:</strong> ${d.Binding_Strength} <br>
+                    <strong>Binding Rank (Very Weak):</strong> ${d.strong_weak_very} <br>
+                `)
+                .style("left", `${event.pageX + 10}px`)
+                .style("top", `${event.pageY - 20}px`);
+            })
+            .on("mousemove", (event) => {
+                tooltip.style("left", `${event.pageX + 20}px`)
+                    .style("top", `${event.pageY}px`);
+            })
+            .on("mouseout", () => {
+                tooltip.transition().duration(500).style("opacity", 0);
+            });
+
+            svg.append("line")
+            .attr("x1", x(range.start)) // 設定起始點 x
+            .attr("x2", x(range.end))   // 設定結束點 x
+            .attr("y1", height-15)         // 設定 y 起點為圖的底部
+            .attr("y2", height-15)         // 設定 y 結束點為圖的底部
+            .attr("stroke", "gray")     // 設定線條顏色為灰色
+            .attr("stroke-width", 30);   // 設定線條粗細為 3px，可根據需要調整
+        */
+    </script>
+</body>
+</html>

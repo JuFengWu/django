@@ -78,141 +78,50 @@ def virus_detail2(request,human_protein):
     return render(request, "virus_detail2.html",context)
 
 
-def get_proteome_seq_length(file_path, protein_id):
-    # Read the CSV file
-    df = pd.read_csv(file_path)
-    
-    # Filter the DataFrame to find the matching protein ID
-    result = df[df['species_protein'] == protein_id]
-    
-    # Check if the result exists and return the `proteome_seq_length`
-    if not result.empty:
-        return result.iloc[0]['proteome_seq_length']
-    else:
-        return f"No match found for protein ID: {protein_id}"
 
-def filter_and_count_non_nan(file_path, protein_id, column_pattern,rank):
-    """
-    從 CSV 中篩選 pathogen_protein 值為指定值的行，匹配的列名稱符合條件，
-    計算每行有幾個非 NaN 值，並返回清單形式。
+def human_protein_detail(request,human_proteome,hla_type,rank):
 
-    :param file_path: str, CSV 檔案的路徑
-    :param protein_id: str, 要篩選的 pathogen_protein 值
-    :param column_pattern: str, 用於篩選列名的模式 (正則表達式)
-    :return: List[List[str, int]], 清單形式的結果，每個元素是 [protein, 非 NaN 數量]
-    """
-    try:
-        # 讀取 CSV 檔案
-        df = pd.read_csv(file_path)
-        
-        # 檢查是否有必要的欄位
-        if 'pathogen_protein' not in df.columns or 'protein' not in df.columns:
-            raise ValueError("CSV 中未找到必要的 'pathogen_protein' 或 'protein' 欄位")
-        
-        # 篩選出 pathogen_protein 欄位等於 protein_id 的行
-        filtered_rows = df[df['pathogen_protein'] == protein_id]
-        
-        # 篩選列名符合 column_pattern 的列
-        filtered_columns = filtered_rows.filter(regex=column_pattern, axis=1)
-        
-        # 找到非 NaN 的行索引，並計算每行的非 NaN 數量
-        non_nan_counts = filtered_columns.notna().sum(axis=1)
-        
-        # 構建結果清單 [protein, 非 NaN 數量]
-        
-        result_list = [
-            {"protein":df.loc[idx, 'protein'], 
-             "non_nan_count":str(non_nan_counts[idx]),
-             "human_start":df.loc[idx, 'human_start'],
-             "human_end":df.loc[idx, 'human_end'],
-             "pathogen_start":df.loc[idx, 'pathogen_start'],
-             "pathogen_end":df.loc[idx, 'pathogen_end'],  
-             "pathogen_species":df.loc[idx, 'pathogen_species'],
-             "gene":df.loc[idx, 'gene'], 
-             "pathogen_length":df.loc[idx, 'pathogen_length'], 
-             "human_seq":df.loc[idx, 'human_seq'], 
-             "Binding_Strength":rank,
-             "binding_rank_very_weak":df.loc[idx, 'binding_rank_very_weak'], 
-             "binding_rank_strong":df.loc[idx, 'binding_rank_strong'], 
-             "binding_rank_weak":df.loc[idx, 'binding_rank_weak'], 
-            }
-            for idx in filtered_columns.index
-            if non_nan_counts[idx] > 0
-        ]
-
-        table2=[]
-        
-        for i in range(len(result_list)):
-            if not pd.isna(result_list[i]["binding_rank_strong"]):
-                result_list[i]["strong_weak_very"] = "Strong"
-            elif not pd.isna(result_list[i]["binding_rank_weak"]):
-                result_list[i]["strong_weak_very"] = "Weak"
-            elif not pd.isna(result_list[i]["binding_rank_very_weak"] ):
-                result_list[i]["strong_weak_very"] = "Very_Weak"
-            else:
-                result_list[i]["strong_weak_very"] = "Extreme_Weak"
-            
-            del result_list[i]['binding_rank_strong']
-            del result_list[i]['binding_rank_weak']
-            del result_list[i]['binding_rank_very_weak']
-            table2Item = {}
-            table2Item["Epitope"] = result_list[i]['human_seq']
-            table2Item["protein"] = result_list[i]['protein']
-            table2Item["Human_Sequence_Start_End"] = str(result_list[i]['human_start']) + "-" + str(result_list[i]['human_end'])
-            table2Item["Sequence_Start_End"] = str(result_list[i]['pathogen_start']) + "-" + str(result_list[i]['pathogen_end'])
-            table2Item["strong_weak_very"] = result_list[i]['strong_weak_very']
-            table2Item["detail2"] = "/virus2_detail/" +table2Item["protein"]+ ".html"
-            table2.append(table2Item)
-        
-        return result_list,table2
-    
-    except Exception as e:
-        print(f"發生錯誤：{e}")
-        return None
-
-def virus_detail(request,hla_type,virus_proteome,virus_protein,rank):
-    print(virus_proteome)
-    print(hla_type)
-    print(rank)
-    print(virus_protein)
-    file_path = "0464024_rank_percent_output_merged.csv"
-    showType = hla_type
-    #print(results)
-
-    if hla_type == "any":
-        showType = "Any_HLA_Type" 
-        select = ".*"
-    else:
-        select = hla_type
-    column_pattern = "binding_rank_"+rank+"_"+select
-    print(column_pattern)
-    results,table2 = filter_and_count_non_nan(file_path,virus_protein,column_pattern,rank)
-    print(results)
-    
+    csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+    df = pd.read_csv(csf_file)
+    filtered_df = df["gene"]
+    print(filtered_df[0])
         
     filter_conditions = {
-        "virus_proteome": virus_proteome,
-        "selected_hla_type": showType,
+        "human_proteome": human_proteome,
+        "selected_hla_type": hla_type,
         "selected_rank_value": rank
     }
 
     proteome_details = [
-        {"virus_proteome": virus_proteome, "virus_protein": virus_protein}
+        {"human_proteome": human_proteome, "human_gene": filtered_df[0]}
     ]
-    maxLen = get_proteome_seq_length("UP000464024_fasta.csv",virus_protein)
-    range_data = {"start": 0, "end": int(maxLen)}
+
+    filtered_df = df[df["binding_rank_" + rank] == rank]
+
+    # 统计每个 type 和 pathogen_species 的出现次数
+    species_counts = (
+        filtered_df.groupby(['type', 'pathogen_species'])
+        .size()
+        .reset_index(name='count')  # 为计数列命名为 'count'
+    )
+
+    # 返回统计结果
+    result = species_counts.to_dict('records')  # 转换为列表字典格式
+
+    #maxLen = get_proteome_seq_length("UP000464024_fasta.csv",virus_protein)
+    #range_data = {"start": 0, "end": int(maxLen)}
     # 傳遞數據到模板
     context = {
         "filter_conditions": filter_conditions,
         "proteome_details": proteome_details,
-        "result_table": results,  # 新增結果表
-        "result_table2": table2,
-        "range": range_data,
+        "result_table": result,  # 新增結果表
+        #"result_table2": table2,
+        #"range": range_data,
     }
-    return render(request, "virus_detail.html",context)
+    return render(request, "human_protein_detail.html",context)
 
 
-def get_page1_data(csf_file, rank,human_proteome):
+def get_page1_data(csf_file, rank,hla_type,human_proteome):
     df = pd.read_csv(csf_file)
     filtered_df = df[df["binding_rank_"+rank] == rank]
     virus_total = 0
@@ -240,7 +149,7 @@ def get_page1_data(csf_file, rank,human_proteome):
         "bacteria_total": bacteria_total,
         "bacteria_count": bacteria_count,
         "human_proteome" : human_proteome,
-        "detail_link": "/virus/UP000464024/A0A663DJA2.html"
+        "detail_link": "/human_protein/"+human_proteome+"/"+hla_type+"/"+rank+".html"
     }
     return result
 
@@ -252,7 +161,7 @@ def proteome_screener(request):
 
         results = []
         data_path = "proteoin_serach_detail_csv/"+human_proteome+".csv"
-        ans = get_page1_data(data_path,rank,human_proteome)
+        ans = get_page1_data(data_path,rank,hla_type,human_proteome)
         
         results.append(ans)
         print(rank)
