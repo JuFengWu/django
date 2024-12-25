@@ -78,24 +78,7 @@ def virus_detail2(request,human_protein):
     return render(request, "virus_detail2.html",context)
 
 
-
-def human_protein_detail(request,human_proteome,hla_type,rank):
-
-    csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
-    df = pd.read_csv(csf_file)
-    filtered_df = df["gene"]
-    print(filtered_df[0])
-        
-    filter_conditions = {
-        "human_proteome": human_proteome,
-        "selected_hla_type": hla_type,
-        "selected_rank_value": rank
-    }
-
-    proteome_details = [
-        {"human_proteome": human_proteome, "human_gene": filtered_df[0]}
-    ]
-
+def get_detail_table(df, rank):
     filtered_df = df[df["binding_rank_" + rank] == rank]
 
     # 统计每个 type 和 pathogen_species 的出现次数
@@ -107,7 +90,31 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
 
     # 返回统计结果
     result = species_counts.to_dict('records')  # 转换为列表字典格式
+    return result
 
+def human_protein_detail(request,human_proteome,hla_type,rank):
+
+    csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+    df = pd.read_csv(csf_file)
+    filtered_df = df["gene"]
+    print(filtered_df[0])
+
+    showType = hla_type
+
+    if hla_type == "any":
+        showType = "Any_HLA_Type" 
+        
+    filter_conditions = {
+        "human_proteome": human_proteome,
+        "selected_hla_type": showType,
+        "selected_rank_value": rank
+    }
+
+    proteome_details = [
+        {"human_proteome": human_proteome, "human_gene": filtered_df[0]}
+    ]
+    
+    result = get_detail_table(df,rank)
     #maxLen = get_proteome_seq_length("UP000464024_fasta.csv",virus_protein)
     #range_data = {"start": 0, "end": int(maxLen)}
     # 傳遞數據到模板
