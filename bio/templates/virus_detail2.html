@@ -54,25 +54,26 @@
     <table id="resultTable2" class="display" style="width:100%">
         <thead>
             <tr>
-                <th>Epitope </th>
-                <th>Human Protein (UniProt) </th>
-                <th>Human Sequence Start - End Pathogen  </th>
-                <th>Sequence Start - End </th>
-                <th>Binding Strange</th>
-                <th>Binding Detail</th>
+                <th>HLA Type</th>
+                <th>Binding Strength </th>
+                <th>Binding Value</th>
+                <th>nM</th>
             </tr>
         </thead>
         <tbody>
-            {% for row in result_table2 %}
+            {% for row in result_table3 %}
                 <tr>
-                    <td>{{ row.Epitope }}</td>
-                    <td>{{ row.protein }}</td>
-                    <td>{{ row.Human_Sequence_Start_End }}</td>
-                    <td>{{ row.Sequence_Start_End }}</td>
-                    <td>{{ row.strong_weak_very }}</td>
-                    <td>{{ row.detail2 }}</td>
+                    <td>{{ row.halType }}</td>
+                    <td>{{ row.bindingStrength }}</td>
+                    <td>{{ row.BindingValue}}</td>
+                    <td>{{ row.nMValue }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <script>
+        $(document).ready(function () {
+            $('#resultTable2').DataTable();
+        });
+    </script>
 </body>
