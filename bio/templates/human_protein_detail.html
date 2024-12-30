@@ -134,7 +134,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <!--div id="chart"></div-->
+        <div id="chart"></div>
 
     <script>
         $(document).ready(function () {
@@ -144,16 +144,16 @@
         $(document).ready(function () {
             $('#resultTable2').DataTable();
         });
-        /*
-        const data = {{ result_table|safe }};
+        
+        const data = {{ result_table2|safe }};
 
-        const range = {{ range|safe }};;
+        const range = {{ range|safe }};
 
         // 設定畫布大小
         const margin = { top: 20, right: 30, bottom: 30, left: 50 };
         const width = 800 - margin.left - margin.right;
         const height = 400 - margin.top - margin.bottom;
-
+       
         function calculateLevels(data) {
             const levels = []; // 保存每層的最右端點
             const result = data.map(d => {
@@ -172,7 +172,7 @@
             });
             return result;
         }
-
+     
         // 計算數據的層次
         const dataWithLevels = calculateLevels(data);
         
@@ -194,15 +194,15 @@
             .call(d3.axisBottom(x));
 
         // 設定 y 軸
-        const y = d3.scaleBand().domain(data.map(d => d.protein)).range([0, height]).padding(0.1);
+        const y = d3.scaleBand().domain(data.map(d => d.Proteome_ID)).range([0, height]).padding(0.1);
 
         svg.append("g").call(d3.axisLeft(y).tickFormat(() => "")); // 將 Y 軸標籤設為空
 
         // 定義顏色
         const color = d => {
-            if (d.strong_weak_very === "Strong") return "red";
-            if (d.strong_weak_very === "Weak") return "blue";
-            if (d.strong_weak_very === "Very_Weak") return "green";
+            if (d.Binding_Strength === "Strong") return "red";
+            if (d.Binding_Strength === "Weak") return "blue";
+            if (d.Binding_Strength === "Very Weak") return "green";
             return "gray";
         };
 
@@ -219,25 +219,28 @@
             .append("rect")
             .attr("class", "bar")
             .attr("x", d => x(d.pathogen_start))
-            .attr("y", d => d.level * y.bandwidth()) // 根據層次調整 Y 軸位置
+            .attr("y", d => Math.min(height - y.bandwidth(), d.level * y.bandwidth())) // 給每個條形增加偏移量，避免超出
             .attr("width", d => x(d.pathogen_end) - x(d.pathogen_start))
-            .attr("height", y.bandwidth())
+            .attr("height", y.bandwidth() - 10) // 減小高度，避免過大
             .attr("fill", color)
             .on("mouseover", (event, d) => {
                 tooltip.transition().duration(200).style("opacity", 0.9);
                 tooltip.html(`
-                    <strong>Protein:</strong> ${d.protein} <br>
-                    <strong>Non-NaN Count:</strong> ${d.non_nan_count} <br>
-                    <strong>Human Start:</strong> ${d.human_star} <br>
-                    <strong>Human End:</strong> ${d.human_end} <br>
-                    <strong>Pathogen Start:</strong> ${d.pathogen_start} <br>
-                    <strong>Pathogen End:</strong> ${d.pathogen_end} <br>
-                    <strong>Pathogen Species:</strong> ${d.pathogen_species} <br>
-                    <strong>Gene:</strong> ${d.gene} <br>
-                    <strong>Pathogen Length:</strong> ${d.pathogen_length} <br>
-                    <strong>Human Seq:</strong> ${d.human_seq} <br>
+                    <strong>Proteome's ID:</strong> ${d.Proteome_ID} <br>
+                    <strong>Species:</strong> ${d.Species} <br>
                     <strong>Binding Strength:</strong> ${d.Binding_Strength} <br>
-                    <strong>Binding Rank (Very Weak):</strong> ${d.strong_weak_very} <br>
+                    <strong>Human Protein:</strong> ${d.Human_Protein} <br>
+                    <strong>Gene:</strong> ${d.Gene} <br>
+                    <strong>OMIM ID:</strong> ${d.OMIM_ID} <br>
+                    <strong>pathogen protein:</strong> ${d.pathogen_protein} <br>
+                    <strong>extended pathogen seq:</strong> ${d.extended_pathogen_seq} <br>
+                    <strong>pathogen lengthh:</strong> ${d.pathogen_length} <br>
+                    <strong>Human Seq:</strong> ${d.human_seq} <br>
+                    <strong>human start:</strong> ${d.human_start} <br>
+                    <strong>human end:</strong> ${d.human_end} <br>
+                    <strong>pathogen seq:</strong> ${d.pathogen_seq} <br>
+                    <strong>pathogen start:</strong> ${d.pathogen_start} <br>
+                    <strong>pathogen end:</strong> ${d.pathogen_end} <br>
                 `)
                 .style("left", `${event.pageX + 10}px`)
                 .style("top", `${event.pageY - 20}px`);
@@ -257,7 +260,7 @@
             .attr("y2", height-15)         // 設定 y 結束點為圖的底部
             .attr("stroke", "gray")     // 設定線條顏色為灰色
             .attr("stroke-width", 30);   // 設定線條粗細為 3px，可根據需要調整
-        */
+        
     </script>
 </body>
 </html>

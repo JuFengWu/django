@@ -140,11 +140,39 @@ def filter_and_rank(df, condition):
                 "pathogen_species":pathogen_species,
                 "pathogen_protein":pathogen_protein,
                 "pathogen_start_end":pathogen_end - pathogen_start,
-                "detail_link": "/human_protein_detail2/"+"/"+get_rank+".html"
+                "detail_link": "/human_protein_detail2/"+"/"+get_rank+".html",
+
+
+                "Proteome_ID": pathogen_species,
+                "Species": type,
+                "Binding_Strength": get_rank,
+                "Human_Protein": target_row.iloc[0].get("protein"),
+                "Gene": target_row.iloc[0].get("gene"),
+                "OMIM_ID": target_row.iloc[0].get("# MIM Number"),
+                "extended_pathogen_seq": target_row.iloc[0].get("extended_pathogen_seq"),
+                "pathogen_length":  target_row.iloc[0].get("pathogen_length"),
+                "human_start": human_start,
+                "human_end": human_end,
+                "pathogen_seq": target_row.iloc[0].get("pathogen_seq"),
+                "pathogen_start": pathogen_start,
+                "pathogen_end": pathogen_end
             }
             results.append(result)
 
     return results
+
+def get_length(csv_file, protein_id):
+    # 讀取 CSV 檔案
+    df = pd.read_csv(csv_file)
+    
+    # 根據 human_protein 欄位篩選
+    result = df[df['human_protein'] == protein_id]
+    
+    # 如果找到對應資料，返回 length 欄位值
+    if not result.empty:
+        return result.iloc[0]['length']
+    else:
+        return "Protein ID not found"
 
 def human_protein_detail(request,human_proteome,hla_type,rank):
 
@@ -172,15 +200,17 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     
     result = get_detail_table(df,rank)
     table2 = filter_and_rank(df,rank+search_type)
-    #maxLen = get_proteome_seq_length("UP000464024_fasta.csv",virus_protein)
-    #range_data = {"start": 0, "end": int(maxLen)}
+    csv_file = 'human_protein_sequence.csv'
+    lenght = get_length(csv_file,human_proteome)
+
+    range_data = {"start": 0, "end": lenght}
     # 傳遞數據到模板
     context = {
         "filter_conditions": filter_conditions,
         "proteome_details": proteome_details,
         "result_table": result,  # 新增結果表
         "result_table2": table2,
-        #"range": range_data,
+        "range": range_data,
     }
     return render(request, "human_protein_detail.html",context)
 
