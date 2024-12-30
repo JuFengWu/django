@@ -83,26 +83,37 @@
             </tr>
             {% endfor %}
         </table>
-
-        <h1>Result Table</h1>
-        <table id="resultTable" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Pathogen Species</th>
-                    <th>Epitope Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in result_table %}
+        {% csrf_token %}
+        <form method="post">
+            <h1>Result Table</h1>
+            <table id="resultTable" class="display" style="width:100%">
+                <thead>
                     <tr>
-                        <td>{{ row.type }}</td>
-                        <td>{{ row.pathogen_species }}</td>
-                        <td>{{ row.count }}</td>
+                        <th><input type="checkbox" id="selectAll"></th> <!-- 新增 -->
+                        <th>Type</th>
+                        <th>Pathogen Species</th>
+                        <th>Epitope Count</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for row in result_table %}
+                        <tr>
+                            <td><input type="checkbox" class="row-select" data-id="{{ row.id }}">{{ row.id }}</td> <!-- 新增 -->
+                            <td>{{ row.type }}</td>
+                            <td>{{ row.pathogen_species }}</td>
+                            <td>{{ row.count }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+                    <!-- Rank 篩選條件 -->
+            <div id="bindingStrength">
+                <input type="checkbox" id="strong" checked> Strong (Rank <= 2)
+                <input type="checkbox" id="weak" checked> Weak (2 < Rank <= 10)
+                <input type="checkbox" id="veryWeak" checked> Very Weak (10 < Rank <= 20)
+            </div>
+            <button id="applyButton">Apply</button>
+        </form>
         
         <table id="resultTable2" class="display" style="width:100%">
             <thead>
@@ -139,10 +150,46 @@
     <script>
         $(document).ready(function () {
             $('#resultTable').DataTable();
-        });
-        
-        $(document).ready(function () {
             $('#resultTable2').DataTable();
+
+            // 全選功能
+            $('#selectAll').click(function () {
+                $('.row-select').prop('checked', this.checked);
+            });
+
+            // Apply 篩選
+            $('#applyButton').click(function () {
+                const selectedIds = [];
+                $('.row-select:checked').each(function () {
+                    selectedIds.push($(this).data('id'));
+                });
+
+                const rankFilters = [];
+                if ($('#strong').is(':checked')) rankFilters.push('strong');
+                if ($('#weak').is(':checked')) rankFilters.push('weak');
+                if ($('#veryWeak').is(':checked')) rankFilters.push('very_weak');
+
+                // 發送 AJAX 請求到後端
+                $.ajax({
+                    url: '', // 替換為實際 URL
+                    type: 'POST',
+                    data: {
+                        selected_ids: selectedIds,
+                        rank_filters: rankFilters,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (data) {
+                        // 更新第二個表格
+                        const table = $('#resultTable2').DataTable();
+                        table.clear();
+                        table.rows.add(data.result_table2); // 假設後端返回的資料格式正確
+                        table.draw();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
         });
         
         const data = {{ result_table2|safe }};

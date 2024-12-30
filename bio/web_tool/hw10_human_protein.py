@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import pandas as pd
-
+from django.views.decorators.csrf import csrf_exempt
 def get_binding_rank_value(csv_file_path, target_protein):
     """
     在給定的 CSV 文件中查找 protein 欄位匹配的行，並返回 binding_rank_very_weak_abc 欄位的值。
@@ -87,6 +87,9 @@ def get_detail_table(df, rank):
 
     # 返回统计结果
     result = species_counts.to_dict('records')  # 转换为列表字典格式
+
+    for i in range(len(result)):
+        result[i]["id"] = str(i)
     return result
 
 def filter_and_rank(df, condition, human_proteome):
@@ -168,8 +171,82 @@ def get_length(csv_file, protein_id):
         return result.iloc[0]['length']
     else:
         return "Protein ID not found"
+    
+def get_detail_table2(df,slelctId ,rank_list):
+    
+    result=[]
+    print(rank_list)
+    for rank in rank_list:
+        filtered_df = df[df["binding_rank_" + rank] == rank]
 
+        # 统计每个 type 和 pathogen_species 的出现次数
+        species_counts = (
+            filtered_df.groupby(['type', 'pathogen_species'])
+            .size()
+            .reset_index(name='count')  # 为计数列命名为 'count'
+        )
+
+        # 返回统计结果
+        result += species_counts.to_dict('records')  # 转换为列表字典格式
+
+    # 为每条记录添加唯一 id
+    for i in range(len(result)):
+        result[i]["id"] = str(i)
+    return result
+
+@csrf_exempt
 def human_protein_detail(request,human_proteome,hla_type,rank):
+
+    
+    if request.method == "POST":
+        selected_ids = request.POST.getlist('selected_ids[]')
+        rank_filters = request.POST.getlist('rank_filters[]')
+        
+        print("aaaaaaa")
+        print(selected_ids)
+        print(rank_filters)
+        rank_filters = ['strong', 'weak', 'very_weak']
+
+        csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+        df = pd.read_csv(csf_file)
+        filtered_df = df["gene"]
+        print(filtered_df[0])
+
+        showType = hla_type
+        search_type = "_"+hla_type
+
+        if hla_type == "any":
+            showType = "Any_HLA_Type"
+            search_type =""
+            
+        filter_conditions = {
+            "human_proteome": human_proteome,
+            "selected_hla_type": showType,
+            "selected_rank_value": rank
+        }
+
+        proteome_details = [
+            {"human_proteome": human_proteome, "human_gene": filtered_df[0]}
+        ]
+        
+        result = get_detail_table2(df,selected_ids,rank_filters) # bug!
+        print(result)
+        table2 = filter_and_rank(df,rank+search_type,human_proteome)
+        csv_file = 'human_protein_sequence.csv'
+        lenght = get_length(csv_file,human_proteome)
+
+        range_data = {"start": 0, "end": lenght}
+        # 傳遞數據到模板
+        context = {
+            "filter_conditions": filter_conditions,
+            "proteome_details": proteome_details,
+            "result_table": result,  # 新增結果表
+            "result_table2": table2,
+            "range": range_data,
+        }
+
+        # 返回 JSON 響應
+        return render(request, "human_protein_detail.html",context)
 
     csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
     df = pd.read_csv(csf_file)

@@ -34,6 +34,6 @@ urlpatterns = [
     path('virus2_detail/<str:human_protein>.html', hw9_virus.virus_detail2, name='virus_detail2'),
 
     path('human_protein/', hw10_human_protein.proteome_screener, name='proteome_screener'),
-    path('human_protein/<str:human_proteome>/<str:hla_type>/<str:rank>.html', hw10_human_protein.human_protein_detail, name='human_protein'),
+    path('human_protein/<str:human_proteome>/<str:hla_type>/<str:rank>.html', hw10_human_protein.human_protein_detail, name='human_protein_detail'),
     path('human_protein_detail2/<str:human_seq>/<str:human_proteome>.html', hw10_human_protein.human_protein_detail2, name='human_protein_detail2'),
 ]
