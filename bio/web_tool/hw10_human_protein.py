@@ -67,12 +67,8 @@ def get_binding_rank_value(csv_file_path, target_protein):
 
 
 def human_protein_detail2(request,human_seq,human_proteome):
-
     csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
     table3 = get_binding_rank_value(csf_file,human_seq)
-
-    
-    
     context = {
         "result_table3": table3,
     }

@@ -54,7 +54,6 @@ class LoginView(APIView):
                 'access': str(refresh.access_token),
             })
         else:
-            print("aaa")
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 def stock_chart_hw4(request):
