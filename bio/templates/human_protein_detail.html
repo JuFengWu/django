@@ -219,6 +219,7 @@
             .append("rect")
             .attr("class", "bar")
             .attr("x", d => x(d.pathogen_start))
+            //.attr("y", d => d.level * y.bandwidth() + 5) // 給每個條形增加偏移量，避免超出
             .attr("y", d => Math.min(height - y.bandwidth(), d.level * y.bandwidth())) // 給每個條形增加偏移量，避免超出
             .attr("width", d => x(d.pathogen_end) - x(d.pathogen_start))
             .attr("height", y.bandwidth() - 10) // 減小高度，避免過大

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .highlight:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <table id="resultTable2" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>HLA Type</th>
+                <th>Binding Strength </th>
+                <th>Binding Value</th>
+                <th>nM</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in result_table3 %}
+                <tr>
+                    <td>{{ row.halType }}</td>
+                    <td>{{ row.bindingStrength }}</td>
+                    <td>{{ row.BindingValue}}</td>
+                    <td>{{ row.nMValue }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        $(document).ready(function () {
+            $('#resultTable2').DataTable();
+        });
+    </script>
+</body>

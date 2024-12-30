@@ -20,7 +20,7 @@ def get_binding_rank_value(csv_file_path, target_protein):
         df = pd.read_csv(csv_file_path)
 
         # 查找 protein 欄位中匹配的行
-        matching_row = df[df['protein'] == target_protein]
+        matching_row = df[df['human_seq'] == target_protein]
 
         datas = ["DRB1_0101","DRB1_0301","DRB1_0401","DRB1_0405",
              "DRB1_0701","DRB1_0802","DRB1_0901","DRB1_1101"
@@ -40,8 +40,14 @@ def get_binding_rank_value(csv_file_path, target_protein):
                 if pd.isna(d):
                     d = "Extremely_weak"
                 item["bindingStrength"] = d
-                item["BindingValue"] = matching_row['Rank_average_'+hal].iloc[0]
-                item["nMValue"] = matching_row['nM_'+hal].iloc[0]
+                try :
+                    item["BindingValue"] = matching_row['Rank_average_'+hal].iloc[0]
+                except:
+                    item["BindingValue"] ="no keys: "+'Rank_average_'+hal
+                try :
+                    item["nMValue"] = matching_row['nM_'+hal].iloc[0]
+                except:
+                    item["nMValue"] = "no keys: "+'nM_'+hal
                 
             else:
                 print(f"Protein '{target_protein}' not found in the dataset.")
@@ -60,24 +66,17 @@ def get_binding_rank_value(csv_file_path, target_protein):
     
 
 
-def virus_detail2(request,human_protein):
+def human_protein_detail2(request,human_seq,human_proteome):
 
-    csv_file_path = '0464024_rank_percent_output_merged.csv'
+    csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+    table3 = get_binding_rank_value(csf_file,human_seq)
+
     
-    table3 = get_binding_rank_value(csv_file_path,human_protein)
-
-    """for i in range(1):
-        item = {}
-        item["halType"] = "aaaa"
-        item["bindingStrength"] = "bbb"
-        item["BindingValue"] = "aaac"
-        item["nMValue"] = "aaad"
-        table3.append(item)
-    """
+    
     context = {
         "result_table3": table3,
     }
-    return render(request, "virus_detail2.html",context)
+    return render(request, "human_protein_detail2.html",context)
 
 
 def get_detail_table(df, rank):
@@ -94,7 +93,7 @@ def get_detail_table(df, rank):
     result = species_counts.to_dict('records')  # 转换为列表字典格式
     return result
 
-def filter_and_rank(df, condition):
+def filter_and_rank(df, condition, human_proteome):
 
     # 构造查询列名
     column_name = "binding_rank_" + condition
@@ -140,7 +139,7 @@ def filter_and_rank(df, condition):
                 "pathogen_species":pathogen_species,
                 "pathogen_protein":pathogen_protein,
                 "pathogen_start_end":pathogen_end - pathogen_start,
-                "detail_link": "/human_protein_detail2/"+"/"+get_rank+".html",
+                "detail_link": "/human_protein_detail2/"+human_seq+"/"+human_proteome+".html",
 
 
                 "Proteome_ID": pathogen_species,
@@ -199,7 +198,7 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     ]
     
     result = get_detail_table(df,rank)
-    table2 = filter_and_rank(df,rank+search_type)
+    table2 = filter_and_rank(df,rank+search_type,human_proteome)
     csv_file = 'human_protein_sequence.csv'
     lenght = get_length(csv_file,human_proteome)
 
