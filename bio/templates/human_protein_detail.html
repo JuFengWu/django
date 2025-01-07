@@ -83,6 +83,14 @@
             </tr>
             {% endfor %}
         </table>
+        <div>
+            <label>
+                <input type="radio" name="data_type" value="original" checked> Original
+            </label>
+            <label>
+                <input type="radio" name="data_type" value="non_redundant"> Non Redundant
+            </label>
+        </div>
         {% csrf_token %}
         <form method="post">
             <h1>Result Table</h1>
@@ -151,6 +159,34 @@
         $(document).ready(function () {
             $('#resultTable').DataTable();
             $('#resultTable2').DataTable();
+
+            // 監聽 radio button 的變化
+            $('input[name="data_type"]').change(function () {
+                const selectedDataType = $('input[name="data_type"]:checked').val(); // 獲取選擇的值
+
+                // 發送 AJAX 請求到後端
+                $.ajax({
+                    url: '', // 替換為後端處理的 URL
+                    type: 'POST',
+                    data: {
+                        data_type: selectedDataType,
+                        rank: $('#rank').val(), // 假設 Rank 有對應的輸入框
+                        hla_type: $('#hla_type').val(), // 假設 HLA Type 有對應的輸入框
+                        human_proteome: $('#human_proteome').val(), // 假設 Human Proteome 有對應的輸入框
+                        csrfmiddlewaretoken: '{{ csrf_token }}' // CSRF Token
+                    },
+                    success: function (data) {
+                        // 更新 Result Table
+                        //const table = $('#resultTable2').DataTable();
+                        //table.clear();
+                        //table.rows.add(data.results[0]); // 假設後端返回的資料格式正確
+                        //table.draw();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
 
             // 全選功能
             $('#selectAll').click(function () {

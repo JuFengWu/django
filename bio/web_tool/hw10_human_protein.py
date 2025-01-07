@@ -194,6 +194,64 @@ def get_detail_table2(df,slelctId ,rank_list):
         result[i]["id"] = str(i)
     return result
 
+def trim_string(input_string, target_length):
+    """
+    根據輸入字串和目標長度，生成所有去頭或去尾後字元為目標長度的可能性。
+    
+    :param input_string: str, 原始字串
+    :param target_length: int, 目標字元長度
+    :return: list, 所有符合條件的字串可能性
+    """
+    # 確保目標長度小於等於字串長度
+    if target_length > len(input_string):
+        raise ValueError("目標長度不能超過輸入字串的長度！")
+    
+    result = []
+    
+    # 從頭部開始移除，保留 target_length
+    for start_index in range(len(input_string) - target_length + 1):
+        trimmed_string = input_string[start_index:start_index + target_length]
+        result.append(trimmed_string)
+    
+    return result
+def remove_repeat(file_path):
+
+    # 讀取 CSV 文件（空格分隔）
+    data = pd.read_csv(file_path)
+
+    # 提取 pathogen_length 和 human_seq
+    data['human_seq_length'] = data['human_seq'].apply(len)
+
+    # 找出最大的 human_seq 長度和對應的 pathogen_length
+    max_human_seq_row = data.loc[data['human_seq_length'].idxmax()]
+    max_human_seq = max_human_seq_row['human_seq']
+    max_pathogen_length = max_human_seq_row['pathogen_length']
+
+    print(f"最大 human_seq: {max_human_seq}")
+    print(f"對應的 pathogen_length: {max_pathogen_length}")
+
+    # 過濾數據
+    filtered_rows = []
+    for _, row in data.iterrows():
+        human_seq = row['human_seq']
+        pathogen_length = row['pathogen_length']
+        extended_pathogen_seq = row['extended_pathogen_seq']
+
+        # 使用剛剛的函數生成所有去頭去尾的可能性
+        possibilities = trim_string(max_human_seq, pathogen_length)
+
+        # 如果 human_seq 不在 possibilities 中，保留該行
+        if human_seq not in possibilities:
+            filtered_rows.append(row)
+
+    # 創建新的數據框
+    filtered_data = pd.DataFrame(filtered_rows)
+
+    # 將結果保存為新的 CSV 文件
+    
+    filtered_data.to_csv("new.csv")
+
+
 @csrf_exempt
 def human_protein_detail(request,human_proteome,hla_type,rank):
 
@@ -201,13 +259,16 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     if request.method == "POST":
         selected_ids = request.POST.getlist('selected_ids[]')
         rank_filters = request.POST.getlist('rank_filters[]')
+        #data_type = request.POST.get("data_type")  # 獲取前端選擇的 radio button 值
+        #print("data_type is "+data_type)
         
-        print("aaaaaaa")
+        
         print(selected_ids)
         print(rank_filters)
         rank_filters = ['strong', 'weak', 'very_weak']
 
         csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+        
         df = pd.read_csv(csf_file)
         filtered_df = df["gene"]
         print(filtered_df[0])
@@ -236,6 +297,7 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
         lenght = get_length(csv_file,human_proteome)
 
         range_data = {"start": 0, "end": lenght}
+        print(len(table2))
         # 傳遞數據到模板
         context = {
             "filter_conditions": filter_conditions,
@@ -274,7 +336,7 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     table2 = filter_and_rank(df,rank+search_type,human_proteome)
     csv_file = 'human_protein_sequence.csv'
     lenght = get_length(csv_file,human_proteome)
-
+    print("QQQQ")
     range_data = {"start": 0, "end": lenght}
     # 傳遞數據到模板
     context = {
