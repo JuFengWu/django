@@ -146,28 +146,37 @@
         const width = 800 - margin.left - margin.right;
         const height = 400 - margin.top - margin.bottom;
 
-        function calculateLevels(data) {
-            const levels = []; // 保存每層的最右端點
+        function calculatePositions(data) {
+            const positions = []; // 保存每個條形圖的終點 (水平位置)
+            const spacing = 5; // 水平間隔
+
             const result = data.map(d => {
-                let level = 0;
-                // 找到可用的層
-                while (level < levels.length && levels[level] > d.pathogen_start) {
-                    level++;
+                let position = 0;
+
+                // 找到最早可用的水平位置
+                while (
+                    position < positions.length &&
+                    positions[position] > d.pathogen_start
+                ) {
+                    position++;
                 }
-                // 更新當前層的最右端點
-                if (level === levels.length) {
-                    levels.push(d.pathogen_end);
+
+                // 如果找到的新位置超出現有數組長度，新增一個位置
+                if (position === positions.length) {
+                    positions.push(d.pathogen_end + spacing);
                 } else {
-                    levels[level] = d.pathogen_end;
+                    positions[position] = d.pathogen_end + spacing;
                 }
-                return { ...d, level }; // 添加層信息
+
+                return { ...d, position }; // 返回位置資訊
             });
+
             return result;
         }
 
-        // 計算數據的層次
-        const dataWithLevels = calculateLevels(data);
-        
+        // 計算每筆資料的位置
+        const dataWithPositions = calculatePositions(data);
+
         // 建立 SVG
         const svg = d3.select("#chart")
             .append("svg")
@@ -186,17 +195,10 @@
             .call(d3.axisBottom(x));
 
         // 設定 y 軸
-        const y = d3.scaleBand().domain(data.map(d => d.protein)).range([0, height]).padding(0.1);
-
-        svg.append("g").call(d3.axisLeft(y).tickFormat(() => "")); // 將 Y 軸標籤設為空
-
-        // 定義顏色
-        const color = d => {
-            if (d.strong_weak_very === "Strong") return "red";
-            if (d.strong_weak_very === "Weak") return "blue";
-            if (d.strong_weak_very === "Very_Weak") return "green";
-            return "gray";
-        };
+        const y = d3.scaleBand()
+        .domain(d3.range(dataWithPositions.length)) // 根據資料的索引動態生成
+        .range([0, height])
+        .padding(0.1); // 設置條形之間的間距
 
         // 加入 tooltip
         const tooltip = d3.select("body")
@@ -204,16 +206,26 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+        const spacing = 5;
+
+        // 定義顏色函數
+        const color = d => {
+            if (d.strong_weak_very === "Strong") return "red";
+            if (d.strong_weak_very === "Weak") return "blue";
+            if (d.strong_weak_very === "Very_Weak") return "green";
+            return "gray";
+        };
+
         // 畫橫條
         svg.selectAll(".bar")
-            .data(dataWithLevels)
+            .data(dataWithPositions)
             .enter()
             .append("rect")
             .attr("class", "bar")
             .attr("x", d => x(d.pathogen_start))
-            .attr("y", d => d.level * y.bandwidth()) // 根據層次調整 Y 軸位置
+            .attr("y", d => d.position * y.bandwidth()) // 根據位置動態調整
             .attr("width", d => x(d.pathogen_end) - x(d.pathogen_start))
-            .attr("height", y.bandwidth())
+            .attr("height", y.bandwidth() - spacing) // 減去間隔
             .attr("fill", color)
             .on("mouseover", (event, d) => {
                 tooltip.transition().duration(200).style("opacity", 0.9);

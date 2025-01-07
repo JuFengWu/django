@@ -108,7 +108,7 @@ def handle_stock_data(request):
             start_date = body.get("start_date", "2330")
 
             stock_symbol = stock_code+".TW"  # 替換成您的股票代碼，例如：台灣股票："2330.TW"
-            start_date = "2023-01-01"
+            start_date = "2024-01-01"
             end_date = "2024-12-03"
 
             data = yf.download(stock_symbol, start=start_date, end=end_date)
