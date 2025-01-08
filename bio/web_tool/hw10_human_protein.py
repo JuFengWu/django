@@ -251,66 +251,8 @@ def remove_repeat(file_path):
     
     filtered_data.to_csv("new.csv")
 
-
-@csrf_exempt
-def human_protein_detail(request,human_proteome,hla_type,rank):
-
+def human_protein_detail_main(csf_file,human_proteome,hla_type,rank):
     
-    if request.method == "POST":
-        selected_ids = request.POST.getlist('selected_ids[]')
-        rank_filters = request.POST.getlist('rank_filters[]')
-        #data_type = request.POST.get("data_type")  # 獲取前端選擇的 radio button 值
-        #print("data_type is "+data_type)
-        
-        
-        print(selected_ids)
-        print(rank_filters)
-        rank_filters = ['strong', 'weak', 'very_weak']
-
-        csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
-        
-        df = pd.read_csv(csf_file)
-        filtered_df = df["gene"]
-        print(filtered_df[0])
-
-        showType = hla_type
-        search_type = "_"+hla_type
-
-        if hla_type == "any":
-            showType = "Any_HLA_Type"
-            search_type =""
-            
-        filter_conditions = {
-            "human_proteome": human_proteome,
-            "selected_hla_type": showType,
-            "selected_rank_value": rank
-        }
-
-        proteome_details = [
-            {"human_proteome": human_proteome, "human_gene": filtered_df[0]}
-        ]
-        
-        result = get_detail_table2(df,selected_ids,rank_filters) # bug!
-        print(result)
-        table2 = filter_and_rank(df,rank+search_type,human_proteome)
-        csv_file = 'human_protein_sequence.csv'
-        lenght = get_length(csv_file,human_proteome)
-
-        range_data = {"start": 0, "end": lenght}
-        print(len(table2))
-        # 傳遞數據到模板
-        context = {
-            "filter_conditions": filter_conditions,
-            "proteome_details": proteome_details,
-            "result_table": result,  # 新增結果表
-            "result_table2": table2,
-            "range": range_data,
-        }
-
-        # 返回 JSON 響應
-        return render(request, "human_protein_detail.html",context)
-
-    csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
     df = pd.read_csv(csf_file)
     filtered_df = df["gene"]
     print(filtered_df[0])
@@ -333,10 +275,11 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
     ]
     
     result = get_detail_table(df,rank)
+    
     table2 = filter_and_rank(df,rank+search_type,human_proteome)
+    print(len(table2))
     csv_file = 'human_protein_sequence.csv'
     lenght = get_length(csv_file,human_proteome)
-    print("QQQQ")
     range_data = {"start": 0, "end": lenght}
     # 傳遞數據到模板
     context = {
@@ -346,6 +289,92 @@ def human_protein_detail(request,human_proteome,hla_type,rank):
         "result_table2": table2,
         "range": range_data,
     }
+    return context
+import json
+import os
+@csrf_exempt
+def human_protein_detail(request,human_proteome,hla_type,rank):
+
+    
+    if request.method == "POST":
+        action = request.POST.get('action')
+        print(action)
+        print("--action--")
+        if action == "radio_submit":
+            print("radio_submit")
+            data_type = request.POST.get('data_type')
+            print(data_type)
+            if(data_type == "non_redundant"):
+                csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+                remove_repeat(csf_file)
+            else:
+                if os.path.exists("new.csv"):
+                    # 移除檔案
+                    os.remove("new.csv")
+                    print(f"檔案 {"new.csv"} 已成功移除")
+                else:
+                    print(f"檔案 {"new.csv"} 不存在")
+            #context = human_protein_detail_main("new.csv",human_proteome,hla_type,rank)
+            return render(request, "human_protein_detail.html")
+        else:
+            selected_ids = request.POST.getlist('selected_ids[]')
+            rank_filters = request.POST.getlist('rank_filters[]')
+            #data_type = request.POST.get("data_type")  # 獲取前端選擇的 radio button 值
+            #print("data_type is "+data_type)
+            
+            
+            print(selected_ids)
+            print(rank_filters)
+            rank_filters = ['strong', 'weak', 'very_weak']
+
+            csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+            
+            df = pd.read_csv(csf_file)
+            filtered_df = df["gene"]
+            print(filtered_df[0])
+
+            showType = hla_type
+            search_type = "_"+hla_type
+
+            if hla_type == "any":
+                showType = "Any_HLA_Type"
+                search_type =""
+                
+            filter_conditions = {
+                "human_proteome": human_proteome,
+                "selected_hla_type": showType,
+                "selected_rank_value": rank
+            }
+
+            proteome_details = [
+                {"human_proteome": human_proteome, "human_gene": filtered_df[0]}
+            ]
+            
+            result = get_detail_table2(df,selected_ids,rank_filters) # bug!
+            table2 = filter_and_rank(df,rank+search_type,human_proteome)
+            csv_file = 'human_protein_sequence.csv'
+            lenght = get_length(csv_file,human_proteome)
+
+            range_data = {"start": 0, "end": lenght}
+            print(len(table2))
+            # 傳遞數據到模板
+            context = {
+                "filter_conditions": filter_conditions,
+                "proteome_details": proteome_details,
+                "result_table": result,  # 新增結果表
+                "result_table2": table2,
+                "range": range_data,
+            }
+
+            # 返回 JSON 響應
+            return render(request, "human_protein_detail.html",context)
+        
+    if os.path.exists("new.csv"):
+        csf_file = "new.csv"
+    else:
+        csf_file = "proteoin_serach_detail_csv/"+human_proteome+".csv"
+    context = human_protein_detail_main(csf_file,human_proteome,hla_type,rank)
+    
     return render(request, "human_protein_detail.html",context)
 
 

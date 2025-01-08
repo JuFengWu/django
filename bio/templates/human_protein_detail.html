@@ -90,6 +90,7 @@
             <label>
                 <input type="radio" name="data_type" value="non_redundant"> Non Redundant
             </label>
+            <button id="radioButtonSubmit">Submit Radio</button>
         </div>
         {% csrf_token %}
         <form method="post">
@@ -161,7 +162,7 @@
             $('#resultTable2').DataTable();
 
             // 監聽 radio button 的變化
-            $('input[name="data_type"]').change(function () {
+            document.getElementById("radioButtonSubmit").addEventListener("click", function () {
                 const selectedDataType = $('input[name="data_type"]:checked').val(); // 獲取選擇的值
 
                 // 發送 AJAX 請求到後端
@@ -170,6 +171,7 @@
                     type: 'POST',
                     data: {
                         data_type: selectedDataType,
+                        action: 'radio_submit', // 用來區分是 radio button 的操作
                         rank: $('#rank').val(), // 假設 Rank 有對應的輸入框
                         hla_type: $('#hla_type').val(), // 假設 HLA Type 有對應的輸入框
                         human_proteome: $('#human_proteome').val(), // 假設 Human Proteome 有對應的輸入框
@@ -181,6 +183,7 @@
                         //table.clear();
                         //table.rows.add(data.results[0]); // 假設後端返回的資料格式正確
                         //table.draw();
+                        window.location.reload();
                     },
                     error: function (error) {
                         console.error('Error:', error);
@@ -208,6 +211,7 @@
                 // 發送 AJAX 請求到後端
                 $.ajax({
                     url: '', // 替換為實際 URL
+                    action: 'apply_filter', // 用來區分是 radio button 的操作
                     type: 'POST',
                     data: {
                         selected_ids: selectedIds,
